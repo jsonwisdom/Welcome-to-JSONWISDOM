@@ -1,0 +1,35 @@
+{
+  "record_id": "COURT_RECORD_SAMPLE_001",
+  "entity": "Sample Court",
+  "jurisdiction": "FEDERAL",
+  "date_utc": "2026-04-21",
+  "context": "opinion",
+  "record": {
+    "text": "This is a sample judicial record for Merkle testing.",
+    "type": "primary",
+    "source_url": "https://example.gov/sample"
+  },
+  "provenance": {
+    "captured_by": "agent_ingest_jay",
+    "timestamp_source": "server",
+    "chain_of_custody": ["capture","hash"]
+  },
+  "evidence_hash": "",
+  "ai_integrity": {
+    "manipulation_indicators": [],
+    "confidence": 0
+  },
+  "analysis": {
+    "metrics": {
+      "clarity": 50,
+      "specificity": 50,
+      "consistency": 50
+    },
+    "opinion_note": "non-binding analytical outputs"
+  },
+  "flags": {
+    "verified": true,
+    "edited_risk": false,
+    "contradiction_link": null
+  }
+}
