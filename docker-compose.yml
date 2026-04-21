@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  agent-ingest-jay:
+    build: ./agents/ingest-jay
+    environment:
+      - AUTHORITY_JAY_ENS=jaywisdom.base.eth
+      - WHITELIST_FEEDS=congress.gov,pacer.uscourts.gov,c-span.org,supremecourt.gov
+  agent-hash-jay:
+    build: ./agents/hash-jay
+  agent-scorer-jay:
+    build: ./agents/scorer-jay
+  agent-report-jay:
+    build: ./agents/report-jay
+  agent-publish-jay:
+    build: ./agents/publish-jay
+    volumes:
+      - ipfs_data:/data/ipfs
+volumes:
+  ipfs_data:
