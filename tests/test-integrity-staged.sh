@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 WORKDIR="${1:-}"
 if [ -z "$WORKDIR" ]; then
   echo "Usage: $0 <staging_workdir>"
@@ -27,7 +30,7 @@ trap cleanup EXIT
 mkdir -p "$TMP_DIR"
 cp -r "$WORKDIR/examples" "$TMP_DIR/examples"
 mkdir -p "$TMP_DIR/.truth"
-cp /app/scripts/merkle-build.sh "$TMP_DIR/merkle-build.sh"
+cp "$REPO_ROOT/scripts/merkle-build.sh" "$TMP_DIR/merkle-build.sh"
 chmod +x "$TMP_DIR/merkle-build.sh"
 
 (
