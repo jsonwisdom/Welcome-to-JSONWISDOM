@@ -1,0 +1,12 @@
+{
+  "local_api": "http://127.0.0.1:5001",
+  "local_gateway": "http://127.0.0.1:8080",
+  "gateways": [
+    "https://ipfs.io/ipfs",
+    "https://cloudflare-ipfs.com/ipfs",
+    "https://gateway.pinata.cloud/ipfs"
+  ],
+  "pinning_services": [
+    "local_kubo"
+  ]
+}
