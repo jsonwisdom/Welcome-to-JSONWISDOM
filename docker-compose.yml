@@ -23,5 +23,10 @@ services:
       - WATCH_DOMAIN=data.jaywisdom.eth
       - WATCH_INTERVAL=60
     restart: unless-stopped
+  agent-producer-jay:
+    build: ./agents/producer-jay
+    volumes:
+      - ./:/app
+    restart: unless-stopped
 volumes:
   ipfs_data:
