@@ -1,16 +1,29 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-echo "🔐 Verifying Merkle Proof..."
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT_FILE="$ROOT_DIR/.truth/merkle-root.txt"
 
-if [ -z "$1" ]; then
-  echo "Usage: ./verify.sh <leaf_hash>"
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <leaf_hash>"
   exit 1
 fi
 
-LEAF=$1
+LEAF="$1"
 
-echo "Leaf: $LEAF"
-echo "(Stub) Compare against stored Merkle root..."
+if [ ! -f "$ROOT_FILE" ]; then
+  echo "Merkle root not found. Run merkle-build.sh first."
+  exit 1
+fi
 
-echo "✅ Verification placeholder complete"
+ROOT=$(cat "$ROOT_FILE" | tr -d '\n\r\t ')
+
+if [ "$LEAF" = "$ROOT" ]; then
+  echo "✅ Verified: leaf matches root (single-leaf tree)"
+  exit 0
+else
+  echo "❌ Verification failed"
+  echo "Expected root: $ROOT"
+  echo "Got leaf:     $LEAF"
+  exit 1
+fi
