@@ -2,27 +2,65 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-EXAMPLE_FILE="$ROOT_DIR/examples/sample-record.json"
+EXAMPLES_DIR="$ROOT_DIR/examples"
 OUTPUT_DIR="$ROOT_DIR/.truth"
 LEAVES_FILE="$OUTPUT_DIR/leaves.txt"
 ROOT_FILE="$OUTPUT_DIR/merkle-root.txt"
+TREE_DIR="$OUTPUT_DIR/tree"
 
-mkdir -p "$OUTPUT_DIR"
-
-if [ ! -f "$EXAMPLE_FILE" ]; then
-  echo "Missing example record: $EXAMPLE_FILE"
-  exit 1
-fi
+mkdir -p "$OUTPUT_DIR" "$TREE_DIR"
 
 if ! command -v sha256sum >/dev/null 2>&1; then
   echo "sha256sum is required"
   exit 1
 fi
 
-LEAF_HASH=$(tr -d '\n\r\t ' < "$EXAMPLE_FILE" | sha256sum | awk '{print $1}')
-printf "%s\n" "$LEAF_HASH" > "$LEAVES_FILE"
-printf "%s\n" "$LEAF_HASH" > "$ROOT_FILE"
+mapfile -t FILES < <(find "$EXAMPLES_DIR" -maxdepth 1 -type f -name '*.json' | sort)
 
-echo "Leaf set written to $LEAVES_FILE"
+if [ ${#FILES[@]} -eq 0 ]; then
+  echo "No JSON records found in $EXAMPLES_DIR"
+  exit 1
+fi
+
+: > "$LEAVES_FILE"
+for file in "${FILES[@]}"; do
+  hash=$(tr -d '\n\r\t ' < "$file" | sha256sum | awk '{print $1}')
+  printf "%s  %s\n" "$hash" "$(basename "$file")" >> "$LEAVES_FILE"
+done
+
+cp "$LEAVES_FILE" "$TREE_DIR/level_0.txt"
+level=0
+current="$TREE_DIR/level_0.txt"
+
+while true; do
+  count=$(wc -l < "$current" | tr -d ' ')
+  if [ "$count" -le 1 ]; then
+    break
+  fi
+
+  next="$TREE_DIR/level_$((level + 1)).txt"
+  : > "$next"
+  mapfile -t lines < "$current"
+  i=0
+  while [ $i -lt ${#lines[@]} ]; do
+    left_hash=$(echo "${lines[$i]}" | awk '{print $1}')
+    if [ $((i + 1)) -lt ${#lines[@]} ]; then
+      right_hash=$(echo "${lines[$((i + 1))]}" | awk '{print $1}')
+    else
+      right_hash="$left_hash"
+    fi
+    parent_hash=$(printf "%s%s" "$left_hash" "$right_hash" | sha256sum | awk '{print $1}')
+    printf "%s\n" "$parent_hash" >> "$next"
+    i=$((i + 2))
+  done
+  level=$((level + 1))
+  current="$next"
+done
+
+root=$(awk 'NR==1 {print $1}' "$current")
+printf "%s\n" "$root" > "$ROOT_FILE"
+
+echo "Leaves written to $LEAVES_FILE"
+echo "Tree levels written to $TREE_DIR"
 echo "Merkle root written to $ROOT_FILE"
-echo "ROOT=$LEAF_HASH"
+echo "ROOT=$root"
