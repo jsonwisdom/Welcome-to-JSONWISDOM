@@ -1,18 +1,29 @@
-version: "3.9"
 services:
-  agent-ingest-jay:
-    build: ./agents/ingest-jay
+  agent-producer-jay:
+    build:
+      context: .
+      dockerfile: agents/producer-jay/Dockerfile
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+
+  agent-verifier-jay:
+    build:
+      context: .
+      dockerfile: agents/verifier-jay/Dockerfile
+    volumes:
+      - ./:/data
     environment:
-      - AUTHORITY_JAY_ENS=jaywisdom.base.eth
-      - WHITELIST_FEEDS=congress.gov,pacer.uscourts.gov,c-span.org,supremecourt.gov
-  agent-hash-jay:
-    build: ./agents/hash-jay
-  agent-scorer-jay:
-    build: ./agents/scorer-jay
-  agent-report-jay:
-    build: ./agents/report-jay
+      - WATCH_DOMAIN=data.jaywisdom.eth
+      - WATCH_INTERVAL=60
+      - WATCH_RPC_URL=https://mainnet.base.org
+      - WATCH_REGISTRY=0x5dC881d0A0291F90d01142b0575Aa4000FE5f547
+    restart: unless-stopped
+
   agent-publisher-jay:
-    build: ./agents/publisher-jay
+    build:
+      context: .
+      dockerfile: agents/publisher-jay/Dockerfile
     volumes:
       - ./:/app
     environment:
@@ -21,18 +32,3 @@ services:
       - PUBLISH_REGISTRY=0x5dC881d0A0291F90d01142b0575Aa4000FE5f547
       - DRY_RUN=true
     restart: "no"
-  agent-verifier-jay:
-    build: ./agents/verifier-jay
-    volumes:
-      - ./:/data
-    environment:
-      - WATCH_DOMAIN=data.jaywisdom.eth
-      - WATCH_INTERVAL=60
-    restart: unless-stopped
-  agent-producer-jay:
-    build: ./agents/producer-jay
-    volumes:
-      - ./:/app
-    restart: unless-stopped
-volumes:
-  ipfs_data:
