@@ -54,14 +54,18 @@ require_bin curl
 log "AGENT A START domain=$DOMAIN rpc=$RPC_URL"
 
 while true; do
-  if [ ! -f "$LOCAL_ROOT_FILE" ]; then
-    log "LOCAL ROOT MISSING"
+
+  # PHASE 1: INTERNAL AUDIT
+  if ! /data/tests/test-integrity.sh >/tmp/internal-audit.log 2>&1; then
+    log "🚨 INTERNAL CORRUPTION DETECTED"
+    cat /tmp/internal-audit.log >> "$AUDIT_LOG"
     sleep "$INTERVAL"
     continue
+  else
+    log "INTERNAL INTEGRITY OK"
   fi
 
-  LOCAL_ROOT=$(tr -d '\n\r\t ' < "$LOCAL_ROOT_FILE")
-
+  # PHASE 2: RESOLVE CID FROM CHAIN
   CID=$(resolve_cid || true)
   if [ -z "$CID" ]; then
     log "FAILED TO RESOLVE CID"
@@ -69,6 +73,7 @@ while true; do
     continue
   fi
 
+  # PHASE 3: FETCH GLOBAL ROOT
   REMOTE_ROOT=$(fetch_remote_root "$CID")
   if [ -z "$REMOTE_ROOT" ]; then
     log "FAILED TO FETCH REMOTE ROOT CID=$CID"
@@ -76,10 +81,13 @@ while true; do
     continue
   fi
 
+  # PHASE 4: LOCAL VS GLOBAL
+  LOCAL_ROOT=$(tr -d '\n\r\t ' < "$LOCAL_ROOT_FILE")
+
   if [ "$LOCAL_ROOT" = "$REMOTE_ROOT" ]; then
-    log "OK ROOT MATCH CID=$CID ROOT=$LOCAL_ROOT"
+    log "✅ SYSTEM NOMINAL CID=$CID ROOT=$LOCAL_ROOT"
   else
-    log "ALERT ROOT MISMATCH CID=$CID LOCAL=$LOCAL_ROOT REMOTE=$REMOTE_ROOT"
+    log "⚠️ DESYNC CID=$CID LOCAL=$LOCAL_ROOT REMOTE=$REMOTE_ROOT"
   fi
 
   sleep "$INTERVAL"
