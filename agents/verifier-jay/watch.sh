@@ -43,15 +43,10 @@ resolve_cid() {
   printf "%s" "$decoded"
 }
 
-fetch_remote_root() {
-  local cid="$1"
-  curl -s "https://ipfs.io/ipfs/$cid/.truth/merkle-root.txt" | tr -d '\n\r\t '
-}
-
 require_bin cast
-require_bin curl
+require_bin ipfs
 
-log "AGENT A START domain=$DOMAIN rpc=$RPC_URL"
+log "AGENT A (SOVEREIGN) START domain=$DOMAIN rpc=$RPC_URL"
 
 while true; do
 
@@ -73,10 +68,10 @@ while true; do
     continue
   fi
 
-  # PHASE 3: FETCH GLOBAL ROOT
-  REMOTE_ROOT=$(fetch_remote_root "$CID")
+  # PHASE 3: FETCH GLOBAL ROOT (P2P)
+  REMOTE_ROOT=$(ipfs cat /ipfs/$CID/.truth/merkle-root.txt 2>/dev/null | tr -d '\n\r\t ')
   if [ -z "$REMOTE_ROOT" ]; then
-    log "FAILED TO FETCH REMOTE ROOT CID=$CID"
+    log "FAILED TO FETCH REMOTE ROOT VIA IPFS CID=$CID"
     sleep "$INTERVAL"
     continue
   fi
@@ -85,9 +80,9 @@ while true; do
   LOCAL_ROOT=$(tr -d '\n\r\t ' < "$LOCAL_ROOT_FILE")
 
   if [ "$LOCAL_ROOT" = "$REMOTE_ROOT" ]; then
-    log "✅ SYSTEM NOMINAL CID=$CID ROOT=$LOCAL_ROOT"
+    log "✅ SOVEREIGN MATCH CID=$CID ROOT=$LOCAL_ROOT"
   else
-    log "⚠️ DESYNC CID=$CID LOCAL=$LOCAL_ROOT REMOTE=$REMOTE_ROOT"
+    log "🚨 DESYNC CID=$CID LOCAL=$LOCAL_ROOT REMOTE=$REMOTE_ROOT"
   fi
 
   sleep "$INTERVAL"
