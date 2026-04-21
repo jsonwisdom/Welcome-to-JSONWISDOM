@@ -1,0 +1,35 @@
+{
+  "record_id": "COURT_RECORD_001",
+  "entity": "COURT_OR_JUDGE",
+  "jurisdiction": "STATE|FEDERAL",
+  "date_utc": "YYYY-MM-DD",
+  "context": "ruling|filing|hearing|opinion|delay",
+  "record": {
+    "text": "exact excerpt",
+    "type": "primary|secondary",
+    "source_url": "link"
+  },
+  "provenance": {
+    "captured_by": "agent_id",
+    "timestamp_source": "block|server|device",
+    "chain_of_custody": []
+  },
+  "evidence_hash": "sha256",
+  "ai_integrity": {
+    "manipulation_indicators": [],
+    "confidence": 0
+  },
+  "analysis": {
+    "metrics": {
+      "clarity": 0,
+      "specificity": 0,
+      "consistency": 0
+    },
+    "opinion_note": "non-binding analytical outputs"
+  },
+  "flags": {
+    "verified": true,
+    "edited_risk": false,
+    "contradiction_link": null
+  }
+}
