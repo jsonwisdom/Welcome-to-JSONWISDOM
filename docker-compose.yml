@@ -15,5 +15,13 @@ services:
     build: ./agents/publish-jay
     volumes:
       - ipfs_data:/data/ipfs
+  agent-verifier-jay:
+    build: ./agents/verifier-jay
+    volumes:
+      - ./:/data
+    environment:
+      - WATCH_DOMAIN=data.jaywisdom.eth
+      - WATCH_INTERVAL=60
+    restart: unless-stopped
 volumes:
   ipfs_data:
