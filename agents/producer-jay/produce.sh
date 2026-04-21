@@ -9,7 +9,7 @@ TRUTH_SRC="/app/.truth"
 
 mkdir -p "$INBOX" "$REJECTED" "$STAGING" "$PROPOSALS"
 
-echo "✍️ Agent B: Auditable Producer watching $INBOX"
+echo "✍️ Agent B: Finalized Producer watching $INBOX"
 
 while true; do
   if [ "$(ls -A $INBOX/*.json 2>/dev/null)" ]; then
@@ -45,7 +45,7 @@ while true; do
 
     MANIFEST=$(cd "$WORKDIR" && ../scripts/make-manifest.sh)
 
-    if (cd /app && ./tests/test-integrity.sh >/dev/null 2>&1); then
+    if /app/tests/test-integrity-staged.sh "$WORKDIR" >/dev/null 2>&1; then
       NEW_ROOT=$(tr -d '\n\r\t ' < "$WORKDIR/.truth/merkle-root.txt")
       PREV_ROOT=$(tr -d '\n\r\t ' < "$TRUTH_SRC/merkle-root.txt")
       NEW_CID=$(ipfs add -q -r "$WORKDIR/.truth" | tail -n1)
@@ -60,8 +60,10 @@ while true; do
         --argjson man "$MANIFEST" \
         '{version:"1.0",timestamp:$ts,previous_root:$pr,new_root:$nr,new_cid:$nc,manifest:$man}' \
         > "$PROPOSALS/PROPOSAL-$TS.json"
+
+      echo "✅ Proposal emitted for root: $NEW_ROOT"
     else
-      echo "🚨 Integrity check failed. Proposal aborted."
+      echo "🚨 STAGING AUDIT FAILED: Proposal aborted"
     fi
 
     rm -rf "$WORKDIR"
