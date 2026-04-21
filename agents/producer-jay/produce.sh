@@ -2,68 +2,66 @@
 set -euo pipefail
 
 INBOX="/app/inbox"
+REJECTED="/app/inbox/rejected"
 STAGING="/app/staging"
 PROPOSALS="/app/proposals"
 TRUTH_SRC="/app/.truth"
 
-mkdir -p "$INBOX" "$STAGING" "$PROPOSALS"
+mkdir -p "$INBOX" "$REJECTED" "$STAGING" "$PROPOSALS"
 
-echo "✍️ Agent B: Monitoring $INBOX for new records..."
+echo "✍️ Agent B: Auditable Producer watching $INBOX"
 
 while true; do
-  if [ "$(ls -A $INBOX 2>/dev/null)" ]; then
-    TIMESTAMP=$(date +%s)
-    WORKDIR="$STAGING/run-$TIMESTAMP"
+  if [ "$(ls -A $INBOX/*.json 2>/dev/null)" ]; then
+    TS=$(date +%s)
+    WORKDIR="$STAGING/run-$TS"
     mkdir -p "$WORKDIR"
 
-    echo "🏗️ Staging run $TIMESTAMP"
+    echo "🏗️ Staging run $TS"
 
-    # 1. Copy current truth into isolated workspace
     cp -r "$TRUTH_SRC" "$WORKDIR/.truth"
     cp -r /app/examples "$WORKDIR/examples"
 
-    # 2. Validate + ingest
-    for f in "$INBOX"/*.json; do
-      if [ ! -f "$f" ]; then
-        continue
-      fi
+    for f in $INBOX/*.json; do
+      if [ ! -f "$f" ]; then continue; fi
       if jq -e . "$f" >/dev/null 2>&1; then
-        echo "✔ Valid JSON: $f"
+        echo "✔ Accept: $f"
         cp "$f" "$WORKDIR/examples/"
         rm "$f"
       else
-        echo "❌ Invalid JSON: $f"
-        rm "$f"
+        echo "❌ Reject: $f"
+        mv "$f" "$REJECTED/"
       fi
     done
 
-    # 3. Rebuild Merkle tree in staging
     (cd "$WORKDIR" && ../scripts/merkle-build.sh >/dev/null 2>&1)
 
     if [ ! -f "$WORKDIR/.truth/merkle-root.txt" ]; then
-      echo "🚨 Build failed. Skipping proposal."
+      echo "🚨 Build failed"
       rm -rf "$WORKDIR"
       sleep 5
       continue
     fi
 
-    # 4. Internal audit on staging
+    MANIFEST=$(cd "$WORKDIR" && ../scripts/make-manifest.sh)
+
     if (cd /app && ./tests/test-integrity.sh >/dev/null 2>&1); then
       NEW_ROOT=$(tr -d '\n\r\t ' < "$WORKDIR/.truth/merkle-root.txt")
-
-      # 5. Pin to IPFS (local node expected)
+      PREV_ROOT=$(tr -d '\n\r\t ' < "$TRUTH_SRC/merkle-root.txt")
       NEW_CID=$(ipfs add -q -r "$WORKDIR/.truth" | tail -n1)
 
-      echo "📜 Proposal generated ROOT=$NEW_ROOT CID=$NEW_CID"
+      echo "📜 Proposal ROOT=$NEW_ROOT CID=$NEW_CID"
 
       jq -n \
-        --arg ts "$TIMESTAMP" \
-        --arg root "$NEW_ROOT" \
-        --arg cid "$NEW_CID" \
-        '{version:"1.0",state:{timestamp:$ts,new_root:$root,new_cid:$cid}}' \
-        > "$PROPOSALS/PROPOSAL-$TIMESTAMP.json"
+        --arg ts "$TS" \
+        --arg pr "$PREV_ROOT" \
+        --arg nr "$NEW_ROOT" \
+        --arg nc "$NEW_CID" \
+        --argjson man "$MANIFEST" \
+        '{version:"1.0",timestamp:$ts,previous_root:$pr,new_root:$nr,new_cid:$nc,manifest:$man}' \
+        > "$PROPOSALS/PROPOSAL-$TS.json"
     else
-      echo "🚨 Integrity check failed. Proposal rejected."
+      echo "🚨 Integrity check failed. Proposal aborted."
     fi
 
     rm -rf "$WORKDIR"
