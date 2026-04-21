@@ -11,10 +11,16 @@ services:
     build: ./agents/scorer-jay
   agent-report-jay:
     build: ./agents/report-jay
-  agent-publish-jay:
-    build: ./agents/publish-jay
+  agent-publisher-jay:
+    build: ./agents/publisher-jay
     volumes:
-      - ipfs_data:/data/ipfs
+      - ./:/app
+    environment:
+      - PUBLISH_DOMAIN=data.jaywisdom.eth
+      - PUBLISH_RPC_URL=https://mainnet.base.org
+      - PUBLISH_REGISTRY=0x5dC881d0A0291F90d01142b0575Aa4000FE5f547
+      - DRY_RUN=true
+    restart: "no"
   agent-verifier-jay:
     build: ./agents/verifier-jay
     volumes:
