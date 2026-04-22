@@ -1,6 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+MERKLE_BUILD_SCRIPT="$REPO_ROOT/scripts/merkle-build.sh"
+
+if [ ! -f "$MERKLE_BUILD_SCRIPT" ] && [ -f "/app/scripts/merkle-build.sh" ]; then
+  MERKLE_BUILD_SCRIPT="/app/scripts/merkle-build.sh"
+fi
+
 WORKDIR="${1:-}"
 if [ -z "$WORKDIR" ]; then
   echo "Usage: $0 <staging_workdir>"
@@ -27,7 +35,11 @@ trap cleanup EXIT
 mkdir -p "$TMP_DIR"
 cp -r "$WORKDIR/examples" "$TMP_DIR/examples"
 mkdir -p "$TMP_DIR/.truth"
-cp /app/scripts/merkle-build.sh "$TMP_DIR/merkle-build.sh"
+if [ ! -f "$MERKLE_BUILD_SCRIPT" ]; then
+  echo "Missing merkle builder script: checked $REPO_ROOT/scripts/merkle-build.sh and /app/scripts/merkle-build.sh"
+  exit 1
+fi
+cp "$MERKLE_BUILD_SCRIPT" "$TMP_DIR/merkle-build.sh"
 chmod +x "$TMP_DIR/merkle-build.sh"
 
 (
