@@ -20,6 +20,12 @@ PREV_ROOT=$(jq -r .previous_root "$PROPOSAL")
 NEW_ROOT=$(jq -r .new_root "$PROPOSAL")
 NEW_CID=$(jq -r .new_cid "$PROPOSAL")
 
+if ! command -v cast >/dev/null 2>&1; then
+  echo "🚨 Missing dependency: cast (Foundry). Rebuild agent-publisher-jay image."
+  mv "$PROPOSAL" "$REJECT_DIR/"
+  exit 1
+fi
+
 NAMEHASH=$(cast namehash "$DOMAIN")
 RESOLVER=$(cast call --rpc-url "$RPC_URL" "$REGISTRY" "resolver(bytes32)" "$NAMEHASH" | tr -d '\n\r\t ')
 

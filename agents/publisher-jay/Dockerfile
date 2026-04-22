@@ -2,6 +2,10 @@ FROM alpine:3.20
 
 RUN apk add --no-cache bash curl jq coreutils tar findutils
 
+RUN curl -L https://foundry.paradigm.xyz | bash \
+    && /root/.foundry/bin/foundryup \
+    && ln -sf /root/.foundry/bin/cast /usr/local/bin/cast
+
 RUN curl -L https://dist.ipfs.tech/kubo/v0.29.0/kubo_v0.29.0_linux-amd64.tar.gz -o /tmp/kubo.tar.gz \
     && tar -xzf /tmp/kubo.tar.gz -C /tmp \
     && /tmp/kubo/install.sh \
