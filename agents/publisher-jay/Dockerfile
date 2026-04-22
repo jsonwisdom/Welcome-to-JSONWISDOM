@@ -1,6 +1,6 @@
 FROM alpine:3.20
 
-RUN apk add --no-cache bash curl jq coreutils tar findutils
+RUN apk add --no-cache bash curl jq coreutils tar findutils git
 
 RUN export SHELL=/bin/bash \
     && curl -L https://foundry.paradigm.xyz | bash \
