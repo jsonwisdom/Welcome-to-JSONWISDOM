@@ -1,9 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-
 WORKDIR="${1:-}"
 if [ -z "$WORKDIR" ]; then
   echo "Usage: $0 <staging_workdir>"
@@ -22,36 +19,53 @@ fi
 
 EXPECTED_ROOT=$(tr -d '\n\r\t ' < "$WORKDIR/.truth/merkle-root.txt")
 TMP_DIR=$(mktemp -d)
-cleanup() {
-  rm -rf "$TMP_DIR"
-}
-trap cleanup EXIT
+trap 'rm -rf "$TMP_DIR"' EXIT
 
-mkdir -p "$TMP_DIR"
-cp -r "$WORKDIR/examples" "$TMP_DIR/examples"
-mkdir -p "$TMP_DIR/.truth"
-cp "$REPO_ROOT/scripts/merkle-build.sh" "$TMP_DIR/merkle-build.sh"
-chmod +x "$TMP_DIR/merkle-build.sh"
+mkdir -p "$TMP_DIR/.truth" "$TMP_DIR/tree"
 
-(
-  cd "$TMP_DIR"
-  ./merkle-build.sh >/tmp/staged-merkle-build.log 2>&1
-)
+find "$WORKDIR/examples" -maxdepth 1 -type f -name '*.json' | sort | while read -r file; do
+  hash=$(tr -d '\n\r\t ' < "$file" | sha256sum | awk '{print $1}')
+  printf "%s  %s\n" "$hash" "$(basename "$file")"
+done > "$TMP_DIR/.truth/leaves.txt"
 
-if [ ! -f "$TMP_DIR/.truth/merkle-root.txt" ]; then
-  cat /tmp/staged-merkle-build.log 2>/dev/null || true
-  echo "STAGED REBUILD FAILED"
-  exit 1
-fi
+cp "$TMP_DIR/.truth/leaves.txt" "$TMP_DIR/tree/level_0.txt"
+current="$TMP_DIR/tree/level_0.txt"
+level=0
 
-ACTUAL_ROOT=$(tr -d '\n\r\t ' < "$TMP_DIR/.truth/merkle-root.txt")
+while true; do
+  count=$(wc -l < "$current" | tr -d ' ')
+  if [ "$count" -le 1 ]; then
+    break
+  fi
+
+  next="$TMP_DIR/tree/level_$((level + 1)).txt"
+  : > "$next"
+  mapfile -t lines < "$current"
+  i=0
+  while [ $i -lt ${#lines[@]} ]; do
+    left_hash=$(echo "${lines[$i]}" | awk '{print $1}')
+    if [ $((i + 1)) -lt ${#lines[@]} ]; then
+      right_hash=$(echo "${lines[$((i + 1))]}" | awk '{print $1}')
+    else
+      right_hash="$left_hash"
+    fi
+    parent_hash=$(printf "%s%s" "$left_hash" "$right_hash" | sha256sum | awk '{print $1}')
+    printf "%s\n" "$parent_hash" >> "$next"
+    i=$((i + 2))
+  done
+  level=$((level + 1))
+  current="$next"
+done
+
+ACTUAL_ROOT=$(awk 'NR==1 {print $1}' "$current" | tr -d '\n\r\t ')
+
+echo "EXPECTED=$EXPECTED_ROOT"
+echo "ACTUAL=$ACTUAL_ROOT"
 
 if [ "$EXPECTED_ROOT" = "$ACTUAL_ROOT" ]; then
   echo "STAGED INTEGRITY CONFIRMED"
   exit 0
 else
   echo "STAGED INTEGRITY FAILED"
-  echo "EXPECTED=$EXPECTED_ROOT"
-  echo "ACTUAL=$ACTUAL_ROOT"
   exit 1
 fi
