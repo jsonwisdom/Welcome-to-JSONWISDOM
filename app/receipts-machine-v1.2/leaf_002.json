@@ -1,0 +1,28 @@
+{
+  "prev_root": "0x34c7bd2850e04053a0db6a5cf61b38101f801d4f045f03c9c05fd676c636fca4",
+  "records": [
+    {
+      "type": "GENESIS",
+      "asset": "bsdETH",
+      "amount": "1.0",
+      "timestamp": 1713731990,
+      "network": "Base",
+      "ens": "jaywisdom.base.eth"
+    },
+    {
+      "type": "STATE_ADVANCE",
+      "asset": "bsdETH",
+      "action": "REBASE",
+      "amount": "1.05",
+      "timestamp": 1713818390,
+      "network": "Base",
+      "ens": "jaywisdom.base.eth",
+      "note": "First advance after genesis"
+    }
+  ],
+  "metadata": {
+    "version": "v1",
+    "epoch": 1713818390,
+    "anchor": "JAYWISDOM_STATE_002"
+  }
+}
