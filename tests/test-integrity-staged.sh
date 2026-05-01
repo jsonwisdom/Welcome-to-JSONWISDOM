@@ -23,8 +23,14 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 
 mkdir -p "$TMP_DIR/.truth" "$TMP_DIR/tree"
 
+JCS_HASH="$WORKDIR/scripts/jcs-hash.sh"
+if [ ! -x "$JCS_HASH" ]; then
+  # Fallback to current directory scripts if not in WORKDIR
+  JCS_HASH="$(cd "$(dirname "$0")/.." && pwd)/scripts/jcs-hash.sh"
+fi
+
 find "$WORKDIR/examples" -maxdepth 1 -type f -name '*.json' | sort | while read -r file; do
-  hash=$(tr -d '\n\r\t ' < "$file" | sha256sum | awk '{print $1}')
+  hash=$("$JCS_HASH" "$file")
   printf "%s  %s\n" "$hash" "$(basename "$file")"
 done > "$TMP_DIR/.truth/leaves.txt"
 
