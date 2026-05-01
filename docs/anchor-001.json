@@ -1,0 +1,18 @@
+{
+  "anchor_id": "001",
+  "timestamp": "2026-05-01T18:12:00Z",
+  "repo": "jsonwisdom/Welcome-to-JSONWISDOM",
+  "branch": "jsonwisdom",
+  "record": "examples/sample-record.json",
+  "tree_cardinality": 1,
+  "merkle_root_sha256": "ff55160908ff41d23f7af0df8873ef7a0dcf8163d1a308f58941e87b5a95bad9",
+  "leaf_sha256": "ff55160908ff41d23f7af0df8873ef7a0dcf8163d1a308f58941e87b5a95bad9",
+  "leaf_keccak256": "0xb7e55f9e1f4f27cd96f38d74e510e184a14772ef3f9f628d5acc68531dd185d",
+  "binding": "same_rfc8785_jcs_bytes",
+  "canonicalization": "RFC 8785 JCS",
+  "offchain_hash": "SHA-256",
+  "onchain_hash": "Keccak-256",
+  "anchor_target": "leaf_keccak256",
+  "note": "leaf_sha256 equals merkle_root_sha256 because the current tree contains exactly one record",
+  "status": "github_anchored_pre_eas_pre_ens"
+}
