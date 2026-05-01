@@ -1,0 +1,24 @@
+name: Goblin Court Docket
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "goblin-court/**"
+      - ".github/workflows/goblin-court-docket.yml"
+
+jobs:
+  docket:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print docket
+        run: |
+          echo "GOBLIN COURT — DOCKET STATUS"
+          echo "EPISODE 001: Goblin Court is in Session base:0x558b75ae2de754caa72d4b195a0c04c8cf279e55"
+          echo "EPISODE 002: CASE 001 — The Corrupted Sibling MINT_READY"
+          echo "EPISODE 003: CASE 002 PENDING"
+          echo "RULE: No receipt, no ruling."
+          echo "JUDGE: The Null Judge"
+          echo "STATUS: AWAITING WALLET SIGNATURE"
