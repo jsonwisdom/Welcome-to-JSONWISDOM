@@ -6,7 +6,7 @@ HASH_SCRIPT="scripts/jcs-hash.sh"
 
 pass=true
 
-jq -c '.test_cases[]' "$TEST_FILE" | while read -r case; do
+while IFS= read -r case; do
   id=$(echo "$case" | jq -r '.id')
 
   if echo "$case" | jq -e '.jcs_must_reject == true' > /dev/null; then
@@ -42,7 +42,7 @@ jq -c '.test_cases[]' "$TEST_FILE" | while read -r case; do
       pass=false
     fi
   fi
-done
+done < <(jq -c '.test_cases[]' "$TEST_FILE")
 
 if [ "$pass" = false ]; then
   exit 1
