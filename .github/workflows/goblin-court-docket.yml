@@ -22,3 +22,13 @@ jobs:
           echo "RULE: No receipt, no ruling."
           echo "JUDGE: The Null Judge"
           echo "STATUS: AWAITING WALLET SIGNATURE"
+
+      - name: Print ALMS receipt
+        run: |
+          echo "ALMS RECEIPT"
+          cat goblin-court/episode-002/alms-receipt.json
+
+      - name: Verify ALMS receipt exists
+        run: |
+          test -f goblin-court/episode-002/alms-receipt.json
+          echo "ALMS_GOBLIN_COURT_EPISODE_002_RECEIPT_OK"
