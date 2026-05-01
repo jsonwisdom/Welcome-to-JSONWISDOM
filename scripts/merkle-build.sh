@@ -7,11 +7,17 @@ OUTPUT_DIR="$ROOT_DIR/.truth"
 LEAVES_FILE="$OUTPUT_DIR/leaves.txt"
 ROOT_FILE="$OUTPUT_DIR/merkle-root.txt"
 TREE_DIR="$OUTPUT_DIR/tree"
+JCS_HASH="$ROOT_DIR/scripts/jcs-hash.sh"
 
 mkdir -p "$OUTPUT_DIR" "$TREE_DIR"
 
 if ! command -v sha256sum >/dev/null 2>&1; then
   echo "sha256sum is required"
+  exit 1
+fi
+
+if [ ! -x "$JCS_HASH" ]; then
+  echo "jcs-hash.sh is required and must be executable: $JCS_HASH"
   exit 1
 fi
 
@@ -24,7 +30,7 @@ fi
 
 : > "$LEAVES_FILE"
 for file in "${FILES[@]}"; do
-  hash=$(tr -d '\n\r\t ' < "$file" | sha256sum | awk '{print $1}')
+  hash=$("$JCS_HASH" "$file")
   printf "%s  %s\n" "$hash" "$(basename "$file")" >> "$LEAVES_FILE"
 done
 

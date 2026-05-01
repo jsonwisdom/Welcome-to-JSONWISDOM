@@ -1,0 +1,46 @@
+{
+  "name": "Adversarial Whitespace — JCS Semantic Integrity",
+  "test_cases": [
+    {
+      "id": "TC-001",
+      "input_a": "{\"verdict\":\"Guilty\"}",
+      "input_b": "{\"verdict\":\"Guilty   \"}",
+      "same_under_jcs": false
+    },
+    {
+      "id": "TC-002",
+      "input_a": "{\"name\":\"Not Guilty\"}",
+      "input_b": "{\"name\":\"Not  Guilty\"}",
+      "same_under_jcs": false
+    },
+    {
+      "id": "TC-003",
+      "input_a": "{\"b\":2,\"a\":1}",
+      "input_b": "{\"a\":1,\"b\":2}",
+      "same_under_jcs": true
+    },
+    {
+      "id": "TC-004",
+      "input_a": "{\"value\":1.0}",
+      "input_b": "{\"value\":1}",
+      "same_under_jcs": true
+    },
+    {
+      "id": "TC-005",
+      "input_a": "{\"field\":null,\"other\":1}",
+      "input_b": "{\"other\":1}",
+      "same_under_jcs": false
+    },
+    {
+      "id": "TC-006",
+      "input_a": "[1,2]",
+      "input_b": "[2,1]",
+      "same_under_jcs": false
+    },
+    {
+      "id": "TC-007",
+      "input": "{\"score\":NaN}",
+      "jcs_must_reject": true
+    }
+  ]
+}
