@@ -1,4 +1,4 @@
-import { canonicalize } from 'canonicalize';
+import canonicalize from 'canonicalize';
 import { readFileSync } from 'fs';
 
 const rawData = readFileSync(0, 'utf8');
