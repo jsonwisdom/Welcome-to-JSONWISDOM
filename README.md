@@ -39,6 +39,34 @@ receipts-engine-v1 verifies and displays proof surfaces.
 
 ---
 
+## Broadcast: Global Governance Role-Collapse Guard
+
+The global governance role-collapse guard is recorded as evidence-only control-plane lineage.
+
+```text
+STATE: CONSTITUTIONALLY_CLOSED
+MODE: EVIDENCE_ONLY
+REQUIRES_FOR_ADJUDICATION: [REPLAY, AL_ADMISSION]
+SEAL: 9bc1ac2025e111f6f30ab1f72611cf638fa4c5d5f95c7f8fbaa8de221d9327f2
+```
+
+Invariant:
+
+```text
+CURRENT_OFFICE_HOLDER != CANDIDATE != NOMINEE != SUCCESSOR_ELECT
+```
+
+Boundary:
+
+```text
+Evidence may mirror globally.
+Authority may not.
+```
+
+This broadcast is an orientation notice only. It does not create final adjudication, state authority, or officeholder truth.
+
+---
+
 ## Mission Registry
 
 The mission registry is the structured map of Jay's projects.
