@@ -3,9 +3,9 @@
 > Identity root, orientation layer, and canonical doorway for Jay Wisdom / JSONWisdom.
 
 **Status:** Identity Root Active  
-**Operator:** Jason Wisdom / Jay Wisdom  
+**Narrator:** JSONWisdom index  
 **Handle:** JSONWisdom  
-**Primary role:** Public source-of-truth doorway for connected projects, receipts, missions, and proof surfaces.
+**Primary role:** Public source-of-truth doorway for connected projects, receipts, missions, witness surfaces, and proof-oriented render layers.
 
 ---
 
@@ -13,15 +13,17 @@
 
 This repository is the front door for JSONWisdom.
 
-It does not replace the operational control plane, the courthouse, or the proof engine. It points to them clearly so humans and machines can understand where each responsibility lives.
+It does not replace the operational control plane, the courthouse, the witness layer, or the proof engine. It narrates how the connected repositories relate so humans and machines can understand where each responsibility lives.
 
 Core rule:
 
 ```text
-Welcome-to-JSONWISDOM orients.
-COMPUTERWISDOM operates.
-AL records and governs.
+Welcome-to-JSONWISDOM narrates and orients.
+COMPUTERWISDOM coordinates operational intelligence.
+AL records, governs, and preserves evidence structure.
+JOY witnesses continuity, family-safe memory, and human meaning.
 receipts-engine-v1 verifies and displays proof surfaces.
+Render layers present records; they do not create proof.
 ```
 
 ---
@@ -30,12 +32,68 @@ receipts-engine-v1 verifies and displays proof surfaces.
 
 | Repository | Mission | Mechanical Role |
 |---|---|---|
-| `Welcome-to-JSONWISDOM` | Identity root and public doorway | Explains the system and links outward |
+| `Welcome-to-JSONWISDOM` | Identity root and public doorway | Narrates the system and links outward |
 | `COMPUTERWISDOM` | Operational control plane | Missions, coordination, replay prep, signer boundaries |
 | `AL` | Registry of Record / courthouse | Governance records, schemas, receipts, audit trails, org-grade evidence |
+| `JOY` | Witness and continuity layer | Family-safe replay, meaning preservation, protected continuity boundaries |
 | `receipts-engine-v1` | Proof and verifier surface | Deterministic proof display, hashing, Merkle/ledger patterns, replay UI |
 | `public-proof` | Public proof publication surface | Human-facing receipts and public attestations |
 | `jay-zora-portal` | Zora media ingestion portal | Zora metadata/artifact acquisition before interpretation |
+
+---
+
+## Narrator Boundary
+
+The JSONWISDOM index speaks as a narrator, not as an operator.
+
+```text
+Narration may explain relationships.
+Narration may point to repositories.
+Narration may describe status labels.
+Narration may not perform the work of another layer.
+Narration may not promote a claim into proof.
+```
+
+Boundary:
+
+```text
+Index README != operator console
+Index README != courthouse record
+Index README != witness testimony
+Index README != verifier output
+```
+
+---
+
+## Render Layer Notice
+
+A render layer may be attached to `COMPUTERWISDOM`, `AL`, and `JOY` as a presentation surface for locked or clearly labeled records.
+
+Allowed render posture:
+
+```json
+{
+  "layer": "render",
+  "truth_source": false,
+  "authority": false,
+  "rule": "receipts first, render second",
+  "membrane": "HOLDS"
+}
+```
+
+Render output may make records easier to read, share, export, or publish.
+
+Render output must not silently promote:
+
+```text
+OBSERVATION -> CLAIM
+CLAIM -> RECEIPT
+RECEIPT -> VERIFIED_RECEIPT
+UNKNOWN -> FACT
+DISPUTED_RECORD -> RESOLVED_RECORD
+```
+
+Pretty output is not proof.
 
 ---
 
@@ -101,6 +159,7 @@ GitHub pointer != truth surface
 Zora UI != verdict
 ENS discovery != authority
 EAS witness != global legitimacy
+Render polish != verification
 Replay decides seal
 ```
 
@@ -114,7 +173,9 @@ Replay decides seal
 - Interpretation must not promote itself into proof.
 - Organization-grade records belong in `AL`.
 - Operational work belongs in `COMPUTERWISDOM`.
+- Witness and continuity memory belongs in `JOY`.
 - Public verification belongs in `receipts-engine-v1` or `public-proof`.
+- Public presentation belongs in render layers only after state is labeled.
 
 ---
 
@@ -132,4 +193,10 @@ Then mirror accepted mission registry state into:
 AL/registry/
 ```
 
-The living story becomes safe only after mission inputs are structured and receipts are generated.
+Then narrate continuity and family-safe witness boundaries through:
+
+```text
+JOY/
+```
+
+The living story becomes safe only after mission inputs are structured, receipts are generated, and rendered surfaces preserve the underlying evidence state.
