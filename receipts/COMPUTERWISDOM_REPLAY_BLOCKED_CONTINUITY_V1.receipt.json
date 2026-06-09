@@ -1,0 +1,39 @@
+{
+  "receipt_id": "CW-REPLAY-BLOCKED-CONTINUITY-001",
+  "title": "Computer Wisdom Replay Blocked Continuity V1",
+  "status": "GITHUB_RECORDED",
+  "date": "2026-06-09",
+  "repository": "jsonwisdom/Welcome-to-JSONWISDOM",
+  "branch": "jsonwisdom",
+  "artifact": "docs/COMPUTERWISDOM_REPLAY_BLOCKED_CONTINUITY_V1.md",
+  "artifact_commit_sha": "1797678aaad6a735c3d591338449a897b679e2e0",
+  "layer": "CONTINUITY",
+  "canonical_state": [
+    "LIVE_REPLAY_BLOCKED",
+    "DESIGN_LAYER_CAN_CONTINUE",
+    "NO_FAKE_GREEN_ACTIVE"
+  ],
+  "allowed_scope": [
+    "draft architecture",
+    "draft workflows",
+    "draft Gmail formats",
+    "draft Base/EAS anchor candidates",
+    "rank next actions from known state",
+    "create replay instructions",
+    "queue replay tasks"
+  ],
+  "prohibited_scope": [
+    "claim live repo state",
+    "claim PR status",
+    "claim issue status",
+    "claim workflow status",
+    "claim chain verification",
+    "claim Gmail delivery",
+    "claim deployment"
+  ],
+  "authority": false,
+  "deployment_claimed": false,
+  "base_anchored": false,
+  "gmail_delivery_claimed": false,
+  "boundary": "Receipt records GitHub custody of the blocked-continuity protocol only. It does not claim live replay, deployment, external verification, Gmail delivery, Base anchoring, or authority."
+}
