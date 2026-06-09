@@ -1,0 +1,15 @@
+{
+  "receipt_id": "CW-SKILL-REG-001",
+  "title": "Computer Wisdom Skills Registry V1",
+  "status": "GITHUB_RECORDED",
+  "date": "2026-06-09",
+  "repository": "jsonwisdom/Welcome-to-JSONWISDOM",
+  "branch": "jsonwisdom",
+  "artifact": "docs/COMPUTERWISDOM_SKILLS_REGISTRY_V1.md",
+  "commit_sha": "e0bfa4a37ec703583a5593b0d8b979408a23f988",
+  "layer": "CAPABILITIES",
+  "skills_count": 8,
+  "authority": false,
+  "deployment_claimed": false,
+  "boundary": "Registry defines capabilities. Receipt records repository state only."
+}
