@@ -1,0 +1,22 @@
+{
+  "receipt_id": "CW-MANIFESTO-001",
+  "title": "Computer Wisdom Manifesto",
+  "status": "GITHUB_RECORDED",
+  "date": "2026-06-09",
+  "repository": "jsonwisdom/Welcome-to-JSONWISDOM",
+  "branch": "jsonwisdom",
+  "artifact": "docs/COMPUTER_WISDOM_MANIFESTO.md",
+  "commit_sha": "45cb55761d18f5f7553a7ad141678df13e486ab3",
+  "layer": "FOUNDATION",
+  "system": "Computer Wisdom as a Service",
+  "backbone": "GitHub",
+  "core_doctrine": [
+    "Verification Over Narrative",
+    "Systems Over Opinions",
+    "Receipts Over Memory",
+    "Repair Over Blame"
+  ],
+  "authority": false,
+  "deployment_claimed": false,
+  "boundary": "Receipt records GitHub custody only. It does not claim external deployment, legal authority, or chain verification."
+}
