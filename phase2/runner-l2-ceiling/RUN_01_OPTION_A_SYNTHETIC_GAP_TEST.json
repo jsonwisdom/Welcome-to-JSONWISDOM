@@ -3,6 +3,11 @@
   "packet_type": "SYNTHETIC_STRESS_TEST",
   "synthetic_only": true,
   "lineage_hash": "345138cc9c92352a73fe20dbfe6785cb1ddfd799fd0e54b8e42161c3dc3b1429",
+  "intersection_basis": "VALUE_CONTROL_OVERLAP_RECORDED",
+  "time_window": {
+    "start": "2026-07-14T15:11:00Z",
+    "end": "2026-07-14T15:12:00Z"
+  },
   "left": {
     "status": "PARTIAL"
   },
