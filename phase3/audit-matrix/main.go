@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"encoding/csv"
 	"flag"
 	"fmt"
@@ -13,13 +12,17 @@ import (
 	"strings"
 )
 
-const classifierSourcePath = "phase3/audit-matrix/main.go"
-
 type row struct {
 	Commit     string
 	MaxState   string
 	GapClass   string
 	ExitReason string
+}
+
+type auditStats struct {
+	RoleCounts                  map[EvidenceRole]int
+	ReviewContextLiteralCount   int
+	ReviewContextVoidPromotions int
 }
 
 var (
@@ -49,31 +52,8 @@ func gitRead(repo string, args ...string) string {
 	return string(out)
 }
 
-func commitEvidence(repo, commit string) string {
-	var evidence strings.Builder
-
-	// Commit metadata is evidence, but classifier implementation text is not.
-	evidence.WriteString(gitRead(repo, "show", "--no-patch", "--format=fuller", commit))
-
-	filesRaw := gitRead(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", commit)
-	scanner := bufio.NewScanner(strings.NewReader(filesRaw))
-	for scanner.Scan() {
-		path := strings.TrimSpace(scanner.Text())
-		if path == "" || path == classifierSourcePath {
-			continue
-		}
-		evidence.WriteString("\nFILE=")
-		evidence.WriteString(path)
-		evidence.WriteString("\n")
-		evidence.WriteString(gitRead(repo, "show", "--no-ext-diff", "--format=", "--unified=0", commit, "--", path))
-	}
-	if err := scanner.Err(); err != nil {
-		parserFail("CHANGED_FILE_LIST_PARSE_FAILED")
-	}
-	return evidence.String()
-}
-
-func classify(text string, priorRoots map[string]struct{}) (string, string, []string) {
+func classifyEvidence(fragments []EvidenceFragment, priorRoots map[string]struct{}) (string, string, []string) {
+	text := joinEvidence(fragments)
 	lower := strings.ToLower(text)
 	roots := []string{}
 	for _, re := range []*regexp.Regexp{declaredRoot, rootExpected} {
@@ -92,8 +72,7 @@ func classify(text string, priorRoots map[string]struct{}) (string, string, []st
 		}
 	}
 
-	if strings.Contains(lower, `"content_independently_verified": false`) ||
-		strings.Contains(lower, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855") {
+	if hasVoidAssertion(fragments) {
 		return "void", "UNVERIFIED_OR_EMPTY_EVIDENCE", roots
 	}
 
@@ -127,25 +106,34 @@ func main() {
 	gitRead(*repo, "rev-parse", "--is-inside-work-tree")
 	commitsRaw := gitRead(*repo, "rev-list", "--reverse", "--max-count="+strconv.Itoa(*maxCount), *ref)
 	commits := []string{}
-	scanner := bufio.NewScanner(strings.NewReader(commitsRaw))
-	for scanner.Scan() {
-		v := strings.TrimSpace(scanner.Text())
-		if v != "" {
-			commits = append(commits, v)
+	for _, line := range strings.Split(commitsRaw, "\n") {
+		commit := strings.TrimSpace(line)
+		if commit != "" {
+			commits = append(commits, commit)
 		}
-	}
-	if err := scanner.Err(); err != nil {
-		parserFail("COMMIT_LIST_PARSE_FAILED")
 	}
 	if len(commits) == 0 {
 		gitFail("NO_COMMITS_OBSERVED")
 	}
 
+	stats := auditStats{RoleCounts: map[EvidenceRole]int{}}
 	priorRoots := map[string]struct{}{}
 	rows := make([]row, 0, len(commits))
 	for _, commit := range commits {
-		text := commitEvidence(*repo, commit)
-		gapClass, reason, roots := classify(text, priorRoots)
+		fragments := collectEvidenceFragments(*repo, commit)
+		for _, fragment := range fragments {
+			stats.RoleCounts[fragment.Role]++
+		}
+		for _, observation := range voidTriggerObservations(fragments) {
+			if observation.Role == ReviewContext {
+				stats.ReviewContextLiteralCount++
+				if observation.IsAssertion {
+					stats.ReviewContextVoidPromotions++
+				}
+			}
+		}
+
+		gapClass, reason, roots := classifyEvidence(fragments, priorRoots)
 		for _, r := range roots {
 			priorRoots[r] = struct{}{}
 		}
@@ -188,7 +176,12 @@ func main() {
 	for _, k := range keys {
 		fmt.Printf("GAP_CLASS_%s=%d\n", strings.ToUpper(k), counts[k])
 	}
-	fmt.Printf("CLASSIFIER_SOURCE_EXCLUDED=%s\n", classifierSourcePath)
+	for _, role := range []EvidenceRole{AssertionSource, ReviewContext, ClassifierImplementation, CommitContext} {
+		fmt.Printf("EVIDENCE_ROLE_%s=%d\n", role, stats.RoleCounts[role])
+	}
+	fmt.Printf("REVIEW_CONTEXT_LITERAL_COUNT=%d\n", stats.ReviewContextLiteralCount)
+	fmt.Printf("REVIEW_CONTEXT_VOID_PROMOTIONS=%d\n", stats.ReviewContextVoidPromotions)
+	fmt.Printf("ROLE_POLICY_MODE=CURRENT_VERSIONED_SIDECARS_APPLIED_TO_HISTORICAL_PATHS\n")
 	fmt.Printf("MAX_STATE_CEILING=L-2\n")
 	fmt.Printf("OUTPUT=%s\n", *output)
 	fmt.Printf("REPOSITORY_MUTATED=FALSE\n")

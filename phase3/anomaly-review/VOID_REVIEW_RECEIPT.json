@@ -1,5 +1,8 @@
 {
-  "schema": "JQG50_PHASE_III_VOID_REVIEW_RECEIPT_V1",
+  "schema": "JQG50_PHASE_III_VOID_REVIEW_RECEIPT_V2",
+  "artifact_role": "REVIEW_CONTEXT",
+  "asserts_subject_state": false,
+  "authority": false,
   "canonical_base": "eb72925dc893304eecf28c7badeaf7596a11a2f0",
   "source_matrix_head": "08f2177f57fc8bb502c49819d0f7a253619b900b",
   "source_matrix_artifact_id": 8316737154,
@@ -17,13 +20,13 @@
   "classification_override": false,
   "review_is_additive": true,
   "max_state": "L-2",
-  "authority": false,
   "artifacts": {
     "PHASE_III_VOID_REVIEW.csv": {
       "sha256": "af03924fb6eb6f7532c7e77e9b3a611c31b677560d8a52501bb10c6612803639"
     },
     "PHASE_III_VOID_REVIEW.md": {
-      "sha256": "99aba3f953eb1850d87869acbe1ddcbe205e6a8465b4ecabb374c923690a050b"
+      "prior_sha256": "99aba3f953eb1850d87869acbe1ddcbe205e6a8465b4ecabb374c923690a050b",
+      "role_declaration_update": true
     }
   }
 }
