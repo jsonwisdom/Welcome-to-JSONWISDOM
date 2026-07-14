@@ -32,7 +32,7 @@ jobs:
           mkdir -p bin
           go build -trimpath -ldflags='-s -w -buildid=' \
             -o bin/jqg50-history-audit \
-            ./phase3/audit-matrix
+            ./phase3/audit-matrix/main.go
           sha256sum bin/jqg50-history-audit | tee JQG-50_PHASE_III_RUNNER.sha256
 
       - name: Verify no network package imports
