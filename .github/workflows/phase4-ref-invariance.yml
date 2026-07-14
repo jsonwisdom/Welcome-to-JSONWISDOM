@@ -1,0 +1,147 @@
+name: Phase IV Ref Invariance
+
+on:
+  pull_request:
+    branches:
+      - jsonwisdom
+    paths:
+      - ".github/workflows/phase4-ref-invariance.yml"
+      - "phase3/audit-matrix/**"
+      - "phase3/anomaly-review/**"
+      - "phase4/**"
+
+permissions:
+  contents: read
+
+jobs:
+  ref-invariance:
+    runs-on: ubuntu-24.04
+    env:
+      PHASE3_TAG: jqg50-phase3-evidence-role-v1.0.0
+      FROZEN_GRAPH_HEAD: f41c931b2834ef6914fa8560d4996f0eaf451ec9
+      EXPECTED_ROWS: 98
+      REF_A: refs/jqg50/ref-invariance/tag-entry
+      REF_B: refs/jqg50/ref-invariance/branch-entry
+      GO111MODULE: "off"
+
+    steps:
+      - name: Checkout Phase IV branch with complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Bind frozen Phase III graph
+        run: |
+          set -euo pipefail
+          git cat-file -e "$FROZEN_GRAPH_HEAD^{commit}"
+          test "$(git rev-list -n 1 "$PHASE3_TAG")" = "$FROZEN_GRAPH_HEAD"
+          test "$(git rev-list --count "$FROZEN_GRAPH_HEAD")" -eq "$EXPECTED_ROWS"
+          git merge-base --is-ancestor "$FROZEN_GRAPH_HEAD" "$GITHUB_SHA"
+
+          git update-ref "$REF_A" "$FROZEN_GRAPH_HEAD"
+          git update-ref "$REF_B" "$FROZEN_GRAPH_HEAD"
+
+          test "$(git rev-parse "$REF_A")" = "$FROZEN_GRAPH_HEAD"
+          test "$(git rev-parse "$REF_B")" = "$FROZEN_GRAPH_HEAD"
+          test "$(git rev-parse "$REF_A")" = "$(git rev-parse "$REF_B")"
+
+          echo "PHASE3_TAG_BOUND=TRUE"
+          echo "FROZEN_GRAPH_HEAD_BOUND=TRUE"
+          echo "REF_TARGETS_EQUAL=TRUE"
+          echo "PHASE4_DESCENDS_FROM_PHASE3=TRUE"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+
+      - name: Test and build canonical classifier
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          set -euo pipefail
+          go test ./phase3/audit-matrix
+          mkdir -p bin
+          go build -trimpath -ldflags='-s -w -buildid=' \
+            -o bin/jqg50-history-audit \
+            ./phase3/audit-matrix
+          sha256sum bin/jqg50-history-audit | tee PHASE_IV_REF_INVARIANCE_RUNNER.sha256
+
+      - name: Execute both traversal entry points
+        run: |
+          set -euo pipefail
+
+          ./bin/jqg50-history-audit \
+            --repo . \
+            --ref "$REF_A" \
+            --max-count "$EXPECTED_ROWS" \
+            --output PHASE_IV_MATRIX_A.csv \
+            | tee PHASE_IV_LOG_A.txt
+
+          ./bin/jqg50-history-audit \
+            --repo . \
+            --ref "$REF_B" \
+            --max-count "$EXPECTED_ROWS" \
+            --output PHASE_IV_MATRIX_B.csv \
+            | tee PHASE_IV_LOG_B.txt
+
+      - name: Verify byte and observation invariance
+        run: |
+          set -euo pipefail
+
+          test -s PHASE_IV_MATRIX_A.csv
+          test -s PHASE_IV_MATRIX_B.csv
+          cmp -s PHASE_IV_MATRIX_A.csv PHASE_IV_MATRIX_B.csv
+
+          MATRIX_A_SHA256="$(sha256sum PHASE_IV_MATRIX_A.csv | awk '{print $1}')"
+          MATRIX_B_SHA256="$(sha256sum PHASE_IV_MATRIX_B.csv | awk '{print $1}')"
+          test "$MATRIX_A_SHA256" = "$MATRIX_B_SHA256"
+
+          ROWS_A="$(($(wc -l < PHASE_IV_MATRIX_A.csv)-1))"
+          ROWS_B="$(($(wc -l < PHASE_IV_MATRIX_B.csv)-1))"
+          test "$ROWS_A" -eq "$EXPECTED_ROWS"
+          test "$ROWS_B" -eq "$EXPECTED_ROWS"
+
+          test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' PHASE_IV_MATRIX_A.csv)" -eq 0
+          test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' PHASE_IV_MATRIX_B.csv)" -eq 0
+
+          grep -E '^(AUDITED_COMMITS|GAP_CLASS_|REVIEW_CONTEXT_LITERAL_COUNT|REVIEW_CONTEXT_VOID_PROMOTIONS|ROLE_POLICY_MODE|MAX_STATE_CEILING)=' PHASE_IV_LOG_A.txt \
+            | sort > PHASE_IV_OBSERVATIONS_A.txt
+          grep -E '^(AUDITED_COMMITS|GAP_CLASS_|REVIEW_CONTEXT_LITERAL_COUNT|REVIEW_CONTEXT_VOID_PROMOTIONS|ROLE_POLICY_MODE|MAX_STATE_CEILING)=' PHASE_IV_LOG_B.txt \
+            | sort > PHASE_IV_OBSERVATIONS_B.txt
+          cmp -s PHASE_IV_OBSERVATIONS_A.txt PHASE_IV_OBSERVATIONS_B.txt
+
+          {
+            echo "VECTOR=REF_INVARIANCE"
+            echo "FROZEN_GRAPH_HEAD=$FROZEN_GRAPH_HEAD"
+            echo "AUDITED_ROWS_A=$ROWS_A"
+            echo "AUDITED_ROWS_B=$ROWS_B"
+            echo "MATRIX_A_SHA256=$MATRIX_A_SHA256"
+            echo "MATRIX_B_SHA256=$MATRIX_B_SHA256"
+            echo "REF_TARGETS_EQUAL=TRUE"
+            echo "MATRICES_BYTE_IDENTICAL=TRUE"
+            echo "CLASS_DISTRIBUTION_EQUAL=TRUE"
+            echo "ROLE_OBSERVATIONS_EQUAL=TRUE"
+            echo "MAX_STATE_A=L-2"
+            echo "MAX_STATE_B=L-2"
+            echo "TOPOLOGY_EQUIVALENCE_CLAIMED=FALSE"
+            echo "AUTHORITY=FALSE"
+            echo "VECTOR_I_PASS=TRUE"
+          } | tee PHASE_IV_REF_INVARIANCE_RECEIPT.txt
+
+      - name: Upload additive Phase IV evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jqg50-phase-iv-ref-invariance
+          path: |
+            PHASE_IV_MATRIX_A.csv
+            PHASE_IV_MATRIX_B.csv
+            PHASE_IV_LOG_A.txt
+            PHASE_IV_LOG_B.txt
+            PHASE_IV_OBSERVATIONS_A.txt
+            PHASE_IV_OBSERVATIONS_B.txt
+            PHASE_IV_REF_INVARIANCE_RUNNER.sha256
+            PHASE_IV_REF_INVARIANCE_RECEIPT.txt
+          if-no-files-found: error
+          retention-days: 30
