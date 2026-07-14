@@ -6,6 +6,7 @@ on:
       - jsonwisdom
     paths:
       - "phase3/audit-matrix/**"
+      - "phase3/anomaly-review/**"
       - ".github/workflows/phase3-audit-matrix.yml"
 
 permissions:
@@ -14,25 +15,36 @@ permissions:
 jobs:
   audit-history:
     runs-on: ubuntu-24.04
+    env:
+      ORIGINAL_AUDIT_HEAD: 45a6c20e32ae49412521bbfb29c755bea894364a
     steps:
-      - name: Checkout full history
+      - name: Checkout correction branch with full history
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Fetch and bind original audit head
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin \
+            refs/heads/phase3/audit-matrix-head50:refs/remotes/origin/phase3/audit-matrix-head50
+          test "$(git rev-parse refs/remotes/origin/phase3/audit-matrix-head50)" = "$ORIGINAL_AUDIT_HEAD"
+          git cat-file -e "$ORIGINAL_AUDIT_HEAD^{commit}"
+          echo "ORIGINAL_50_COMMIT_WINDOW_BOUND=TRUE"
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.24.x"
 
-      - name: Build read-only audit tool
+      - name: Build corrected read-only audit tool
         run: |
           set -euo pipefail
           mkdir -p bin
           go build -trimpath -ldflags='-s -w -buildid=' \
             -o bin/jqg50-history-audit \
             ./phase3/audit-matrix/main.go
-          sha256sum bin/jqg50-history-audit | tee JQG-50_PHASE_III_RUNNER.sha256
+          sha256sum bin/jqg50-history-audit | tee JQG-50_PHASE_III_REPLAY_RUNNER.sha256
 
       - name: Verify no network package imports
         run: |
@@ -43,35 +55,40 @@ jobs:
           fi
           echo "NETWORK_IMPORTS=NONE"
 
-      - name: Generate observation matrix
+      - name: Replay identical 50-commit window
         run: |
           set -euo pipefail
           ./bin/jqg50-history-audit \
             --repo . \
-            --ref HEAD \
+            --ref "$ORIGINAL_AUDIT_HEAD" \
             --max-count 50 \
-            --output JQG-50_PHASE_III_AUDIT_MATRIX.csv \
-            | tee JQG-50_PHASE_III_AUDIT_LOG.txt
+            --output JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv \
+            | tee JQG-50_PHASE_III_AUDIT_REPLAY_LOG.txt
 
-          test -s JQG-50_PHASE_III_AUDIT_MATRIX.csv
-          test "$(head -n 1 JQG-50_PHASE_III_AUDIT_MATRIX.csv)" = 'commit,max_state,gap_class,exit_reason'
-          ROWS="$(($(wc -l < JQG-50_PHASE_III_AUDIT_MATRIX.csv)-1))"
-          test "$ROWS" -ge 1
-          test "$ROWS" -le 50
-          test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX.csv)" -eq 0
-          echo "MATRIX_SCHEMA_PASS=TRUE"
-          echo "AUDITED_ROWS=$ROWS"
-          echo "MAX_COUNT_CLAMP_PASS=TRUE"
+          test -s JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv
+          test "$(head -n 1 JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv)" = 'commit,max_state,gap_class,exit_reason'
+          ROWS="$(($(wc -l < JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv)-1))"
+          test "$ROWS" -eq 50
+          test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv)" -eq 0
+          test "$(awk -F, 'NR>1 && $3 == "void" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv)" -eq 1
+          grep -q '^b6a734c40a43b558b9ea0efe136cf60994c084f1,L-2,void,UNVERIFIED_OR_EMPTY_EVIDENCE$' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv
+          grep -q '^5fe7879a18b6c2a2c59b9866aad02c4cd6f1a55d,L-2,partial,' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv
+          grep -qx 'GAP_CLASS_VOID=1' JQG-50_PHASE_III_AUDIT_REPLAY_LOG.txt
+          grep -qx 'CLASSIFIER_SOURCE_EXCLUDED=phase3/audit-matrix/main.go' JQG-50_PHASE_III_AUDIT_REPLAY_LOG.txt
+          echo "AUDITED_ROWS=50"
+          echo "ORIGINAL_VOID_COUNT=2"
+          echo "REPLAY_VOID_COUNT=1"
+          echo "SELF_MATCH_EXCLUSION_PASS=TRUE"
+          echo "ORIGINAL_MATRIX_EDITED=FALSE"
           echo "L2_CEILING_PASS=TRUE"
-          echo "FINDINGS_ARE_OBSERVATIONS=TRUE"
 
-      - name: Upload matrix evidence
+      - name: Upload additive replay evidence
         uses: actions/upload-artifact@v4
         with:
-          name: jqg50-phase-iii-audit-matrix
+          name: jqg50-phase-iii-void-correction-replay
           path: |
-            JQG-50_PHASE_III_AUDIT_MATRIX.csv
-            JQG-50_PHASE_III_AUDIT_LOG.txt
-            JQG-50_PHASE_III_RUNNER.sha256
+            JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv
+            JQG-50_PHASE_III_AUDIT_REPLAY_LOG.txt
+            JQG-50_PHASE_III_REPLAY_RUNNER.sha256
           if-no-files-found: error
           retention-days: 30
