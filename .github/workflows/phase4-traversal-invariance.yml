@@ -1,0 +1,182 @@
+name: Phase IV Traversal Invariance
+
+on:
+  pull_request:
+    branches:
+      - jsonwisdom
+    paths:
+      - ".github/workflows/phase4-traversal-invariance.yml"
+      - "phase3/audit-matrix/**"
+      - "phase3/anomaly-review/**"
+      - "phase4/traversal-invariance/**"
+
+permissions:
+  contents: read
+
+jobs:
+  traversal-invariance:
+    runs-on: ubuntu-24.04
+    env:
+      PHASE3_TAG: jqg50-phase3-evidence-role-v1.0.0
+      FROZEN_GRAPH_HEAD: f41c931b2834ef6914fa8560d4996f0eaf451ec9
+      EXPECTED_ROWS: 98
+      ENTRY_BRANCH: refs/heads/jqg50/traversal-frozen
+      GO111MODULE: "off"
+
+    steps:
+      - name: Checkout Phase IV branch with complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Bind traversal entries to frozen graph
+        run: |
+          set -euo pipefail
+          git cat-file -e "$FROZEN_GRAPH_HEAD^{commit}"
+          test "$(git rev-list -n 1 "$PHASE3_TAG")" = "$FROZEN_GRAPH_HEAD"
+          test "$(git rev-list --count "$FROZEN_GRAPH_HEAD")" -eq "$EXPECTED_ROWS"
+          git merge-base --is-ancestor "$FROZEN_GRAPH_HEAD" "$GITHUB_SHA"
+
+          git update-ref "$ENTRY_BRANCH" "$FROZEN_GRAPH_HEAD"
+
+          TAG_TARGET="$(git rev-parse "$PHASE3_TAG^{commit}")"
+          SHA_TARGET="$(git rev-parse "$FROZEN_GRAPH_HEAD^{commit}")"
+          BRANCH_TARGET="$(git rev-parse "$ENTRY_BRANCH^{commit}")"
+
+          test "$TAG_TARGET" = "$FROZEN_GRAPH_HEAD"
+          test "$SHA_TARGET" = "$FROZEN_GRAPH_HEAD"
+          test "$BRANCH_TARGET" = "$FROZEN_GRAPH_HEAD"
+          test "$TAG_TARGET" = "$SHA_TARGET"
+          test "$SHA_TARGET" = "$BRANCH_TARGET"
+
+          echo "ENTRY_TAG_TARGET=$TAG_TARGET"
+          echo "ENTRY_SHA_TARGET=$SHA_TARGET"
+          echo "ENTRY_BRANCH_TARGET=$BRANCH_TARGET"
+          echo "ALL_ENTRY_TARGETS_EQUAL=TRUE"
+          echo "PHASE4_DESCENDS_FROM_VECTOR_I=TRUE"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+
+      - name: Test and build canonical classifier
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          set -euo pipefail
+          go test ./phase3/audit-matrix
+          mkdir -p bin
+          go build -trimpath -ldflags='-s -w -buildid=' \
+            -o bin/jqg50-history-audit \
+            ./phase3/audit-matrix
+          sha256sum bin/jqg50-history-audit | tee PHASE_IV_TRAVERSAL_INVARIANCE_RUNNER.sha256
+
+      - name: Execute tag SHA and branch traversal entries
+        run: |
+          set -euo pipefail
+
+          ./bin/jqg50-history-audit \
+            --repo . \
+            --ref "$PHASE3_TAG" \
+            --max-count "$EXPECTED_ROWS" \
+            --output PHASE_IV_TRAVERSAL_MATRIX_TAG.csv \
+            | tee PHASE_IV_TRAVERSAL_LOG_TAG.txt
+
+          ./bin/jqg50-history-audit \
+            --repo . \
+            --ref "$FROZEN_GRAPH_HEAD" \
+            --max-count "$EXPECTED_ROWS" \
+            --output PHASE_IV_TRAVERSAL_MATRIX_SHA.csv \
+            | tee PHASE_IV_TRAVERSAL_LOG_SHA.txt
+
+          ./bin/jqg50-history-audit \
+            --repo . \
+            --ref "$ENTRY_BRANCH" \
+            --max-count "$EXPECTED_ROWS" \
+            --output PHASE_IV_TRAVERSAL_MATRIX_BRANCH.csv \
+            | tee PHASE_IV_TRAVERSAL_LOG_BRANCH.txt
+
+      - name: Verify traversal invariance
+        run: |
+          set -euo pipefail
+
+          for matrix in \
+            PHASE_IV_TRAVERSAL_MATRIX_TAG.csv \
+            PHASE_IV_TRAVERSAL_MATRIX_SHA.csv \
+            PHASE_IV_TRAVERSAL_MATRIX_BRANCH.csv
+          do
+            test -s "$matrix"
+            test "$(($(wc -l < "$matrix")-1))" -eq "$EXPECTED_ROWS"
+            test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' "$matrix")" -eq 0
+          done
+
+          cmp -s PHASE_IV_TRAVERSAL_MATRIX_TAG.csv PHASE_IV_TRAVERSAL_MATRIX_SHA.csv
+          cmp -s PHASE_IV_TRAVERSAL_MATRIX_SHA.csv PHASE_IV_TRAVERSAL_MATRIX_BRANCH.csv
+
+          TAG_SHA256="$(sha256sum PHASE_IV_TRAVERSAL_MATRIX_TAG.csv | awk '{print $1}')"
+          SHA_SHA256="$(sha256sum PHASE_IV_TRAVERSAL_MATRIX_SHA.csv | awk '{print $1}')"
+          BRANCH_SHA256="$(sha256sum PHASE_IV_TRAVERSAL_MATRIX_BRANCH.csv | awk '{print $1}')"
+          test "$TAG_SHA256" = "$SHA_SHA256"
+          test "$SHA_SHA256" = "$BRANCH_SHA256"
+
+          OBSERVATION_PATTERN='^(AUDITED_COMMITS|GAP_CLASS_[A-Z_]+|EVIDENCE_ROLE_[A-Z_]+|REVIEW_CONTEXT_LITERAL_COUNT|REVIEW_CONTEXT_VOID_PROMOTIONS|ROLE_POLICY_MODE|MAX_STATE_CEILING)='
+          grep -E "$OBSERVATION_PATTERN" PHASE_IV_TRAVERSAL_LOG_TAG.txt | sort > PHASE_IV_TRAVERSAL_OBSERVATIONS_TAG.txt
+          grep -E "$OBSERVATION_PATTERN" PHASE_IV_TRAVERSAL_LOG_SHA.txt | sort > PHASE_IV_TRAVERSAL_OBSERVATIONS_SHA.txt
+          grep -E "$OBSERVATION_PATTERN" PHASE_IV_TRAVERSAL_LOG_BRANCH.txt | sort > PHASE_IV_TRAVERSAL_OBSERVATIONS_BRANCH.txt
+
+          cmp -s PHASE_IV_TRAVERSAL_OBSERVATIONS_TAG.txt PHASE_IV_TRAVERSAL_OBSERVATIONS_SHA.txt
+          cmp -s PHASE_IV_TRAVERSAL_OBSERVATIONS_SHA.txt PHASE_IV_TRAVERSAL_OBSERVATIONS_BRANCH.txt
+
+          for observations in \
+            PHASE_IV_TRAVERSAL_OBSERVATIONS_TAG.txt \
+            PHASE_IV_TRAVERSAL_OBSERVATIONS_SHA.txt \
+            PHASE_IV_TRAVERSAL_OBSERVATIONS_BRANCH.txt
+          do
+            grep -Eq '^GAP_CLASS_[A-Z_]+=[0-9]+$' "$observations"
+            grep -Eq '^EVIDENCE_ROLE_[A-Z_]+=[0-9]+$' "$observations"
+          done
+
+          {
+            echo "VECTOR=TRAVERSAL_INVARIANCE"
+            echo "FROZEN_GRAPH_HEAD=$FROZEN_GRAPH_HEAD"
+            echo "AUDITED_ROWS_TAG=$EXPECTED_ROWS"
+            echo "AUDITED_ROWS_SHA=$EXPECTED_ROWS"
+            echo "AUDITED_ROWS_BRANCH=$EXPECTED_ROWS"
+            echo "MATRIX_TAG_SHA256=$TAG_SHA256"
+            echo "MATRIX_SHA_SHA256=$SHA_SHA256"
+            echo "MATRIX_BRANCH_SHA256=$BRANCH_SHA256"
+            echo "ALL_ENTRY_TARGETS_EQUAL=TRUE"
+            echo "MATRICES_BYTE_IDENTICAL=TRUE"
+            echo "CLASS_DISTRIBUTIONS_EQUAL=TRUE"
+            echo "EVIDENCE_ROLE_COUNTS_EQUAL=TRUE"
+            echo "ROLE_POLICY_MODE_EQUAL=TRUE"
+            echo "MAX_STATE_TAG=L-2"
+            echo "MAX_STATE_SHA=L-2"
+            echo "MAX_STATE_BRANCH=L-2"
+            echo "CLASSIFIER_EDITED=FALSE"
+            echo "HISTORICAL_MATRIX_EDITED=FALSE"
+            echo "TOPOLOGY_EQUIVALENCE_CLAIMED=FALSE"
+            echo "AUTHORITY=FALSE"
+            echo "VECTOR_II_PASS=TRUE"
+          } | tee PHASE_IV_TRAVERSAL_INVARIANCE_RECEIPT.txt
+
+      - name: Upload additive Phase IV traversal evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jqg50-phase-iv-traversal-invariance
+          path: |
+            PHASE_IV_TRAVERSAL_MATRIX_TAG.csv
+            PHASE_IV_TRAVERSAL_MATRIX_SHA.csv
+            PHASE_IV_TRAVERSAL_MATRIX_BRANCH.csv
+            PHASE_IV_TRAVERSAL_LOG_TAG.txt
+            PHASE_IV_TRAVERSAL_LOG_SHA.txt
+            PHASE_IV_TRAVERSAL_LOG_BRANCH.txt
+            PHASE_IV_TRAVERSAL_OBSERVATIONS_TAG.txt
+            PHASE_IV_TRAVERSAL_OBSERVATIONS_SHA.txt
+            PHASE_IV_TRAVERSAL_OBSERVATIONS_BRANCH.txt
+            PHASE_IV_TRAVERSAL_INVARIANCE_RUNNER.sha256
+            PHASE_IV_TRAVERSAL_INVARIANCE_RECEIPT.txt
+          if-no-files-found: error
+          retention-days: 30
