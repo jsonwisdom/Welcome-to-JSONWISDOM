@@ -18,20 +18,32 @@ def run(*args: str) -> str:
     return subprocess.check_output(args, text=True).strip()
 
 
+def tracked_paths(repo: pathlib.Path) -> list[str]:
+    output = run("git", "-C", str(repo), "ls-tree", "-r", "--name-only", "HEAD")
+    return sorted(line for line in output.splitlines() if line)
+
+
 def build_findings(repo: pathlib.Path, base: dict) -> dict:
-    artifact = base["artifact"]
-    content = (repo / artifact["path"]).read_bytes()
-    return {
-        "artifacts": [{
-            "path": artifact["path"],
+    declared = base["artifact"]
+    declared_paths = [declared["path"]]
+    observed_paths = tracked_paths(repo)
+    if observed_paths != declared_paths:
+        raise AssertionError(
+            f"FINAL_TREE_DECLARATION_MISMATCH: observed={observed_paths} declared={declared_paths}"
+        )
+
+    artifacts = []
+    for path in observed_paths:
+        content = (repo / path).read_bytes()
+        artifacts.append({
+            "path": path,
             "content_sha256": hashlib.sha256(content).hexdigest(),
-            "evidence_role": artifact["evidence_role"],
-            "gap_class": artifact["gap_class"],
-            "exit_reason": artifact["exit_reason"],
-            "max_state": artifact["max_state"],
-        }],
-        "policy": base["policy"],
-    }
+            "evidence_role": declared["evidence_role"],
+            "gap_class": declared["gap_class"],
+            "exit_reason": declared["exit_reason"],
+            "max_state": declared["max_state"],
+        })
+    return {"artifacts": artifacts, "policy": base["policy"]}
 
 
 def commit_set(repo: pathlib.Path) -> set[str]:
@@ -75,6 +87,10 @@ def main() -> None:
         assert len(raw_a.splitlines()) != len(raw_b.splitlines())
         assert hashlib.sha256(raw_a).hexdigest() != hashlib.sha256(raw_b).hexdigest()
 
+        git_tree_a = run("git", "-C", str(graph_a), "rev-parse", "HEAD^{tree}")
+        git_tree_b = run("git", "-C", str(graph_b), "rev-parse", "HEAD^{tree}")
+        assert git_tree_a == git_tree_b
+
         projection_a, digest_a = canonicalize(build_findings(graph_a, base))
         projection_b, digest_b = canonicalize(build_findings(graph_b, base))
         assert projection_a["final_tree_digest"] == projection_b["final_tree_digest"]
@@ -89,7 +105,9 @@ def main() -> None:
             "PARENT_EDGE_SETS_EQUAL": False,
             "RAW_MATRIX_ROW_COUNTS_EQUAL": False,
             "RAW_MATRIX_SHA256_EQUAL": False,
+            "FINAL_GIT_TREE_OID_EQUAL": True,
             "FINAL_TREE_DIGEST_EQUAL": True,
+            "FINAL_TREE_DECLARATION_COMPLETE": True,
             "NORMALIZED_ARTIFACT_SET_EQUAL": True,
             "NORMALIZED_FINDINGS_SHA256_EQUAL": True,
             "POLICY_MODE_EQUAL": True,
@@ -98,6 +116,7 @@ def main() -> None:
             "CANONICAL_HISTORY_MUTATED": False,
             "FIXTURE_REPOSITORIES_EPHEMERAL": True,
             "UNKNOWN_FIELDS_REJECTED": True,
+            "CONTENT_SHA256_HEX_VALIDATED": True,
             "TOPOLOGY_EQUIVALENCE_PROVEN_FOR_FIXTURE": True,
             "UNIVERSAL_TOPOLOGY_EQUIVALENCE_CLAIMED": False,
             "AUTHORITY": False,
