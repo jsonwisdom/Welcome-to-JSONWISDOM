@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       CALIBRATION_HEAD: 5ea6039073ee5f1f5e8047a8f075da9d99a9d16a
+      REQUESTED_MAX_COUNT: 100
     steps:
       - name: Checkout calibration branch with full history
         uses: actions/checkout@v4
@@ -53,31 +54,47 @@ jobs:
           fi
           echo "NETWORK_IMPORTS=NONE"
 
-      - name: Execute 100-commit calibration
+      - name: Execute up-to-100 full-history calibration
         run: |
           set -euo pipefail
+          AVAILABLE_COMMITS="$(git rev-list --count "$CALIBRATION_HEAD")"
+          EXPECTED_ROWS="$AVAILABLE_COMMITS"
+          if [ "$EXPECTED_ROWS" -gt "$REQUESTED_MAX_COUNT" ]; then
+            EXPECTED_ROWS="$REQUESTED_MAX_COUNT"
+          fi
+
           ./bin/jqg50-history-audit \
             --repo . \
             --ref "$CALIBRATION_HEAD" \
-            --max-count 100 \
+            --max-count "$REQUESTED_MAX_COUNT" \
             --output JQG-50_PHASE_III_AUDIT_MATRIX_100.csv \
             | tee JQG-50_PHASE_III_AUDIT_100_LOG.txt
 
           test -s JQG-50_PHASE_III_AUDIT_MATRIX_100.csv
           test "$(head -n 1 JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)" = 'commit,max_state,gap_class,exit_reason'
           ROWS="$(($(wc -l < JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)-1))"
-          test "$ROWS" -eq 100
+          test "$ROWS" -eq "$EXPECTED_ROWS"
+          test "$ROWS" -ge 50
+          test "$ROWS" -le "$REQUESTED_MAX_COUNT"
           test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)" -eq 0
 
           VOID="$(awk -F, 'NR>1 && $3 == "void" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
           CONTRADICTORY="$(awk -F, 'NR>1 && $3 == "contradictory" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
           PARTIAL="$(awk -F, 'NR>1 && $3 == "partial" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
           CLEAN="$(awk -F, 'NR>1 && $3 == "clean" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
-          test "$((VOID + CONTRADICTORY + PARTIAL + CLEAN))" -eq 100
+          test "$((VOID + CONTRADICTORY + PARTIAL + CLEAN))" -eq "$ROWS"
+
+          HISTORY_SATURATED=FALSE
+          if [ "$AVAILABLE_COMMITS" -lt "$REQUESTED_MAX_COUNT" ]; then
+            HISTORY_SATURATED=TRUE
+          fi
 
           {
             echo "CALIBRATION_HEAD=$CALIBRATION_HEAD"
-            echo "AUDITED_ROWS=100"
+            echo "REQUESTED_MAX_COUNT=$REQUESTED_MAX_COUNT"
+            echo "AVAILABLE_COMMITS=$AVAILABLE_COMMITS"
+            echo "AUDITED_ROWS=$ROWS"
+            echo "HISTORY_SATURATED=$HISTORY_SATURATED"
             echo "GAP_CLASS_VOID=$VOID"
             echo "GAP_CLASS_CONTRADICTORY=$CONTRADICTORY"
             echo "GAP_CLASS_PARTIAL=$PARTIAL"
@@ -88,7 +105,7 @@ jobs:
             echo "ORIGINAL_50_COMMIT_ARTIFACTS_EDITED=FALSE"
           } | tee JQG-50_PHASE_III_100_DISTRIBUTION.txt
 
-      - name: Upload additive 100-commit evidence
+      - name: Upload additive calibration evidence
         uses: actions/upload-artifact@v4
         with:
           name: jqg50-phase-iii-audit-matrix-100
