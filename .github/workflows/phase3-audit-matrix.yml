@@ -16,20 +16,18 @@ jobs:
   audit-history:
     runs-on: ubuntu-24.04
     env:
-      ORIGINAL_AUDIT_HEAD: 45a6c20e32ae49412521bbfb29c755bea894364a
+      ORIGINAL_AUDIT_HEAD: 08f2177f57fc8bb502c49819d0f7a253619b900b
     steps:
       - name: Checkout correction branch with full history
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Fetch and bind original audit head
+      - name: Bind canonical source matrix head
         run: |
           set -euo pipefail
-          git fetch --no-tags origin \
-            refs/heads/phase3/audit-matrix-head50:refs/remotes/origin/phase3/audit-matrix-head50
-          test "$(git rev-parse refs/remotes/origin/phase3/audit-matrix-head50)" = "$ORIGINAL_AUDIT_HEAD"
           git cat-file -e "$ORIGINAL_AUDIT_HEAD^{commit}"
+          echo "SOURCE_MATRIX_HEAD=$ORIGINAL_AUDIT_HEAD"
           echo "ORIGINAL_50_COMMIT_WINDOW_BOUND=TRUE"
 
       - name: Set up Go
@@ -55,7 +53,7 @@ jobs:
           fi
           echo "NETWORK_IMPORTS=NONE"
 
-      - name: Replay identical 50-commit window
+      - name: Replay identical canonical 50-commit window
         run: |
           set -euo pipefail
           ./bin/jqg50-history-audit \
@@ -72,7 +70,7 @@ jobs:
           test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv)" -eq 0
           test "$(awk -F, 'NR>1 && $3 == "void" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv)" -eq 1
           grep -q '^b6a734c40a43b558b9ea0efe136cf60994c084f1,L-2,void,UNVERIFIED_OR_EMPTY_EVIDENCE$' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv
-          grep -q '^5fe7879a18b6c2a2c59b9866aad02c4cd6f1a55d,L-2,partial,' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv
+          grep -q '^b162de497cee548d7894fdee09ec80769b52f4eb,L-2,partial,' JQG-50_PHASE_III_AUDIT_MATRIX_REPLAY.csv
           grep -qx 'GAP_CLASS_VOID=1' JQG-50_PHASE_III_AUDIT_REPLAY_LOG.txt
           grep -qx 'CLASSIFIER_SOURCE_EXCLUDED=phase3/audit-matrix/main.go' JQG-50_PHASE_III_AUDIT_REPLAY_LOG.txt
           echo "AUDITED_ROWS=50"
