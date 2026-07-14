@@ -8,11 +8,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 const (
 	expectedRunID       = "RUN_01_OPTION_A_SYNTHETIC_GAP_TEST"
 	expectedLineageHash = "345138cc9c92352a73fe20dbfe6785cb1ddfd799fd0e54b8e42161c3dc3b1429"
+	expectedBasis       = "VALUE_CONTROL_OVERLAP_RECORDED"
 )
 
 type statusNode struct {
@@ -24,14 +26,21 @@ type receiptState struct {
 	Contradictions bool `json:"contradictions"`
 }
 
+type timeWindow struct {
+	Start string `json:"start"`
+	End   string `json:"end"`
+}
+
 type vector struct {
-	RunID        string       `json:"run_id"`
-	PacketType   string       `json:"packet_type"`
-	SyntheticOnly bool        `json:"synthetic_only"`
-	LineageHash  string       `json:"lineage_hash"`
-	Left         statusNode   `json:"left"`
-	Right        statusNode   `json:"right"`
-	Receipts     receiptState `json:"receipts"`
+	RunID             string       `json:"run_id"`
+	PacketType        string       `json:"packet_type"`
+	SyntheticOnly     bool         `json:"synthetic_only"`
+	LineageHash       string       `json:"lineage_hash"`
+	IntersectionBasis string       `json:"intersection_basis"`
+	TimeWindow        timeWindow   `json:"time_window"`
+	Left              statusNode   `json:"left"`
+	Right             statusNode   `json:"right"`
+	Receipts          receiptState `json:"receipts"`
 }
 
 type result struct {
@@ -61,6 +70,15 @@ func selfHash() string {
 		fail("SELF_HASH_ERROR")
 	}
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+func validL2Basis(v vector) bool {
+	if strings.TrimSpace(v.IntersectionBasis) != expectedBasis {
+		return false
+	}
+	start := strings.TrimSpace(v.TimeWindow.Start)
+	end := strings.TrimSpace(v.TimeWindow.End)
+	return start != "" && end != "" && start < end
 }
 
 func main() {
@@ -95,6 +113,9 @@ func main() {
 	}
 	if v.LineageHash != expectedLineageHash {
 		fail("LINEAGE_HASH_MISMATCH")
+	}
+	if !validL2Basis(v) {
+		fail("L2_INTERSECTION_EVIDENCE_REQUIRED")
 	}
 
 	mustHalt := v.Left.Status != "SUPPORTED" ||
