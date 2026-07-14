@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -20,23 +21,28 @@ type row struct {
 }
 
 var (
-	sha40 = regexp.MustCompile(`(?i)\b[0-9a-f]{40}\b`)
+	sha40        = regexp.MustCompile(`(?i)\b[0-9a-f]{40}\b`)
 	declaredRoot = regexp.MustCompile(`(?i)"declared_root_commit"\s*:\s*"([0-9a-f]{40})"`)
 	rootExpected = regexp.MustCompile(`(?i)(?:ROOT_EXPECTED=|ROOT=")([0-9a-f]{40})`)
 )
 
-func fail(msg string) {
+func parserFail(msg string) {
 	fmt.Fprintln(os.Stderr, msg)
 	os.Exit(1)
 }
 
-func git(repo string, args ...string) string {
+func gitFail(msg string) {
+	fmt.Fprintln(os.Stderr, msg)
+	os.Exit(2)
+}
+
+func gitRead(repo string, args ...string) string {
 	full := append([]string{"-C", repo}, args...)
 	cmd := exec.Command("git", full...)
 	cmd.Env = append(os.Environ(), "GIT_CONFIG_NOSYSTEM=1", "GIT_TERMINAL_PROMPT=0")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		fail(fmt.Sprintf("GIT_READ_FAILED: %s: %s", strings.Join(args, " "), strings.TrimSpace(string(out))))
+		gitFail(fmt.Sprintf("GIT_TRAVERSAL_FAILED: %s: %s", strings.Join(args, " "), strings.TrimSpace(string(out))))
 	}
 	return string(out)
 }
@@ -83,13 +89,17 @@ func classify(text string, priorRoots map[string]struct{}) (string, string, []st
 
 func main() {
 	repo := flag.String("repo", ".", "local repository path")
-	rangeSpec := flag.String("range", "HEAD~50..HEAD", "git revision range")
+	ref := flag.String("ref", "HEAD", "git ref to audit")
+	maxCount := flag.Int("max-count", 50, "maximum commits to audit")
 	output := flag.String("output", "JQG-50_PHASE_III_AUDIT_MATRIX.csv", "CSV output path")
 	flag.Parse()
 
-	// Read-only repository checks.
-	git(*repo, "rev-parse", "--is-inside-work-tree")
-	commitsRaw := git(*repo, "rev-list", "--reverse", *rangeSpec)
+	if *maxCount < 1 {
+		parserFail("INVALID_MAX_COUNT")
+	}
+
+	gitRead(*repo, "rev-parse", "--is-inside-work-tree")
+	commitsRaw := gitRead(*repo, "rev-list", "--reverse", "--max-count="+strconv.Itoa(*maxCount), *ref)
 	commits := []string{}
 	scanner := bufio.NewScanner(strings.NewReader(commitsRaw))
 	for scanner.Scan() {
@@ -98,45 +108,46 @@ func main() {
 			commits = append(commits, v)
 		}
 	}
+	if err := scanner.Err(); err != nil {
+		parserFail("COMMIT_LIST_PARSE_FAILED")
+	}
 	if len(commits) == 0 {
-		fail("NO_COMMITS_IN_RANGE")
+		gitFail("NO_COMMITS_OBSERVED")
 	}
 
 	priorRoots := map[string]struct{}{}
 	rows := make([]row, 0, len(commits))
 	for _, commit := range commits {
-		text := git(*repo, "show", "--no-ext-diff", "--format=fuller", "--unified=0", commit)
+		text := gitRead(*repo, "show", "--no-ext-diff", "--format=fuller", "--unified=0", commit)
 		gapClass, reason, roots := classify(text, priorRoots)
 		for _, r := range roots {
 			priorRoots[r] = struct{}{}
 		}
-
-		// Conservative Phase III ceiling: no history row auto-promotes beyond L-2.
-		rows = append(rows, row{
-			Commit: commit,
-			MaxState: "L-2",
-			GapClass: gapClass,
-			ExitReason: reason,
-		})
+		rows = append(rows, row{Commit: commit, MaxState: "L-2", GapClass: gapClass, ExitReason: reason})
 	}
 
 	f, err := os.Create(*output)
 	if err != nil {
-		fail("CSV_CREATE_FAILED")
+		parserFail("CSV_CREATE_FAILED")
 	}
-	defer f.Close()
 	w := csv.NewWriter(f)
 	if err := w.Write([]string{"commit", "max_state", "gap_class", "exit_reason"}); err != nil {
-		fail("CSV_WRITE_FAILED")
+		_ = f.Close()
+		parserFail("CSV_HEADER_WRITE_FAILED")
 	}
 	for _, r := range rows {
 		if err := w.Write([]string{r.Commit, r.MaxState, r.GapClass, r.ExitReason}); err != nil {
-			fail("CSV_WRITE_FAILED")
+			_ = f.Close()
+			parserFail("CSV_ROW_WRITE_FAILED")
 		}
 	}
 	w.Flush()
 	if err := w.Error(); err != nil {
-		fail("CSV_FLUSH_FAILED")
+		_ = f.Close()
+		parserFail("CSV_FLUSH_FAILED")
+	}
+	if err := f.Close(); err != nil {
+		parserFail("CSV_CLOSE_FAILED")
 	}
 
 	counts := map[string]int{}
@@ -145,7 +156,8 @@ func main() {
 	}
 	keys := []string{"void", "contradictory", "partial", "clean"}
 	sort.Strings(keys)
-	fmt.Printf("AUDIT_RANGE=%s\n", *rangeSpec)
+	fmt.Printf("AUDIT_REF=%s\n", *ref)
+	fmt.Printf("MAX_COUNT=%d\n", *maxCount)
 	fmt.Printf("AUDITED_COMMITS=%d\n", len(rows))
 	for _, k := range keys {
 		fmt.Printf("GAP_CLASS_%s=%d\n", strings.ToUpper(k), counts[k])
@@ -153,4 +165,5 @@ func main() {
 	fmt.Printf("MAX_STATE_CEILING=L-2\n")
 	fmt.Printf("OUTPUT=%s\n", *output)
 	fmt.Printf("REPOSITORY_MUTATED=FALSE\n")
+	fmt.Printf("AUDIT_COMPLETE=TRUE\n")
 }
