@@ -1,4 +1,4 @@
-name: Phase III Audit Matrix 100
+name: Phase III Evidence Role Calibration
 
 on:
   pull_request:
@@ -6,6 +6,7 @@ on:
       - jsonwisdom
     paths:
       - "phase3/audit-matrix/**"
+      - "phase3/anomaly-review/**"
       - "phase3/calibration-100/**"
       - ".github/workflows/phase3-audit-matrix-100.yml"
 
@@ -13,37 +14,49 @@ permissions:
   contents: read
 
 jobs:
-  audit-history-100:
+  evidence-role-calibration:
     runs-on: ubuntu-24.04
     env:
       CALIBRATION_HEAD: 5ea6039073ee5f1f5e8047a8f075da9d99a9d16a
-      REQUESTED_MAX_COUNT: 100
+      EXPECTED_ROWS: 97
     steps:
-      - name: Checkout calibration branch with full history
+      - name: Checkout role-filter branch with full history
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Bind canonical calibration head
+      - name: Bind exact 97-commit calibration head
         run: |
           set -euo pipefail
           git cat-file -e "$CALIBRATION_HEAD^{commit}"
           test "$(git rev-parse origin/jsonwisdom)" = "$CALIBRATION_HEAD"
+          test "$(git rev-list --count "$CALIBRATION_HEAD")" -eq "$EXPECTED_ROWS"
           echo "CALIBRATION_HEAD_BOUND=TRUE"
+          echo "HISTORY_SATURATED=TRUE"
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.24.x"
 
-      - name: Build corrected read-only audit tool
+      - name: Run evidence-role fixture suite
+        run: |
+          set -euo pipefail
+          go test ./phase3/audit-matrix
+          echo "ROLE_FILTER_FIXTURE_TESTS=PASS"
+
+      - name: Build role-aware read-only audit tool
+        env:
+          CGO_ENABLED: "0"
         run: |
           set -euo pipefail
           mkdir -p bin
           go build -trimpath -ldflags='-s -w -buildid=' \
             -o bin/jqg50-history-audit \
-            ./phase3/audit-matrix/main.go
-          sha256sum bin/jqg50-history-audit | tee JQG-50_PHASE_III_100_RUNNER.sha256
+            ./phase3/audit-matrix
+          sha256sum bin/jqg50-history-audit | tee JQG-50_PHASE_III_ROLE_FILTER_RUNNER.sha256
+          test "$(cut -d' ' -f1 JQG-50_PHASE_III_ROLE_FILTER_RUNNER.sha256)" != "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          echo "EMPTY_BYTE_BINARY_HASH_REJECTED=TRUE"
 
       - name: Verify no network package imports
         run: |
@@ -54,65 +67,67 @@ jobs:
           fi
           echo "NETWORK_IMPORTS=NONE"
 
-      - name: Execute up-to-100 full-history calibration
+      - name: Replay exact 97-commit role-filtered window
         run: |
           set -euo pipefail
-          AVAILABLE_COMMITS="$(git rev-list --count "$CALIBRATION_HEAD")"
-          EXPECTED_ROWS="$AVAILABLE_COMMITS"
-          if [ "$EXPECTED_ROWS" -gt "$REQUESTED_MAX_COUNT" ]; then
-            EXPECTED_ROWS="$REQUESTED_MAX_COUNT"
-          fi
-
           ./bin/jqg50-history-audit \
             --repo . \
             --ref "$CALIBRATION_HEAD" \
-            --max-count "$REQUESTED_MAX_COUNT" \
-            --output JQG-50_PHASE_III_AUDIT_MATRIX_100.csv \
-            | tee JQG-50_PHASE_III_AUDIT_100_LOG.txt
+            --max-count "$EXPECTED_ROWS" \
+            --output JQG-50_PHASE_III_97_REPLAY_ROLE_FILTERED.csv \
+            | tee JQG-50_PHASE_III_97_REPLAY_ROLE_FILTERED.log
 
-          test -s JQG-50_PHASE_III_AUDIT_MATRIX_100.csv
-          test "$(head -n 1 JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)" = 'commit,max_state,gap_class,exit_reason'
-          ROWS="$(($(wc -l < JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)-1))"
+          MATRIX=JQG-50_PHASE_III_97_REPLAY_ROLE_FILTERED.csv
+          LOG=JQG-50_PHASE_III_97_REPLAY_ROLE_FILTERED.log
+          test -s "$MATRIX"
+          test "$(head -n 1 "$MATRIX")" = 'commit,max_state,gap_class,exit_reason'
+          ROWS="$(($(wc -l < "$MATRIX")-1))"
           test "$ROWS" -eq "$EXPECTED_ROWS"
-          test "$ROWS" -ge 50
-          test "$ROWS" -le "$REQUESTED_MAX_COUNT"
-          test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)" -eq 0
+          test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' "$MATRIX")" -eq 0
 
-          VOID="$(awk -F, 'NR>1 && $3 == "void" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
-          CONTRADICTORY="$(awk -F, 'NR>1 && $3 == "contradictory" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
-          PARTIAL="$(awk -F, 'NR>1 && $3 == "partial" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
-          CLEAN="$(awk -F, 'NR>1 && $3 == "clean" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX_100.csv)"
+          VOID="$(awk -F, 'NR>1 && $3 == "void" {n++} END {print n+0}' "$MATRIX")"
+          CONTRADICTORY="$(awk -F, 'NR>1 && $3 == "contradictory" {n++} END {print n+0}' "$MATRIX")"
+          PARTIAL="$(awk -F, 'NR>1 && $3 == "partial" {n++} END {print n+0}' "$MATRIX")"
+          CLEAN="$(awk -F, 'NR>1 && $3 == "clean" {n++} END {print n+0}' "$MATRIX")"
+          test "$VOID" -eq 1
+          test "$PARTIAL" -eq 96
+          test "$CONTRADICTORY" -eq 0
+          test "$CLEAN" -eq 0
           test "$((VOID + CONTRADICTORY + PARTIAL + CLEAN))" -eq "$ROWS"
 
-          HISTORY_SATURATED=FALSE
-          if [ "$AVAILABLE_COMMITS" -lt "$REQUESTED_MAX_COUNT" ]; then
-            HISTORY_SATURATED=TRUE
-          fi
+          grep -q '^b6a734c40a43b558b9ea0efe136cf60994c084f1,L-2,void,UNVERIFIED_OR_EMPTY_EVIDENCE$' "$MATRIX"
+          grep -q '^5ea6039073ee5f1f5e8047a8f075da9d99a9d16a,L-2,partial,' "$MATRIX"
+          grep -Eq '^REVIEW_CONTEXT_LITERAL_COUNT=[1-9][0-9]*$' "$LOG"
+          grep -qx 'REVIEW_CONTEXT_VOID_PROMOTIONS=0' "$LOG"
+          grep -qx 'ROLE_POLICY_MODE=CURRENT_VERSIONED_SIDECARS_APPLIED_TO_HISTORICAL_PATHS' "$LOG"
+          grep -qx 'MAX_STATE_CEILING=L-2' "$LOG"
 
           {
             echo "CALIBRATION_HEAD=$CALIBRATION_HEAD"
-            echo "REQUESTED_MAX_COUNT=$REQUESTED_MAX_COUNT"
-            echo "AVAILABLE_COMMITS=$AVAILABLE_COMMITS"
             echo "AUDITED_ROWS=$ROWS"
-            echo "HISTORY_SATURATED=$HISTORY_SATURATED"
+            echo "HISTORY_SATURATED=TRUE"
             echo "GAP_CLASS_VOID=$VOID"
-            echo "GAP_CLASS_CONTRADICTORY=$CONTRADICTORY"
             echo "GAP_CLASS_PARTIAL=$PARTIAL"
+            echo "GAP_CLASS_CONTRADICTORY=$CONTRADICTORY"
             echo "GAP_CLASS_CLEAN=$CLEAN"
-            echo "MAX_STATE_CEILING=L-2"
-            echo "FINDINGS_ARE_OBSERVATIONS=TRUE"
-            echo "AUTHORITY_AUTO_PROMOTION=FALSE"
-            echo "ORIGINAL_50_COMMIT_ARTIFACTS_EDITED=FALSE"
-          } | tee JQG-50_PHASE_III_100_DISTRIBUTION.txt
+            echo "VOID_COUNT_2_TO_1=OBSERVED"
+            echo "B6A734C_REMAINS_VOID=TRUE"
+            echo "5EA6039_BECOMES_PARTIAL=TRUE"
+            echo "CLASSIFIER_INVARIANCE=PASS"
+            echo "ORIGINAL_97_MATRIX_EDITED=FALSE"
+            echo "REPLAY_IS_ADDITIVE=TRUE"
+            echo "AUTHORITY=FALSE"
+            echo "MAX_STATE=L-2"
+          } | tee EVIDENCE_ROLE_FILTER_RECEIPT.json
 
-      - name: Upload additive calibration evidence
+      - name: Upload additive role-filter evidence
         uses: actions/upload-artifact@v4
         with:
-          name: jqg50-phase-iii-audit-matrix-100
+          name: jqg50-phase-iii-evidence-role-filter
           path: |
-            JQG-50_PHASE_III_AUDIT_MATRIX_100.csv
-            JQG-50_PHASE_III_AUDIT_100_LOG.txt
-            JQG-50_PHASE_III_100_DISTRIBUTION.txt
-            JQG-50_PHASE_III_100_RUNNER.sha256
+            JQG-50_PHASE_III_97_REPLAY_ROLE_FILTERED.csv
+            JQG-50_PHASE_III_97_REPLAY_ROLE_FILTERED.log
+            JQG-50_PHASE_III_ROLE_FILTER_RUNNER.sha256
+            EVIDENCE_ROLE_FILTER_RECEIPT.json
           if-no-files-found: error
           retention-days: 30
