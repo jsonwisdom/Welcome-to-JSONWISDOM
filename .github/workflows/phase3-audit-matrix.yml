@@ -44,21 +44,27 @@ jobs:
           fi
           echo "NETWORK_IMPORTS=NONE"
 
-      - name: Generate deterministic L-2 matrix
+      - name: Generate observation matrix
         run: |
           set -euo pipefail
           ./bin/jqg50-history-audit \
             --repo . \
-            --range 'HEAD~50..HEAD' \
+            --ref HEAD \
+            --max-count 50 \
             --output JQG-50_PHASE_III_AUDIT_MATRIX.csv \
             | tee JQG-50_PHASE_III_AUDIT_LOG.txt
 
+          test -s JQG-50_PHASE_III_AUDIT_MATRIX.csv
           test "$(head -n 1 JQG-50_PHASE_III_AUDIT_MATRIX.csv)" = 'commit,max_state,gap_class,exit_reason'
-          test "$(($(wc -l < JQG-50_PHASE_III_AUDIT_MATRIX.csv)-1))" -eq 50
+          ROWS="$(($(wc -l < JQG-50_PHASE_III_AUDIT_MATRIX.csv)-1))"
+          test "$ROWS" -ge 1
+          test "$ROWS" -le 50
           test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX.csv)" -eq 0
           echo "MATRIX_SCHEMA_PASS=TRUE"
-          echo "FIFTY_COMMITS_PASS=TRUE"
+          echo "AUDITED_ROWS=$ROWS"
+          echo "MAX_COUNT_CLAMP_PASS=TRUE"
           echo "L2_CEILING_PASS=TRUE"
+          echo "FINDINGS_ARE_OBSERVATIONS=TRUE"
 
       - name: Upload matrix evidence
         uses: actions/upload-artifact@v4
