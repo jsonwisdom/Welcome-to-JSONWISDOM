@@ -1,9 +1,14 @@
 {
   "schema": "JQG50_PHASE_III_VOID_REVIEW_RECEIPT_V1",
   "canonical_base": "eb72925dc893304eecf28c7badeaf7596a11a2f0",
+  "source_matrix_head": "08f2177f57fc8bb502c49819d0f7a253619b900b",
   "source_matrix_artifact_id": 8316737154,
   "source_matrix_artifact_digest": "sha256:488b60dc49b7e3046112fc81b4730015d70ca5dd0178485ce7669946d8ebefeb",
   "reviewed_void_rows": 2,
+  "reviewed_commits": [
+    "b6a734c40a43b558b9ea0efe136cf60994c084f1",
+    "b162de497cee548d7894fdee09ec80769b52f4eb"
+  ],
   "confirmed_genuine_void": 1,
   "classifier_false_positive": 1,
   "classifier_correction_required": true,
@@ -15,10 +20,10 @@
   "authority": false,
   "artifacts": {
     "PHASE_III_VOID_REVIEW.csv": {
-      "sha256": "2d4307f0a68bad73d219b31ec0221615f27b8272f7492baf6df8c924537ecb08"
+      "sha256": "af03924fb6eb6f7532c7e77e9b3a611c31b677560d8a52501bb10c6612803639"
     },
     "PHASE_III_VOID_REVIEW.md": {
-      "sha256": "96e1078746f0def3e345e4a30884ea14fa843e036a02c8487afe8abdfc98eb72"
+      "sha256": "99aba3f953eb1850d87869acbe1ddcbe205e6a8465b4ecabb374c923690a050b"
     }
   }
 }
