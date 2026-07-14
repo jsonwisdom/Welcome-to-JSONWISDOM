@@ -1,0 +1,17 @@
+{
+  "schema": "JQG50_SHARED_FIXTURE_BASE_V1",
+  "source_binding": "canonical Phase IV evidence-role policy",
+  "authority": false,
+  "policy": {
+    "mode": "CURRENT_VERSIONED_SIDECARS_APPLIED_TO_HISTORICAL_PATHS",
+    "version": "v2.1"
+  },
+  "artifact": {
+    "path": "src/handler.py",
+    "content": "def handle(value):\n    return {\"value\": value, \"status\": \"ok\"}\n",
+    "evidence_role": "ASSERTION_SOURCE",
+    "gap_class": "partial",
+    "exit_reason": "HASH_OR_REFERENCE_PRESENT_WITHOUT_COMPLETE_RECEIPT_SET",
+    "max_state": "L-2"
+  }
+}

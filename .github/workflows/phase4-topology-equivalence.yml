@@ -1,0 +1,69 @@
+name: Phase IV Topology Equivalence
+
+on:
+  pull_request:
+    branches:
+      - jsonwisdom
+    paths:
+      - ".github/workflows/phase4-topology-equivalence.yml"
+      - "phase4/topology-equivalence/**"
+
+permissions:
+  contents: read
+
+jobs:
+  topology-equivalence:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout complete repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify canonical parent remains immutable
+        run: |
+          set -euo pipefail
+          git cat-file -e cfbfd678e1f93391455347fbef5560cd5da1e434^{commit}
+          git merge-base --is-ancestor cfbfd678e1f93391455347fbef5560cd5da1e434 "$GITHUB_SHA"
+
+      - name: Run topology-equivalence contract
+        run: |
+          set -euo pipefail
+          python3 phase4/topology-equivalence/test_topology_equivalence.py | tee PHASE_IV_TOPOLOGY_EQUIVALENCE_LOG.txt
+          test -s PHASE_IV_TOPOLOGY_EQUIVALENCE_RECEIPT.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('PHASE_IV_TOPOLOGY_EQUIVALENCE_RECEIPT.json').read_text())
+          required = {
+              'GRAPH_COMMIT_SETS_EQUAL': False,
+              'PARENT_EDGE_SETS_EQUAL': False,
+              'RAW_MATRIX_ROW_COUNTS_EQUAL': False,
+              'RAW_MATRIX_SHA256_EQUAL': False,
+              'FINAL_TREE_DIGEST_EQUAL': True,
+              'NORMALIZED_ARTIFACT_SET_EQUAL': True,
+              'NORMALIZED_FINDINGS_SHA256_EQUAL': True,
+              'CANONICAL_HISTORY_MUTATED': False,
+              'FIXTURE_REPOSITORIES_EPHEMERAL': True,
+              'UNKNOWN_FIELDS_REJECTED': True,
+              'TOPOLOGY_EQUIVALENCE_PROVEN_FOR_FIXTURE': True,
+              'UNIVERSAL_TOPOLOGY_EQUIVALENCE_CLAIMED': False,
+              'AUTHORITY': False,
+          }
+          for key, expected in required.items():
+              assert r[key] is expected, (key, r[key], expected)
+          assert r['GRAPH_A_COMMIT_COUNT'] == 2
+          assert r['GRAPH_B_COMMIT_COUNT'] == 1
+          assert r['MAX_STATE_A'] == 'L-2'
+          assert r['MAX_STATE_B'] == 'L-2'
+          PY
+
+      - name: Upload additive Vector III evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jqg50-phase-iv-topology-equivalence
+          path: |
+            PHASE_IV_TOPOLOGY_EQUIVALENCE_LOG.txt
+            PHASE_IV_TOPOLOGY_EQUIVALENCE_RECEIPT.json
+          if-no-files-found: error
+          retention-days: 30
