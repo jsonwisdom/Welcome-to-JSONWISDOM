@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - jsonwisdom
+      - phase2/runner-l2-ceiling
     paths:
       - "phase3/audit-matrix/**"
       - ".github/workflows/phase3-audit-matrix.yml"
