@@ -1,0 +1,3 @@
+commit,original_gap_class,trigger,source_location,classification_confirmed,follow_up_required,max_state,review_reason
+b6a734c40a43b558b9ea0efe136cf60994c084f1,void,"literal `""content_independently_verified"": false`",JQG50_CANONICAL_ROOT_DECLARATION_V0_4_5.json,true,true,L-2,Genuine explicit unverified-evidence marker in the commit payload; additive receipt required before any later promotion.
+5fe7879a18b6c2a2c59b9866aad02c4cd6f1a55d,void,classifier source contains its own literal VOID signatures,phase3/audit-matrix/main.go,false,true,L-2,Classifier self-match false positive: the audited commit introduced detection literals; not an unverified evidence claim or empty artifact.
