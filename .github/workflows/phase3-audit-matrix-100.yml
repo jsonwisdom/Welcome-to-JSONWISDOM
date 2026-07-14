@@ -19,6 +19,7 @@ jobs:
     env:
       CALIBRATION_HEAD: 5ea6039073ee5f1f5e8047a8f075da9d99a9d16a
       EXPECTED_ROWS: 97
+      GO111MODULE: "off"
     steps:
       - name: Checkout role-filter branch with full history
         uses: actions/checkout@v4
@@ -102,23 +103,27 @@ jobs:
           grep -qx 'ROLE_POLICY_MODE=CURRENT_VERSIONED_SIDECARS_APPLIED_TO_HISTORICAL_PATHS' "$LOG"
           grep -qx 'MAX_STATE_CEILING=L-2' "$LOG"
 
+          cat > EVIDENCE_ROLE_FILTER_RECEIPT.json <<EOF
           {
-            echo "CALIBRATION_HEAD=$CALIBRATION_HEAD"
-            echo "AUDITED_ROWS=$ROWS"
-            echo "HISTORY_SATURATED=TRUE"
-            echo "GAP_CLASS_VOID=$VOID"
-            echo "GAP_CLASS_PARTIAL=$PARTIAL"
-            echo "GAP_CLASS_CONTRADICTORY=$CONTRADICTORY"
-            echo "GAP_CLASS_CLEAN=$CLEAN"
-            echo "VOID_COUNT_2_TO_1=OBSERVED"
-            echo "B6A734C_REMAINS_VOID=TRUE"
-            echo "5EA6039_BECOMES_PARTIAL=TRUE"
-            echo "CLASSIFIER_INVARIANCE=PASS"
-            echo "ORIGINAL_97_MATRIX_EDITED=FALSE"
-            echo "REPLAY_IS_ADDITIVE=TRUE"
-            echo "AUTHORITY=FALSE"
-            echo "MAX_STATE=L-2"
-          } | tee EVIDENCE_ROLE_FILTER_RECEIPT.json
+            "schema": "JQG50_EVIDENCE_ROLE_FILTER_RECEIPT_V1",
+            "calibration_head": "$CALIBRATION_HEAD",
+            "audited_rows": $ROWS,
+            "history_saturated": true,
+            "gap_class_void": $VOID,
+            "gap_class_partial": $PARTIAL,
+            "gap_class_contradictory": $CONTRADICTORY,
+            "gap_class_clean": $CLEAN,
+            "void_count_2_to_1_observed": true,
+            "b6a734c_remains_void": true,
+            "5ea6039_becomes_partial": true,
+            "classifier_invariance": "PASS",
+            "original_97_matrix_edited": false,
+            "replay_is_additive": true,
+            "authority": false,
+            "max_state": "L-2"
+          }
+          EOF
+          python3 -m json.tool EVIDENCE_ROLE_FILTER_RECEIPT.json >/dev/null
 
       - name: Upload additive role-filter evidence
         uses: actions/upload-artifact@v4
