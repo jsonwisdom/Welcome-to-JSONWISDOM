@@ -2,7 +2,7 @@
 
 ## Scope
 
-This review is additive. It does not edit the original Phase III matrix, delete VOID rows, or override historical classifications in place.
+This review is additive. It is bound to source matrix artifact `8316737154`, generated from head `08f2177f57fc8bb502c49819d0f7a253619b900b`. It does not edit the original matrix, delete VOID rows, or override historical classifications in place.
 
 ## Findings
 
@@ -15,14 +15,14 @@ This review is additive. It does not edit the original Phase III matrix, delete 
 - Reason: the commit explicitly declares that its content was not independently verified.
 - Follow-up: retain `L-2`; a later additive verification receipt would be required for any stronger claim.
 
-### `5fe7879a18b6c2a2c59b9866aad02c4cd6f1a55d`
+### `b162de497cee548d7894fdee09ec80769b52f4eb`
 
 - Original classification: `void`
-- Trigger: the classifier source contains the literal signatures it searches for.
+- Trigger: classifier source contains the literal signatures it searches for.
 - Source: `phase3/audit-matrix/main.go`
 - Review result: **classifier false positive**
-- Reason: the commit introduced the detection code itself. The presence of `"content_independently_verified": false` and the empty-byte SHA inside classifier source is not evidence that the commit's artifact was unverified or empty.
-- Follow-up: correct the classifier with source-aware matching or self-source exclusion, then replay the same 50-commit window. The original matrix remains unchanged.
+- Reason: this commit added the classifier source on the canonical-base Phase III branch. The source contains `"content_independently_verified": false` and the empty-byte SHA as detection literals; those literals are not evidence that the commit artifact was unverified or empty.
+- Follow-up: exclude classifier implementation text from evidence scanning, then replay the same 50-commit window pinned to `08f2177f57fc8bb502c49819d0f7a253619b900b`. The original matrix remains unchanged.
 
 ## Boundaries
 
