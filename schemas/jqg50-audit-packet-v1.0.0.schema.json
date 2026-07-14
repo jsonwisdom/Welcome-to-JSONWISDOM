@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jsonwisdom.example/schemas/jqg50-audit-packet-v1.0.0.schema.json",
+  "title": "JQG-50 Audit Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "version",
+    "packet_id",
+    "parent_packet_hash",
+    "created_at",
+    "left_pincer",
+    "right_pincer",
+    "center_intersection",
+    "verification",
+    "disposition",
+    "receipts"
+  ],
+  "properties": {
+    "protocol": {"const": "JQG-50"},
+    "version": {"const": "1.0.0"},
+    "packet_id": {"type": "string", "minLength": 1},
+    "parent_packet_hash": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}
+      ]
+    },
+    "created_at": {"type": "string", "format": "date-time"},
+    "left_pincer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trace_path", "observations", "evidence_hashes", "authorization_status"],
+      "properties": {
+        "trace_path": {
+          "type": "array",
+          "items": {"type": "string"},
+          "default": ["treasury", "agency", "bank", "processor", "merchant", "vendor", "subcontractor", "beneficiary"]
+        },
+        "observations": {"type": "array", "items": {}},
+        "evidence_hashes": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+          "uniqueItems": true
+        },
+        "authorization_status": {
+          "enum": ["SUPPORTED", "UNSUPPORTED", "PARTIAL", "UNOBSERVED"]
+        }
+      }
+    },
+    "right_pincer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["control_path", "observations", "evidence_hashes", "authority_status"],
+      "properties": {
+        "control_path": {
+          "type": "array",
+          "items": {"type": "string"},
+          "default": ["identity", "device", "location", "access_log", "communications"]
+        },
+        "observations": {"type": "array", "items": {}},
+        "evidence_hashes": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+          "uniqueItems": true
+        },
+        "authority_status": {
+          "enum": ["SUPPORTED", "UNSUPPORTED", "PARTIAL", "UNOBSERVED"]
+        }
+      }
+    },
+    "center_intersection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "benefit_id", "time_window", "intersection_basis", "missing_receipts", "alternative_explanations"],
+      "properties": {
+        "actor_id": {"type": ["string", "null"]},
+        "benefit_id": {"type": ["string", "null"]},
+        "time_window": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": {"type": ["string", "null"], "format": "date-time"},
+            "end": {"type": ["string", "null"], "format": "date-time"}
+          }
+        },
+        "intersection_basis": {"type": "array", "items": {}},
+        "missing_receipts": {"type": "array", "items": {}},
+        "alternative_explanations": {"type": "array", "items": {}}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["integrity", "source_binding", "claim_relevance", "independent_corroboration", "contradictions"],
+      "properties": {
+        "integrity": {"enum": ["PASS", "FAIL", "UNOBSERVED"]},
+        "source_binding": {"enum": ["PASS", "FAIL", "PARTIAL"]},
+        "claim_relevance": {"enum": ["DIRECT", "INDIRECT", "NONE"]},
+        "independent_corroboration": {"enum": ["PRESENT", "ABSENT"]},
+        "contradictions": {"type": "array", "items": {}}
+      }
+    },
+    "disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "result", "reason", "supersedes"],
+      "properties": {
+        "state": {"enum": ["L-0", "L-1", "L-2", "L-3", "L-4"]},
+        "result": {
+          "enum": [
+            "HIGH_PRIORITY_AUDIT_TARGET",
+            "SUBSTANTIATED",
+            "UNSUBSTANTIATED",
+            "UNRESOLVED",
+            "PARTIAL_TRACE_GAP",
+            "DISMISSED",
+            "OUT_OF_SCOPE"
+          ]
+        },
+        "reason": {"type": "string", "minLength": 1},
+        "supersedes": {"type": ["string", "null"]}
+      }
+    },
+    "receipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content_sha256", "git_commit", "eas_uid", "ipfs_cid"],
+      "properties": {
+        "content_sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+        "git_commit": {"type": ["string", "null"]},
+        "eas_uid": {"type": ["string", "null"]},
+        "ipfs_cid": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
