@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
+import re
 from typing import Any
 
 SCHEMA = "JQG50_TOPOLOGY_EQUIVALENCE_V1"
@@ -23,6 +24,7 @@ ARTIFACT_FIELDS = {
 }
 POLICY_FIELDS = {"mode", "version"}
 FINDINGS_FIELDS = {"artifacts", "policy"}
+SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -67,7 +69,7 @@ def canonicalize(graph_findings: dict[str, Any]) -> tuple[dict[str, Any], str]:
             raise ValueError("INVALID_EVIDENCE_ROLE")
         if artifact["max_state"] != "L-2":
             raise ValueError("MAX_STATE_CEILING_VIOLATION")
-        if len(artifact["content_sha256"]) != 64:
+        if not SHA256_HEX.fullmatch(artifact["content_sha256"]):
             raise ValueError("INVALID_CONTENT_SHA256")
         artifacts.append(artifact)
 
