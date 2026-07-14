@@ -1,8 +1,17 @@
+---
+schema: JQG50_EVIDENCE_ROLE_V1
+artifact_role: REVIEW_CONTEXT
+asserts_subject_state: false
+authority: false
+---
+
 # Phase III VOID Anomaly Review
 
 ## Scope
 
 This review is additive. It is bound to source matrix artifact `8316737154`, generated from head `08f2177f57fc8bb502c49819d0f7a253619b900b`. It does not edit the original matrix, delete VOID rows, or override historical classifications in place.
+
+The YAML declaration is human-readable redundancy. The authoritative role declaration is the sidecar `PHASE_III_VOID_REVIEW.md.meta.json`.
 
 ## Findings
 
@@ -22,7 +31,7 @@ This review is additive. It is bound to source matrix artifact `8316737154`, gen
 - Source: `phase3/audit-matrix/main.go`
 - Review result: **classifier false positive**
 - Reason: this commit added the classifier source on the canonical-base Phase III branch. The source contains `"content_independently_verified": false` and the empty-byte SHA as detection literals; those literals are not evidence that the commit artifact was unverified or empty.
-- Follow-up: exclude classifier implementation text from evidence scanning, then replay the same 50-commit window pinned to `08f2177f57fc8bb502c49819d0f7a253619b900b`. The original matrix remains unchanged.
+- Follow-up: use evidence-role filtering and replay the bound calibration window. The original matrix remains unchanged.
 
 ## Boundaries
 
