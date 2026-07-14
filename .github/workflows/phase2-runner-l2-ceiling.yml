@@ -1,0 +1,68 @@
+name: Phase II L-2 Ceiling Runner
+
+on:
+  pull_request:
+    branches:
+      - jsonwisdom
+    paths:
+      - 'phase2/runner-l2-ceiling/**'
+      - '.github/workflows/phase2-runner-l2-ceiling.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+
+      - name: Verify no network imports
+        working-directory: phase2/runner-l2-ceiling
+        run: |
+          set -eu
+          if grep -RE '"net(/|"|$)|"net/http"|"net/url"|os/exec' main.go; then
+            echo 'NETWORK_OR_SUBPROCESS_SURFACE_DETECTED'
+            exit 1
+          fi
+          grep -q 'synthetic-only' main.go
+          grep -q 'PROD_INJECTION_BLOCKED' main.go
+
+      - name: Build twice deterministically
+        working-directory: phase2/runner-l2-ceiling
+        env:
+          CGO_ENABLED: '0'
+        run: |
+          set -eu
+          go build -trimpath -ldflags='-s -w -buildid=' -o runner-a main.go
+          go build -trimpath -ldflags='-s -w -buildid=' -o runner-b main.go
+          sha256sum runner-a runner-b | tee runner-hashes.txt
+          test "$(sha256sum runner-a | awk '{print $1}')" = "$(sha256sum runner-b | awk '{print $1}')"
+          strings runner-a | grep -q 'synthetic-only'
+          strings runner-a | grep -q 'PROD_INJECTION_BLOCKED'
+
+      - name: Verify production path is blocked
+        working-directory: phase2/runner-l2-ceiling
+        run: |
+          set +e
+          ./runner-a --vector RUN_01_OPTION_A_SYNTHETIC_GAP_TEST.json >blocked.out 2>blocked.err
+          status=$?
+          set -e
+          test "$status" -eq 1
+          grep -qx 'PROD_INJECTION_BLOCKED' blocked.err
+
+      - name: Execute RUN_01 and enforce L-2 ceiling
+        working-directory: phase2/runner-l2-ceiling
+        run: |
+          set -eu
+          ./runner-a --synthetic-only --vector RUN_01_OPTION_A_SYNTHETIC_GAP_TEST.json | tee run.out
+          grep -Eq '^SELF_HASH=[0-9a-f]{64}$' run.out
+          grep -qx '{"result":"PARTIAL_TRACE_GAP","max_state":"L-2","progression_to_l3":false}' run.out
+          ! grep -q '"max_state":"L-3"' run.out
