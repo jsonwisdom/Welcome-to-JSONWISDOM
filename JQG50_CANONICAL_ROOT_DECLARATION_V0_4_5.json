@@ -1,0 +1,10 @@
+{
+  "schema": "JQG50_CANONICAL_ROOT_DECLARATION_V0_4_5",
+  "repository": "jsonwisdom/Welcome-to-JSONWISDOM",
+  "default_branch": "jsonwisdom",
+  "declared_root_commit": "455aa20978cc31f67b0f4477ad6d0cc7b14da156",
+  "declaration": "The named commit is declared by the repository maintainer as the candidate JSONWISDOM root reference for JQG-50 research provenance.",
+  "authority_scope": "REPOSITORY_MAINTAINER_ASSERTION_ONLY",
+  "governmental_authority": false,
+  "content_independently_verified": false
+}
