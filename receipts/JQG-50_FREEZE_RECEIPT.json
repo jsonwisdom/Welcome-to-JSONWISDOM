@@ -1,0 +1,74 @@
+{
+  "artifactType": "repository_freeze_replay_receipt",
+  "eas": {
+    "attester": "0xC345B26094c63C69222Ee775189a3d3eaead5a84",
+    "contract": "0x4200000000000000000000000000000000000021",
+    "correctiveAttestation": {
+      "attestationTimeUnix": 1784040379,
+      "decodedPayloadMatch": true,
+      "receiptHashMatch": true,
+      "replayComplete": true,
+      "revocable": false,
+      "schemaUid": "0x25f20429ea33e461ce8e9e38489e6f2a1bd96aa1b633c9dad8a518ca23127a66",
+      "transaction": "0x53f5b3918988686a908d258b4e23306b332e85e764721df17db5538c0bf1b72f",
+      "uid": "0xa1824e352715e10aadef153e17d06ebbb178e187635fde121a6ef526bbb4481d"
+    },
+    "failedAttempt": {
+      "classification": "preserved_drift_artifact",
+      "decodedPayloadMatch": false,
+      "drift": {
+        "freezeReady": false,
+        "githubVerified": false,
+        "revocable": true,
+        "testExecutionObserved": false
+      },
+      "schemaUid": "0x6abab26d5fe9d2795e76011606eb03b3cd385558f28ca76c0b8e2e2e0a4b00a3",
+      "transaction": "0x4c8b40a21dbcb00b1f61bdd85f9844e31d590b634e61ccfe488566877245588b",
+      "uid": "0x79b63c9acf994fab4d26ffcf668f4e238c7140f5bfe796f536cbbdfae4e98d41"
+    },
+    "network": "Base",
+    "recipient": "0xA380552a27b0a5a2874Ea7AA52CAC09f542002E8"
+  },
+  "freezeReceipt": {
+    "filename": "JQG50-FREEZE-VERIFICATION-RECEIPT.txt",
+    "sha256": "e4c796ac23ee63012061dbdffc98dca0f68a9f043492b3fe329bef97a0b49147"
+  },
+  "git": {
+    "canonicalCommit": "6a9a1f00b7fbdbc0d4599400a9dbf38819455238",
+    "freezeReady": true,
+    "githubVerified": true,
+    "parentCommit": "b6a734c40a43b558b9ea0efe136cf60994c084f1",
+    "schemaBlobSha": "79e087c2ee4a700a9efa31049606892307651f37",
+    "specBlobSha": "2414e73ec3c18a94dbd7d58ac49d8a63ee17689b",
+    "testExecutionObserved": true
+  },
+  "schema": "jqg50_freeze_receipt_v1_0_0",
+  "scope": {
+    "branch": "jsonwisdom",
+    "claim": "The recorded repository freeze receipt is bound to the stated Git and EAS records.",
+    "limitations": [
+      "This receipt proves the stated repository-state binding only.",
+      "Hash integrity does not independently prove source truth.",
+      "The attestation does not establish governmental, legal, or external operational authority.",
+      "The first attestation is preserved as drift evidence and is not silently replaced."
+    ],
+    "repository": "jsonwisdom/Welcome-to-JSONWISDOM"
+  },
+  "verification": {
+    "branchMatch": true,
+    "canonicalCommitMatch": true,
+    "controlChainBinding": true,
+    "decodeComplete": true,
+    "freezeReadyMatch": true,
+    "githubVerifiedMatch": true,
+    "nonrevocableSchemaConfirmed": true,
+    "parentCommitMatch": true,
+    "receiptHashMatch": true,
+    "replayComplete": true,
+    "repositoryMatch": true,
+    "rpcReadbackObserved": true,
+    "schemaBlobShaMatch": true,
+    "specBlobShaMatch": true,
+    "testExecutionObservedMatch": true
+  }
+}
