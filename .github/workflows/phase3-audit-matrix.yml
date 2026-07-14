@@ -1,0 +1,71 @@
+name: Phase III Audit Matrix
+
+on:
+  pull_request:
+    branches:
+      - jsonwisdom
+    paths:
+      - "phase3/audit-matrix/**"
+      - ".github/workflows/phase3-audit-matrix.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit-history:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+
+      - name: Build read-only audit tool
+        run: |
+          set -euo pipefail
+          mkdir -p bin
+          go build -trimpath -ldflags='-s -w -buildid=' \
+            -o bin/jqg50-history-audit \
+            ./phase3/audit-matrix
+          sha256sum bin/jqg50-history-audit | tee JQG-50_PHASE_III_RUNNER.sha256
+
+      - name: Verify no network package imports
+        run: |
+          set -euo pipefail
+          if grep -RInE '"(net|net/http|net/url|crypto/tls)"' phase3/audit-matrix; then
+            echo "NETWORK_IMPORT_DETECTED"
+            exit 1
+          fi
+          echo "NETWORK_IMPORTS=NONE"
+
+      - name: Generate deterministic L-2 matrix
+        run: |
+          set -euo pipefail
+          ./bin/jqg50-history-audit \
+            --repo . \
+            --range 'HEAD~50..HEAD' \
+            --output JQG-50_PHASE_III_AUDIT_MATRIX.csv \
+            | tee JQG-50_PHASE_III_AUDIT_LOG.txt
+
+          test "$(head -n 1 JQG-50_PHASE_III_AUDIT_MATRIX.csv)" = 'commit,max_state,gap_class,exit_reason'
+          test "$(($(wc -l < JQG-50_PHASE_III_AUDIT_MATRIX.csv)-1))" -eq 50
+          test "$(awk -F, 'NR>1 && $2 != "L-2" {n++} END {print n+0}' JQG-50_PHASE_III_AUDIT_MATRIX.csv)" -eq 0
+          echo "MATRIX_SCHEMA_PASS=TRUE"
+          echo "FIFTY_COMMITS_PASS=TRUE"
+          echo "L2_CEILING_PASS=TRUE"
+
+      - name: Upload matrix evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jqg50-phase-iii-audit-matrix
+          path: |
+            JQG-50_PHASE_III_AUDIT_MATRIX.csv
+            JQG-50_PHASE_III_AUDIT_LOG.txt
+            JQG-50_PHASE_III_RUNNER.sha256
+          if-no-files-found: error
+          retention-days: 30
