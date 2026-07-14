@@ -1,0 +1,8 @@
+{
+  "schema": "JQG50_EVIDENCE_ROLE_V1",
+  "artifact": "phase3/anomaly-review/PHASE_III_VOID_REVIEW.md",
+  "artifact_role": "REVIEW_CONTEXT",
+  "asserts_subject_state": false,
+  "role_scope": "FILE_CONTENT_ONLY",
+  "authority": false
+}
