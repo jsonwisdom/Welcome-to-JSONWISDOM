@@ -13,6 +13,8 @@ import (
 	"strings"
 )
 
+const classifierSourcePath = "phase3/audit-matrix/main.go"
+
 type row struct {
 	Commit     string
 	MaxState   string
@@ -45,6 +47,30 @@ func gitRead(repo string, args ...string) string {
 		gitFail(fmt.Sprintf("GIT_TRAVERSAL_FAILED: %s: %s", strings.Join(args, " "), strings.TrimSpace(string(out))))
 	}
 	return string(out)
+}
+
+func commitEvidence(repo, commit string) string {
+	var evidence strings.Builder
+
+	// Commit metadata is evidence, but classifier implementation text is not.
+	evidence.WriteString(gitRead(repo, "show", "--no-patch", "--format=fuller", commit))
+
+	filesRaw := gitRead(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", commit)
+	scanner := bufio.NewScanner(strings.NewReader(filesRaw))
+	for scanner.Scan() {
+		path := strings.TrimSpace(scanner.Text())
+		if path == "" || path == classifierSourcePath {
+			continue
+		}
+		evidence.WriteString("\nFILE=")
+		evidence.WriteString(path)
+		evidence.WriteString("\n")
+		evidence.WriteString(gitRead(repo, "show", "--no-ext-diff", "--format=", "--unified=0", commit, "--", path))
+	}
+	if err := scanner.Err(); err != nil {
+		parserFail("CHANGED_FILE_LIST_PARSE_FAILED")
+	}
+	return evidence.String()
 }
 
 func classify(text string, priorRoots map[string]struct{}) (string, string, []string) {
@@ -118,7 +144,7 @@ func main() {
 	priorRoots := map[string]struct{}{}
 	rows := make([]row, 0, len(commits))
 	for _, commit := range commits {
-		text := gitRead(*repo, "show", "--no-ext-diff", "--format=fuller", "--unified=0", commit)
+		text := commitEvidence(*repo, commit)
 		gapClass, reason, roots := classify(text, priorRoots)
 		for _, r := range roots {
 			priorRoots[r] = struct{}{}
@@ -162,6 +188,7 @@ func main() {
 	for _, k := range keys {
 		fmt.Printf("GAP_CLASS_%s=%d\n", strings.ToUpper(k), counts[k])
 	}
+	fmt.Printf("CLASSIFIER_SOURCE_EXCLUDED=%s\n", classifierSourcePath)
 	fmt.Printf("MAX_STATE_CEILING=L-2\n")
 	fmt.Printf("OUTPUT=%s\n", *output)
 	fmt.Printf("REPOSITORY_MUTATED=FALSE\n")
