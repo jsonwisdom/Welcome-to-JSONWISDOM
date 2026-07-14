@@ -26,13 +26,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Bind exact 97-commit calibration head
+      - name: Bind exact frozen 97-commit calibration head
         run: |
           set -euo pipefail
           git cat-file -e "$CALIBRATION_HEAD^{commit}"
-          test "$(git rev-parse origin/jsonwisdom)" = "$CALIBRATION_HEAD"
           test "$(git rev-list --count "$CALIBRATION_HEAD")" -eq "$EXPECTED_ROWS"
           echo "CALIBRATION_HEAD_BOUND=TRUE"
+          echo "CALIBRATION_HEAD_IS_FROZEN=TRUE"
+          echo "BRANCH_TIP_EQUALITY_REQUIRED=FALSE"
           echo "HISTORY_SATURATED=TRUE"
 
       - name: Set up Go
