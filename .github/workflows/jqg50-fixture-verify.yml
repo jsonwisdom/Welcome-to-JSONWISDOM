@@ -1,0 +1,33 @@
+name: JQG-50 Fixture Verify
+
+on:
+  pull_request:
+    branches:
+      - jsonwisdom
+    paths:
+      - 'specs/JQG-50-FIXTURE-v1.0.0.md'
+      - 'schemas/jqg50-audit-packet-v1.0.0.schema.json'
+      - 'tests/jqg50-fixtures/**'
+      - '.github/workflows/jqg50-fixture-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate JSON schema syntax
+        run: python -m json.tool schemas/jqg50-audit-packet-v1.0.0.schema.json >/dev/null
+
+      - name: Execute TC-01 through TC-06
+        run: python -m unittest -v tests/jqg50-fixtures/test_jqg50.py
