@@ -1,0 +1,63 @@
+{
+  "schema": "QUADRATIC_REQUIREMENTS_V0_1",
+  "status": "LOCKED",
+  "scope": {
+    "repository": "jsonwisdom/Welcome-to-JSONWISDOM",
+    "branch": "phase4/multibranch-replay-consistency"
+  },
+  "authority": {
+    "ruleset_creates_execution_authority": false,
+    "model_judgment_creates_execution_authority": false
+  },
+  "quadratic_vote": {
+    "cost_formula": "abs(vote_units)^2",
+    "canonical_cost_recomputed_by_server": true,
+    "overspend": "REJECT",
+    "insufficient_credit_result": "INSUFFICIENT_CREDITS",
+    "level6_t2_calibration": {
+      "starting_credits": 20,
+      "weight_3_expected_balance": 11,
+      "weight_4_expected_balance": 4,
+      "unaffordable_weight_5": "REJECT"
+    }
+  },
+  "evidence_discipline": {
+    "allowed_claim_states": [
+      "OBSERVED",
+      "PENDING"
+    ],
+    "no_fake_green": true,
+    "exact_errors_must_be_preserved": true,
+    "paraphrased_errors_are_not_receipts": true,
+    "failed_or_missing_evidence_remains_pending": true
+  },
+  "level6_conformance": {
+    "tests": 8,
+    "runs_per_test": 3,
+    "consecutive_passes_required_per_test": 3,
+    "total_required_passes": 24,
+    "promotion_target": "LEVEL_6_2",
+    "promotion_gate": "CLOSED_UNTIL_24_OF_24_PASS",
+    "required_receipt_fields": [
+      "TEST_ID",
+      "RUN_NUMBER",
+      "DEVICE",
+      "OS",
+      "BROWSER",
+      "OBSERVED_RESULT",
+      "EXACT_ERROR",
+      "NEXUS_LOG",
+      "PASS_OR_FAIL",
+      "EVIDENCE_REFERENCE",
+      "SEVERITY"
+    ]
+  },
+  "cloud_shell": {
+    "session_model": "EPHEMERAL_ONE_PASTE",
+    "each_block_self_contained": true,
+    "depend_on_previous_shell_state": false,
+    "reestablish_repo_path_in_each_block": true,
+    "inject_gcloud_project_configuration_unless_required": false,
+    "paste_tokens_or_private_keys": false
+  }
+}
