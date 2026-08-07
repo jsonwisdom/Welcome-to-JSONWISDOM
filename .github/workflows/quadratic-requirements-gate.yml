@@ -1,0 +1,112 @@
+name: Quadratic Requirements Gate
+
+on:
+  push:
+    branches:
+      - jsonwisdom
+      - phase4/multibranch-replay-consistency
+  pull_request:
+    branches:
+      - jsonwisdom
+      - phase4/multibranch-replay-consistency
+
+permissions:
+  contents: read
+
+jobs:
+  quadratic-requirements:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate locked quadratic ruleset
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path('rulesets/quadratic_requirements_v0.1.json')
+          if not p.is_file():
+              raise SystemExit('RULESET_MISSING')
+
+          r = json.loads(p.read_text())
+          checks = {
+              'schema': r.get('schema') == 'QUADRATIC_REQUIREMENTS_V0_1',
+              'status_locked': r.get('status') == 'LOCKED',
+              'no_model_authority': r['authority']['model_judgment_creates_execution_authority'] is False,
+              'quadratic_formula': r['quadratic_vote']['cost_formula'] == 'abs(vote_units)^2',
+              'server_recomputes': r['quadratic_vote']['canonical_cost_recomputed_by_server'] is True,
+              'overspend_rejected': r['quadratic_vote']['overspend'] == 'REJECT',
+              'no_fake_green': r['evidence_discipline']['no_fake_green'] is True,
+              'exact_errors': r['evidence_discipline']['exact_errors_must_be_preserved'] is True,
+              'tests_8': r['level6_conformance']['tests'] == 8,
+              'runs_3': r['level6_conformance']['runs_per_test'] == 3,
+              'passes_24': r['level6_conformance']['total_required_passes'] == 24,
+              'gate_closed': r['level6_conformance']['promotion_gate'] == 'CLOSED_UNTIL_24_OF_24_PASS',
+              'one_paste': r['cloud_shell']['each_block_self_contained'] is True,
+              'no_prior_state': r['cloud_shell']['depend_on_previous_shell_state'] is False,
+          }
+          failed = [k for k, ok in checks.items() if not ok]
+          if failed:
+              raise SystemExit('RULESET_VALIDATION_FAILED=' + ','.join(failed))
+          print('QUADRATIC_RULESET=PASS')
+          PY
+
+      - name: Gate Level 6.2 promotion on 24-of-24 conformance
+        run: |
+          set -euo pipefail
+
+          if ! git ls-files | grep -Eiq '(^|/)(level[-_. ]?6[-_. ]?2|LEVEL6_2)(/|$|\.)'; then
+            echo 'LEVEL_6_2_PROMOTION_DETECTED=FALSE'
+            exit 0
+          fi
+
+          echo 'LEVEL_6_2_PROMOTION_DETECTED=TRUE'
+
+          REPORT=''
+          for candidate in CONFORMANCE_REPORT.json conformance/CONFORMANCE_REPORT.json; do
+            if [ -f "$candidate" ]; then
+              REPORT="$candidate"
+              break
+            fi
+          done
+
+          if [ -z "$REPORT" ]; then
+            echo 'LEVEL_6_2_GATE=BLOCKED_NO_CONFORMANCE_REPORT'
+            exit 1
+          fi
+
+          python3 - "$REPORT" <<'PY'
+          import json, sys
+          from pathlib import Path
+
+          report = json.loads(Path(sys.argv[1]).read_text())
+          summary = report.get('summary', {})
+          required = {
+              'tests_conformant': 8,
+              'total_tests': 8,
+              'runs_passed': 24,
+              'total_runs': 24,
+              'overall_status': 'CONFORMANT',
+          }
+          bad = {k: (summary.get(k), v) for k, v in required.items() if summary.get(k) != v}
+
+          tests = report.get('tests', {})
+          if len(tests) != 8:
+              bad['test_count'] = (len(tests), 8)
+          for test_id, rec in tests.items():
+              runs = rec.get('runs', [])
+              if len(runs) != 3 or any(run.get('status') != 'PASS' for run in runs):
+                  bad[f'{test_id}_runs'] = ([run.get('status') for run in runs], ['PASS','PASS','PASS'])
+
+          if bad:
+              print('LEVEL_6_2_GATE=BLOCKED')
+              print(json.dumps(bad, sort_keys=True))
+              raise SystemExit(1)
+
+          print('LEVEL_6_2_GATE=PASS_24_OF_24')
+          PY
