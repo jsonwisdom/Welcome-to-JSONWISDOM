@@ -1,0 +1,95 @@
+{
+  "artifact": "JASONS_DOUBLE_ONION_LINEAGE_MANIFEST_V0_1",
+  "state": "CANON_CANDIDATE",
+  "operator_label": "jaywisdom.eth",
+  "base_identity_anchor": "jaywisdom.base.eth",
+  "lineage_model": "PARALLEL_AND_STACKED_INSTANTIATIONS_OF_ONE_KERNEL",
+  "not_literal_release_sequence": true,
+  "methodology": {
+    "source": "jsonwisdom/COMPUTERWISDOM#460",
+    "repositories_directly_traversed": 80,
+    "code_search_indexed": 11,
+    "code_search_unindexed": 69,
+    "audit_inference": "SEARCH_MISS != ARCHITECTURE_ABSENCE"
+  },
+  "nodes": [
+    {
+      "id": "AL_353",
+      "repo": "jsonwisdom/AL",
+      "pr": 353,
+      "state": "MERGED",
+      "head_sha": "3c26bbe5aa259de075ba13d74445d5012c85ab87",
+      "merge_sha": "d2b895f988eb3adfc79b5be38a52bfb7f7a35db4",
+      "role": "origin-versus-authority separation; replay proof machinery; signed review receipt bridge back to verified state"
+    },
+    {
+      "id": "RECEIPTOS_BASE_159",
+      "repo": "jsonwisdom/receiptos-base",
+      "pr": 159,
+      "state": "MERGED",
+      "head_sha": "ddca3c381cd54cca0ba36a91c06cb5318e7dc91a",
+      "merge_sha": "f6941c1a7d308f923fc2f9f41a08d6e583010a08",
+      "role": "Constitutional Evidence Graph: observation, canonicalization, provenance, graph, promotion, replay, conformance"
+    },
+    {
+      "id": "COMPUTERWISDOM_482",
+      "repo": "jsonwisdom/COMPUTERWISDOM",
+      "pr": 482,
+      "state": "MERGED",
+      "head_sha": "6aef1f69e3b288c3356d6e493ad045d386b6da7f",
+      "merge_sha": "b6e55ea0e5b8f089b9f9ddda3a13844b0143f434",
+      "role": "ENDPOINT != HISTORY; STATE_ROOT != EVENT_ROOT; same endpoint can conceal different causal paths"
+    },
+    {
+      "id": "COMPUTERWISDOM_490",
+      "repo": "jsonwisdom/COMPUTERWISDOM",
+      "pr": 490,
+      "state": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "d50eaf5893cb7328ae65dc3d875ba163b25e90a9",
+      "role": "presidential/public-purpose forward and reverse replay; Double Reverse Onion"
+    },
+    {
+      "id": "COMPUTERWISDOM_493",
+      "repo": "jsonwisdom/COMPUTERWISDOM",
+      "pr": 493,
+      "state": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "97730cf432dc417f619574ad3e07f1c2d5bdfcf0",
+      "role": "identity/infrastructure Dual Onion; LOGIN != OWNER; HASH != SEMANTIC_TRUTH; account-specific receipt gate"
+    },
+    {
+      "id": "COMPUTERWISDOM_494",
+      "repo": "jsonwisdom/COMPUTERWISDOM",
+      "pr": 494,
+      "state": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "5520d516de7335f7314f7637f40fcb361bb8ead7",
+      "role": "Congress 3.0 authority-to-consequence chain; recursive citizen re-proof detector; correction/reconciliation gate"
+    },
+    {
+      "id": "COMPUTERWISDOM_496",
+      "repo": "jsonwisdom/COMPUTERWISDOM",
+      "pr": 496,
+      "state": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "36386c4fe6dd10bb15488bee417617913adf7066",
+      "role": "explicit Reality/Record onion plus Authority/System onion in historical constitutional replay"
+    }
+  ],
+  "connected_drive_binding": {
+    "title": "ORDER — Jay's Dual Onion Governmental Audit — AI Developer v0.1",
+    "drive_file_id": "1xVnQxU8SDLfA723CJmEw5biGEJc5qkociot22iem5PA",
+    "bound_rule": "SOURCE -> AUTHORITY -> ACTION -> RECEIPT -> REPLAY",
+    "separation_rule": "Keep Onion A public-record evidence separate from Onion B infrastructure evidence",
+    "crossing_rule": "Require an explicit receipt before binding person, login, cloud, CMS editor, deployment actor, or motive"
+  },
+  "synthesis": {
+    "equation": "2 ONIONS x 2 DIRECTIONS = 4 TRACES",
+    "equation_status": "ARCHITECTURAL_SYNTHESIS_NOT_VERBATIM_INVARIANT",
+    "kernel_status": "SUPPORTED_BY_LINEAGE"
+  },
+  "boundaries": {
+    "search_miss_proves_absence": false,
+    "lineage_proves_legal_authority": false,
+    "open_pr_is_canon": false,
+    "replay_implies_truth": false,
+    "authority_created": false
+  }
+}
