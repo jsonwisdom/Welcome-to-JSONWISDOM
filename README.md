@@ -13,17 +13,31 @@
 
 This repository is the front door for JSONWisdom.
 
-It does not replace the operational control plane, the courthouse, the witness layer, or the proof engine. It narrates how the connected repositories relate so humans and machines can understand where each responsibility lives.
+It does not replace the operational control plane, the courthouse, the replay rail, the witness layer, or the proof-display surface. It narrates how the connected repositories relate so humans and machines can understand where each responsibility lives.
+
+Canonical architecture:
+
+[`ARCHITECTURE.md`](./ARCHITECTURE.md)
+
+The architecture file is the repository-architecture root for duty topology and cross-surface drift reconciliation. It creates no statutory, judicial, governmental, or other external legal authority.
 
 Core rule:
 
 ```text
 Welcome-to-JSONWISDOM narrates and orients.
 COMPUTERWISDOM coordinates operational intelligence.
-AL records, governs, and preserves evidence structure.
-JOY witnesses continuity, family-safe memory, and human meaning.
+AL records, governs, and preserves registry / courthouse / receipt machinery.
+receiptos-base produces replay frames and public-docket rails.
 receipts-engine-v1 verifies and displays proof surfaces.
+JOY witnesses continuity, family-safe memory, and human meaning.
 Render layers present records; they do not create proof.
+```
+
+Replay rail and verifier surface are sequential, not interchangeable:
+
+```text
+receiptos-base → replay / frame / docket
+receipts-engine-v1 → public verifier / proof display
 ```
 
 ---
@@ -35,10 +49,13 @@ Render layers present records; they do not create proof.
 | `Welcome-to-JSONWISDOM` | Identity root and public doorway | Narrates the system and links outward |
 | `COMPUTERWISDOM` | Operational control plane | Missions, coordination, replay prep, signer boundaries |
 | `AL` | Registry of Record / courthouse | Governance records, schemas, receipts, audit trails, org-grade evidence |
+| `receiptos-base` | Replay / frame / public-docket rail | Produces replay frames and docket-ready receipt context |
+| `receipts-engine-v1` | Public verifier / proof-display surface | Deterministic verification and proof display of replayable frames |
 | `JOY` | Witness and continuity layer | Family-safe replay, meaning preservation, protected continuity boundaries |
-| `receipts-engine-v1` | Proof and verifier surface | Deterministic proof display, hashing, Merkle/ledger patterns, replay UI |
 | `public-proof` | Public proof publication surface | Human-facing receipts and public attestations |
 | `jay-zora-portal` | Zora media ingestion portal | Zora metadata/artifact acquisition before interpretation |
+
+No surface may recursively grant authority to another surface. Repository roles route work; they do not bootstrap legal authority.
 
 ---
 
@@ -60,6 +77,7 @@ Boundary:
 Index README != operator console
 Index README != courthouse record
 Index README != witness testimony
+Index README != replay-engine output
 Index README != verifier output
 ```
 
@@ -160,8 +178,11 @@ Zora UI != verdict
 ENS discovery != authority
 EAS witness != global legitimacy
 Render polish != verification
-Replay decides seal
+Replay success != legal finding
+Verifier success != truth
 ```
+
+No repository surface may recursively elevate another. Any claimed legal or institutional authority must come from an independently valid external standard appropriate to that claim.
 
 ---
 
@@ -173,9 +194,11 @@ Replay decides seal
 - Interpretation must not promote itself into proof.
 - Organization-grade records belong in `AL`.
 - Operational work belongs in `COMPUTERWISDOM`.
+- Replay/frame/docket work belongs in `receiptos-base`.
 - Witness and continuity memory belongs in `JOY`.
-- Public verification belongs in `receipts-engine-v1` or `public-proof`.
+- Public verification and proof display belongs in `receipts-engine-v1` or `public-proof`.
 - Public presentation belongs in render layers only after state is labeled.
+- Cross-surface topology drift must be reconciled against `ARCHITECTURE.md`.
 
 ---
 
@@ -193,10 +216,22 @@ Then mirror accepted mission registry state into:
 AL/registry/
 ```
 
+Then route replay/frame work through:
+
+```text
+receiptos-base/
+```
+
+Then verify and display replayable frames through:
+
+```text
+receipts-engine-v1/
+```
+
 Then narrate continuity and family-safe witness boundaries through:
 
 ```text
 JOY/
 ```
 
-The living story becomes safe only after mission inputs are structured, receipts are generated, and rendered surfaces preserve the underlying evidence state.
+The living story becomes safe only after mission inputs are structured, receipts are generated, replay state is preserved, verifier state is labeled, and rendered surfaces preserve the underlying evidence state.
