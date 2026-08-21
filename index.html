@@ -3,166 +3,232 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Welcome to Jason. The honest front door to JSONWisdom.">
-  <meta property="og:title" content="Welcome to Jason">
-  <meta property="og:description" content="A work in progress. No fake launch claims.">
+  <meta name="description" content="Atomic Replay: intelligence moving through 80 JSONWisdom repositories, COMPUTERWISDOM, MRS Wisdom, JOY, family, business, research, workflows, math, and completed work.">
+  <meta property="og:title" content="Atomic Replay — JSONWisdom">
+  <meta property="og:description" content="Intelligence pushes forward. Learning pulls back. The system keeps moving.">
   <meta property="og:type" content="website">
-  <title>Welcome to Jason</title>
+  <title>Atomic Replay — JSONWisdom</title>
   <style>
     :root {
       color-scheme: dark;
-      --paper: #f4efe6;
-      --ink: #11100e;
-      --acid: #d8ff45;
-      --red: #ff4f3d;
-      --line: rgba(244, 239, 230, 0.24);
+      --bg: #06070a;
+      --ink: #f7f3ea;
+      --muted: #a8acb7;
+      --lime: #c9ff3d;
+      --cyan: #49e6ff;
+      --violet: #a88cff;
+      --orange: #ff845e;
+      --line: rgba(247, 243, 234, 0.18);
     }
-
     * { box-sizing: border-box; }
-
-    html { background: var(--ink); }
-
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
       margin: 0;
       min-height: 100vh;
-      color: var(--paper);
+      color: var(--ink);
       background:
-        linear-gradient(var(--line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--line) 1px, transparent 1px),
-        var(--ink);
-      background-size: 48px 48px;
-      font-family: Arial, Helvetica, sans-serif;
+        radial-gradient(circle at 8% 6%, rgba(73,230,255,.13), transparent 30rem),
+        radial-gradient(circle at 92% 94%, rgba(168,140,255,.13), transparent 34rem),
+        var(--bg);
+      font-family: Inter, Arial, Helvetica, sans-serif;
     }
-
-    main {
-      min-height: 100vh;
+    a { color: inherit; }
+    main { width: min(1280px, calc(100% - 40px)); margin: auto; padding: 28px 0 48px; }
+    .topline, footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      font: 750 .76rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .pulse { display: inline-flex; align-items: center; gap: 9px; color: var(--lime); }
+    .pulse::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 18px currentColor;
+    }
+    .hero { padding: clamp(74px, 13vh, 170px) 0 clamp(70px, 11vh, 130px); }
+    .kicker {
+      margin: 0 0 20px;
+      color: var(--cyan);
+      font: 800 .82rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 1200px;
+      font-size: clamp(4rem, 13vw, 11.5rem);
+      line-height: .78;
+      letter-spacing: -.085em;
+      text-transform: uppercase;
+    }
+    h1 span { display: block; color: var(--lime); }
+    .lede {
+      max-width: 900px;
+      margin: clamp(40px, 6vw, 72px) 0 0;
+      font-size: clamp(1.35rem, 3.25vw, 2.8rem);
+      line-height: 1.08;
+      font-weight: 720;
+      letter-spacing: -.045em;
+    }
+    .lede strong { color: var(--orange); }
+    .loop {
+      position: relative;
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding: clamp(20px, 4vw, 56px);
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 0 0 72px;
     }
-
-    .topline,
-    footer {
+    .node {
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+    }
+    .node:nth-child(2) { border-color: rgba(73,230,255,.55); }
+    .node:nth-child(3) { border-color: rgba(168,140,255,.55); }
+    .node:nth-child(4) { border-color: rgba(201,255,61,.55); }
+    .node small {
+      color: var(--muted);
+      font: 750 .7rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .node strong { font-size: clamp(1.35rem, 2.6vw, 2.25rem); letter-spacing: -.035em; }
+    .node p { margin: 12px 0 0; color: var(--muted); line-height: 1.45; }
+    .direction {
+      grid-column: 1 / -1;
       display: flex;
       justify-content: space-between;
       gap: 24px;
-      font: 700 0.75rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      letter-spacing: 0.12em;
+      padding: 18px 0 0;
+      color: var(--cyan);
+      font: 750 .74rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: .1em;
       text-transform: uppercase;
     }
-
-    .status {
-      color: var(--acid);
+    .work {
+      padding: clamp(42px, 7vw, 78px);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
     }
-
-    .hero {
-      align-self: center;
-      max-width: 1180px;
-      padding: clamp(64px, 12vh, 160px) 0;
+    .work h2 { margin: 0; font-size: clamp(2.5rem, 6vw, 5.5rem); line-height: .9; letter-spacing: -.06em; }
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-top: 42px;
+      background: var(--line);
+      border: 1px solid var(--line);
     }
-
-    h1 {
-      margin: 0;
-      max-width: 1100px;
-      font-size: clamp(4.25rem, 15vw, 13rem);
-      line-height: 0.78;
-      letter-spacing: -0.085em;
-      text-transform: uppercase;
-    }
-
-    h1 span {
-      display: block;
-      color: var(--acid);
-    }
-
-    .truth {
-      max-width: 780px;
-      margin: clamp(44px, 7vw, 84px) 0 0;
-      font-size: clamp(1.35rem, 3vw, 2.5rem);
-      line-height: 1.12;
-      font-weight: 700;
-      letter-spacing: -0.035em;
-    }
-
-    .truth strong {
-      color: var(--red);
-    }
-
-    .actions {
+    .work-grid span {
+      min-height: 96px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 36px;
+      align-items: center;
+      padding: 20px;
+      background: var(--bg);
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      font-weight: 750;
     }
-
-    a {
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+    .button {
+      min-height: 54px;
       display: inline-flex;
-      min-height: 52px;
       align-items: center;
       padding: 0 22px;
-      border: 2px solid var(--paper);
-      color: var(--paper);
-      font-weight: 800;
+      border: 2px solid var(--ink);
+      font-weight: 850;
       text-decoration: none;
       text-transform: uppercase;
     }
-
-    a:first-child {
-      border-color: var(--acid);
-      background: var(--acid);
-      color: var(--ink);
+    .button.primary { border-color: var(--lime); background: var(--lime); color: var(--bg); }
+    .button:hover, .button:focus-visible { transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--orange); outline: none; }
+    footer { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); }
+    footer span:last-child { text-align: right; }
+    @media (max-width: 840px) {
+      .loop { grid-template-columns: repeat(2, 1fr); }
+      .work-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
-    a:hover,
-    a:focus-visible {
-      transform: translate(-3px, -3px);
-      box-shadow: 6px 6px 0 var(--red);
-      outline: none;
-    }
-
-    footer {
-      padding-top: 22px;
-      border-top: 1px solid var(--line);
-      color: rgba(244, 239, 230, 0.68);
-    }
-
-    footer span:last-child {
-      text-align: right;
-    }
-
-    @media (max-width: 640px) {
-      h1 { font-size: clamp(4rem, 23vw, 7rem); }
-      .topline, footer { flex-direction: column; }
+    @media (max-width: 560px) {
+      h1 { font-size: clamp(3.65rem, 22vw, 6.6rem); }
+      .topline, footer, .direction { flex-direction: column; align-items: flex-start; }
+      .loop, .work-grid { grid-template-columns: 1fr; }
       footer span:last-child { text-align: left; }
     }
-
     @media (prefers-reduced-motion: no-preference) {
-      a { transition: transform 120ms ease, box-shadow 120ms ease; }
+      .button { transition: transform 120ms ease, box-shadow 120ms ease; }
     }
   </style>
 </head>
 <body>
   <main>
     <header class="topline">
-      <span>JSONWisdom / Atomic Reset</span>
-      <span class="status">Work in progress</span>
+      <span>JSONWisdom / 80 repositories</span>
+      <span class="pulse">Intelligence in motion</span>
     </header>
 
     <section class="hero" aria-labelledby="title">
-      <h1 id="title">Welcome to <span>Jason.</span></h1>
-      <p class="truth">
-        Seven hundred pull requests. Too many repositories.
-        <strong>Nothing here gets to pretend it works until it actually works.</strong>
+      <p class="kicker">Push forward · pull learning back · replay</p>
+      <h1 id="title">Atomic <span>Replay.</span></h1>
+      <p class="lede">
+        JSONWisdom is a living intelligence network.
+        Work moves forward through the system.
+        <strong>Learning comes back through every pass.</strong>
       </p>
+    </section>
+
+    <section class="loop" aria-label="Atomic Replay intelligence loop">
+      <article class="node">
+        <small>01 · Human direction</small>
+        <div><strong>Jason Wisdom</strong><p>Intent, judgment, imagination, and final human control.</p></div>
+      </article>
+      <article class="node">
+        <small>02 · Operational intelligence</small>
+        <div><strong>COMPUTERWISDOM</strong><p>Coordinates repositories, missions, workflows, agents, evidence, and execution.</p></div>
+      </article>
+      <article class="node">
+        <small>03 · Family intelligence</small>
+        <div><strong>MRS Wisdom</strong><p>Updates the family loop, carries context, shapes priorities, and keeps real life in the system.</p></div>
+      </article>
+      <article class="node">
+        <small>04 · Continuity</small>
+        <div><strong>JOY</strong><p>Preserves memory, meaning, care, witness, and what the work is actually for.</p></div>
+      </article>
+      <div class="direction">
+        <span>Intelligence pushes →</span>
+        <span>← Experience, evidence, and learning pull back</span>
+      </div>
+    </section>
+
+    <section class="work" aria-labelledby="work-title">
+      <h2 id="work-title">The loop does the work.</h2>
+      <div class="work-grid">
+        <span>Updating family</span>
+        <span>Designing business</span>
+        <span>Creating workflows</span>
+        <span>Doing the math</span>
+        <span>Studying and researching</span>
+        <span>Completing tasks</span>
+      </div>
       <div class="actions">
-        <a href="https://github.com/jsonwisdom">Enter the work</a>
-        <a href="README.md">Read the map</a>
+        <a class="button primary" href="https://github.com/jsonwisdom">Explore all 80 repositories</a>
+        <a class="button" href="https://github.com/jsonwisdom/COMPUTERWISDOM">Enter COMPUTERWISDOM</a>
+        <a class="button" href="https://github.com/jsonwisdom/JOY">Enter JOY</a>
       </div>
     </section>
 
     <footer>
-      <span>No launch claims. No fake green lights.</span>
-      <span>Authority = false. Proof before promotion.</span>
+      <span>Build → act → observe → learn → replay</span>
+      <span>Human-directed. Evidence-aware. Never finished.</span>
     </footer>
   </main>
 </body>
