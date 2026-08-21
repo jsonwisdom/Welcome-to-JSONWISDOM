@@ -1,50 +1,169 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="JSONWisdom: replayable receipts, provenance, and human-controlled AI systems.">
-    <meta property="og:title" content="JSONWisdom — Receipts You Can Replay">
-    <meta property="og:description" content="Explore provenance, receipts, replay, and human-controlled AI systems built by Jason Wisdom.">
-    <meta property="og:image" content="assets/jsonwisdom-jw-logo.png">
-    <meta property="og:type" content="website">
-    <title>JSONWisdom — Receipts You Can Replay</title>
-    <style>
-      :root { color-scheme: dark; --ink:#f5f8ff; --muted:#aebbd0; --cyan:#32d6e8; --blue:#0879e8; --panel:rgba(8,23,47,.72); }
-      * { box-sizing: border-box; }
-      body { margin:0; min-height:100vh; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:radial-gradient(circle at 50% 0,#0c2b51 0,#05152d 38%,#020915 100%); }
-      main { width:min(1080px,calc(100% - 40px)); margin:auto; padding:56px 0 44px; }
-      .hero { display:grid; grid-template-columns:minmax(250px,390px) 1fr; gap:clamp(36px,7vw,82px); align-items:center; min-height:72vh; }
-      .logo { width:100%; aspect-ratio:1; border-radius:28px; box-shadow:0 24px 80px rgba(0,139,255,.2); }
-      .eyebrow { margin:0 0 14px; color:var(--cyan); font-size:.8rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
-      h1 { margin:0; max-width:700px; font-size:clamp(2.7rem,7vw,5.8rem); line-height:.94; letter-spacing:-.055em; }
-      .lede { margin:24px 0 30px; max-width:650px; color:var(--muted); font-size:clamp(1.05rem,2.4vw,1.35rem); line-height:1.65; }
-      .actions { display:flex; flex-wrap:wrap; gap:12px; }
-      a { color:inherit; }
-      .button { display:inline-flex; align-items:center; min-height:48px; padding:0 20px; border:1px solid rgba(87,222,238,.5); border-radius:999px; font-weight:750; text-decoration:none; background:linear-gradient(135deg,var(--cyan),var(--blue)); color:#00101f; }
-      .button.secondary { background:transparent; color:var(--ink); border-color:rgba(190,220,255,.28); }
-      .boundary { margin-top:42px; padding:20px 22px; border:1px solid rgba(101,184,255,.22); border-radius:18px; background:var(--panel); color:var(--muted); line-height:1.6; }
-      .boundary strong { color:var(--ink); }
-      footer { margin-top:42px; padding-top:24px; border-top:1px solid rgba(190,220,255,.14); color:#8292aa; font-size:.9rem; }
-      @media (max-width:760px) { main{padding-top:28px}.hero{grid-template-columns:1fr;min-height:auto}.logo{width:min(76vw,360px);justify-self:center}h1{font-size:clamp(2.65rem,14vw,4.7rem)} }
-    </style>
-  </head>
-  <body>
-    <main>
-      <section class="hero" aria-labelledby="title">
-        <img class="logo" src="assets/jsonwisdom-jw-logo.png" alt="JW circuit tree logo" width="1024" height="1024">
-        <div>
-          <p class="eyebrow">JSONWisdom · ReceiptOS</p>
-          <h1 id="title">Receipts you can replay.</h1>
-          <p class="lede">Explore provenance, replay, and human-controlled AI systems built by Jason Wisdom—where every substrate keeps its boundaries and every claim keeps its receipts.</p>
-          <div class="actions">
-            <a class="button" href="README.md">Explore the architecture</a>
-            <a class="button secondary" href="https://github.com/jsonwisdom">View JSONWisdom on GitHub</a>
-          </div>
-          <p class="boundary"><strong>Boundary preserved:</strong> a receipt records provenance; it does not create truth, legal authority, governance power, or permission. <code>authority=false</code>.</p>
-        </div>
-      </section>
-      <footer>JSONWisdom is the public orientation doorway. ReceiptOS is the receipt and replay substrate.</footer>
-    </main>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Welcome to Jason. The honest front door to JSONWisdom.">
+  <meta property="og:title" content="Welcome to Jason">
+  <meta property="og:description" content="A work in progress. No fake launch claims.">
+  <meta property="og:type" content="website">
+  <title>Welcome to Jason</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --paper: #f4efe6;
+      --ink: #11100e;
+      --acid: #d8ff45;
+      --red: #ff4f3d;
+      --line: rgba(244, 239, 230, 0.24);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: var(--ink); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--paper);
+      background:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px),
+        var(--ink);
+      background-size: 48px 48px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    main {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: clamp(20px, 4vw, 56px);
+    }
+
+    .topline,
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      font: 700 0.75rem/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status {
+      color: var(--acid);
+    }
+
+    .hero {
+      align-self: center;
+      max-width: 1180px;
+      padding: clamp(64px, 12vh, 160px) 0;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 1100px;
+      font-size: clamp(4.25rem, 15vw, 13rem);
+      line-height: 0.78;
+      letter-spacing: -0.085em;
+      text-transform: uppercase;
+    }
+
+    h1 span {
+      display: block;
+      color: var(--acid);
+    }
+
+    .truth {
+      max-width: 780px;
+      margin: clamp(44px, 7vw, 84px) 0 0;
+      font-size: clamp(1.35rem, 3vw, 2.5rem);
+      line-height: 1.12;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+    }
+
+    .truth strong {
+      color: var(--red);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    a {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      padding: 0 22px;
+      border: 2px solid var(--paper);
+      color: var(--paper);
+      font-weight: 800;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    a:first-child {
+      border-color: var(--acid);
+      background: var(--acid);
+      color: var(--ink);
+    }
+
+    a:hover,
+    a:focus-visible {
+      transform: translate(-3px, -3px);
+      box-shadow: 6px 6px 0 var(--red);
+      outline: none;
+    }
+
+    footer {
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: rgba(244, 239, 230, 0.68);
+    }
+
+    footer span:last-child {
+      text-align: right;
+    }
+
+    @media (max-width: 640px) {
+      h1 { font-size: clamp(4rem, 23vw, 7rem); }
+      .topline, footer { flex-direction: column; }
+      footer span:last-child { text-align: left; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      a { transition: transform 120ms ease, box-shadow 120ms ease; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="topline">
+      <span>JSONWisdom / Atomic Reset</span>
+      <span class="status">Work in progress</span>
+    </header>
+
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title">Welcome to <span>Jason.</span></h1>
+      <p class="truth">
+        Seven hundred pull requests. Too many repositories.
+        <strong>Nothing here gets to pretend it works until it actually works.</strong>
+      </p>
+      <div class="actions">
+        <a href="https://github.com/jsonwisdom">Enter the work</a>
+        <a href="README.md">Read the map</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>No launch claims. No fake green lights.</span>
+      <span>Authority = false. Proof before promotion.</span>
+    </footer>
+  </main>
+</body>
 </html>
