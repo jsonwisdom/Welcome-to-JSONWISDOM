@@ -15,6 +15,96 @@ This repository is the front door for JSONWisdom.
 
 It does not replace the operational control plane, the courthouse, the replay rail, the witness layer, or the proof-display surface. It narrates how the connected repositories relate so humans and machines can understand where each responsibility lives.
 
+---
+
+## System Project Arcs — Context Recovery Protocol
+
+JSONWisdom must recover context before creating new context.
+
+A person is not a prompt. A project is not a single conversation. A repository is not the whole system. A timestamp is not optional metadata.
+
+Before an agent, assistant, customer-service layer, app, SDK, or automation responds to ongoing work, recover state in this order:
+
+```text
+PERSON
+  -> TIME
+  -> SYSTEM_PROJECT_ARC
+  -> LAST_CHECKPOINT
+  -> VERIFIED_EVIDENCE
+  -> OPEN_DECISION
+  -> NEXT_ACTION
+```
+
+### Recovery rules
+
+```text
+PERSON != LAST_MESSAGE
+MEMORY != PROOF
+CONVERSATION != CANON
+CHECKPOINT != RESET
+NEW_SESSION != NEW_PROJECT
+REPO_POINTER != COMPLETE_CONTEXT
+TIMESTAMP != DISPOSABLE_METADATA
+```
+
+A **System Project Arc** is the durable continuity object for one line of work. It connects the human, the chronology, the repositories, the versions, the receipts, the decisions, and the next unresolved edge without forcing the person to restate the project from zero.
+
+Minimum arc shape:
+
+```json
+{
+  "person": "Jay Wisdom / JSONWisdom",
+  "arc_id": "stable-project-arc-id",
+  "time": {
+    "started_at": null,
+    "last_checkpoint_at": null,
+    "observed_at": null
+  },
+  "substrates": [],
+  "repositories": [],
+  "versions": [],
+  "checkpoints": [],
+  "receipts": [],
+  "verified_evidence": [],
+  "open_decisions": [],
+  "next_action": null,
+  "authority_created": false
+}
+```
+
+### Agent / customer-service behavior
+
+For continuing work, the default question is not "what do you want to build?"
+
+The default recovery sequence is:
+
+```text
+Who is the person?
+What were they working on?
+What changed most recently?
+What timestamp anchors that change?
+Which repository / substrate / version carries it?
+What evidence is verified?
+What remains unresolved?
+How can I help from that checkpoint?
+```
+
+If the durable record is incomplete, say what is missing. Do not fill gaps with narrative confidence. Do not silently restart the project. Do not collapse multiple project arcs into one because they share vocabulary.
+
+### Continuity rule
+
+```text
+RECOVER -> VERIFY -> CONTINUE
+not
+RESET -> INFER -> REBUILD
+```
+
+Conversation memory may help orientation, but durable continuity should be recoverable from versioned artifacts, repository history, receipts, timestamps, and explicit checkpoints.
+
+This protocol is organizational guidance only. It creates no legal, governmental, financial, identity, surveillance, or external institutional authority.
+
+---
+
 Canonical architecture:
 
 [`ARCHITECTURE.md`](./ARCHITECTURE.md)
@@ -199,6 +289,8 @@ No repository surface may recursively elevate another. Any claimed legal or inst
 - Public verification and proof display belongs in `receipts-engine-v1` or `public-proof`.
 - Public presentation belongs in render layers only after state is labeled.
 - Cross-surface topology drift must be reconciled against `ARCHITECTURE.md`.
+- Continuing work must recover the correct System Project Arc before proposing new work.
+- Time, version, substrate, checkpoint, and receipt metadata must not be discarded when recovering state.
 
 ---
 
