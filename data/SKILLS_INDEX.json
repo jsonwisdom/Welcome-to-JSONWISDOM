@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "index": "JASON_SKILLS_INDEX",
+  "status": "EVIDENCE_WEIGHTED_PARTIAL",
+  "rule": "Skills may be linked to completed cycles and receipts; they are not inferred from repository names or keywords alone.",
+  "authority": false,
+  "claim_truth": false,
+  "skills": [
+    "Verification Architecture",
+    "Cryptographic Provenance",
+    "Replayable Infrastructure",
+    "Public-Record Reconstruction",
+    "Deterministic Civic Memory",
+    "Civic Accountability Systems",
+    "Fraud / Oversight Analysis Architecture",
+    "Justice-Lane State Modeling",
+    "Narrative Navigation / Human Interface"
+  ]
+}
