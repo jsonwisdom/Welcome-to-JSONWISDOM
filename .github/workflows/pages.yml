@@ -1,12 +1,15 @@
-name: Deploy public front door
+name: Deploy Jason's HisStory front door
 
 on:
   push:
     branches: [jsonwisdom]
+  schedule:
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
+  pull-requests: read
   pages: write
   id-token: write
 
@@ -16,16 +19,36 @@ concurrency:
 
 jobs:
   deploy:
+    name: Parental BoxDee public index
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build live merged-cycle index
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/build_green_board.py --out build/GREEN_BOARD.json
+      - name: Enforce NO FAKE GREEN before publication
+        run: python scripts/validate_green_board.py build/GREEN_BOARD.json
+      - name: Stage public front door
+        run: |
+          rm -rf _site
+          mkdir -p _site/schemas _site/data
+          cp index.html README.md ARCHITECTURE.md _site/
+          cp -R assets _site/assets
+          cp build/GREEN_BOARD.json _site/GREEN_BOARD.json
+          cp schemas/green_board.schema.json _site/schemas/
+          cp data/EPOCH_INDEX.json data/SKILLS_INDEX.json data/CORRECTION_LEDGER.jsonl _site/data/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
