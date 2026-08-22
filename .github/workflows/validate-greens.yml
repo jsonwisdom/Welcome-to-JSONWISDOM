@@ -1,0 +1,78 @@
+name: NO FAKE GREEN Gate
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'scripts/build_green_board.py'
+      - 'scripts/validate_green_board.py'
+      - 'schemas/green_board.schema.json'
+      - 'data/EPOCH_INDEX.json'
+      - 'data/SKILLS_INDEX.json'
+      - 'data/CORRECTION_LEDGER.jsonl'
+      - '.github/workflows/validate-greens.yml'
+      - '.github/workflows/pages.yml'
+  push:
+    branches: [jsonwisdom]
+    paths:
+      - 'index.html'
+      - 'scripts/build_green_board.py'
+      - 'scripts/validate_green_board.py'
+      - 'schemas/green_board.schema.json'
+      - 'data/**'
+      - '.github/workflows/validate-greens.yml'
+      - '.github/workflows/pages.yml'
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate-green-board:
+    name: NO FAKE GREEN Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact event SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build live merged-cycle board
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/build_green_board.py --out build/GREEN_BOARD.json
+      - name: Validate board schema
+        run: |
+          npm install --global ajv-cli ajv-formats
+          ajv validate --spec=draft2020 -c ajv-formats -s schemas/green_board.schema.json -d build/GREEN_BOARD.json
+      - name: Enforce NO FAKE GREEN core
+        run: python scripts/validate_green_board.py build/GREEN_BOARD.json
+      - name: Validate epoch and skills indexes
+        run: |
+          python -m json.tool data/EPOCH_INDEX.json >/dev/null
+          python -m json.tool data/SKILLS_INDEX.json >/dev/null
+      - name: Validate append-only correction ledger syntax
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for n, line in enumerate(Path('data/CORRECTION_LEDGER.jsonl').read_text().splitlines(), 1):
+              if line.strip(): json.loads(line)
+          print('correction ledger JSONL: PASS')
+          PY
+      - name: Upload generated lifecycle index
+        uses: actions/upload-artifact@v4
+        with:
+          name: no-fake-green-board
+          path: build/GREEN_BOARD.json
+          if-no-files-found: error
