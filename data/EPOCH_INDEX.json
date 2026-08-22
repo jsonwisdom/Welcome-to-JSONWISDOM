@@ -1,0 +1,9 @@
+{
+  "schema_version": "0.1.0",
+  "index": "JASONS_HISSTORY_EPOCH_INDEX",
+  "status": "GENERATED_FROM_MERGED_AT_TIME",
+  "source": "GREEN_BOARD.json",
+  "grouping_rule": "Calendar YYYY-MM is a temporal index only. It does not infer semantic epoch names from keywords.",
+  "authority": false,
+  "claim_truth": false
+}
