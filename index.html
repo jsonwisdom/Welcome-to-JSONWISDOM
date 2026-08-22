@@ -1,50 +1,89 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="JSONWisdom: replayable receipts, provenance, and human-controlled AI systems.">
-    <meta property="og:title" content="JSONWisdom — Receipts You Can Replay">
-    <meta property="og:description" content="Explore provenance, receipts, replay, and human-controlled AI systems built by Jason Wisdom.">
-    <meta property="og:image" content="assets/jsonwisdom-jw-logo.png">
-    <meta property="og:type" content="website">
-    <title>JSONWisdom — Receipts You Can Replay</title>
-    <style>
-      :root { color-scheme: dark; --ink:#f5f8ff; --muted:#aebbd0; --cyan:#32d6e8; --blue:#0879e8; --panel:rgba(8,23,47,.72); }
-      * { box-sizing: border-box; }
-      body { margin:0; min-height:100vh; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:radial-gradient(circle at 50% 0,#0c2b51 0,#05152d 38%,#020915 100%); }
-      main { width:min(1080px,calc(100% - 40px)); margin:auto; padding:56px 0 44px; }
-      .hero { display:grid; grid-template-columns:minmax(250px,390px) 1fr; gap:clamp(36px,7vw,82px); align-items:center; min-height:72vh; }
-      .logo { width:100%; aspect-ratio:1; border-radius:28px; box-shadow:0 24px 80px rgba(0,139,255,.2); }
-      .eyebrow { margin:0 0 14px; color:var(--cyan); font-size:.8rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
-      h1 { margin:0; max-width:700px; font-size:clamp(2.7rem,7vw,5.8rem); line-height:.94; letter-spacing:-.055em; }
-      .lede { margin:24px 0 30px; max-width:650px; color:var(--muted); font-size:clamp(1.05rem,2.4vw,1.35rem); line-height:1.65; }
-      .actions { display:flex; flex-wrap:wrap; gap:12px; }
-      a { color:inherit; }
-      .button { display:inline-flex; align-items:center; min-height:48px; padding:0 20px; border:1px solid rgba(87,222,238,.5); border-radius:999px; font-weight:750; text-decoration:none; background:linear-gradient(135deg,var(--cyan),var(--blue)); color:#00101f; }
-      .button.secondary { background:transparent; color:var(--ink); border-color:rgba(190,220,255,.28); }
-      .boundary { margin-top:42px; padding:20px 22px; border:1px solid rgba(101,184,255,.22); border-radius:18px; background:var(--panel); color:var(--muted); line-height:1.6; }
-      .boundary strong { color:var(--ink); }
-      footer { margin-top:42px; padding-top:24px; border-top:1px solid rgba(190,220,255,.14); color:#8292aa; font-size:.9rem; }
-      @media (max-width:760px) { main{padding-top:28px}.hero{grid-template-columns:1fr;min-height:auto}.logo{width:min(76vw,360px);justify-self:center}h1{font-size:clamp(2.65rem,14vw,4.7rem)} }
-    </style>
-  </head>
-  <body>
-    <main>
-      <section class="hero" aria-labelledby="title">
-        <img class="logo" src="assets/jsonwisdom-jw-logo.png" alt="JW circuit tree logo" width="1024" height="1024">
-        <div>
-          <p class="eyebrow">JSONWisdom · ReceiptOS</p>
-          <h1 id="title">Receipts you can replay.</h1>
-          <p class="lede">Explore provenance, replay, and human-controlled AI systems built by Jason Wisdom—where every substrate keeps its boundaries and every claim keeps its receipts.</p>
-          <div class="actions">
-            <a class="button" href="README.md">Explore the architecture</a>
-            <a class="button secondary" href="https://github.com/jsonwisdom">View JSONWisdom on GitHub</a>
-          </div>
-          <p class="boundary"><strong>Boundary preserved:</strong> a receipt records provenance; it does not create truth, legal authority, governance power, or permission. <code>authority=false</code>.</p>
-        </div>
-      </section>
-      <footer>JSONWisdom is the public orientation doorway. ReceiptOS is the receipt and replay substrate.</footer>
-    </main>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Jason's HisStory — JSONWisdom lifecycle receipts, completed cycles, skills, and NO FAKE GREEN public index.">
+  <meta property="og:title" content="Jason's HisStory — JSONWisdom">
+  <meta property="og:description" content="The work is there. The cycles are there. The receipts are there. The index is here.">
+  <meta property="og:image" content="assets/jsonwisdom-jw-logo.png">
+  <title>Jason's HisStory — JSONWisdom</title>
+  <style>
+    :root{color-scheme:dark;--bg:#05070b;--panel:#0d121a;--panel2:#111924;--ink:#f7f8fb;--muted:#a8b1c0;--green:#76e6a4;--gold:#efc870;--red:#ff8b8b;--line:#253243;--blue:#76b7ff}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 50% -10%,#16263d 0,#080d14 35%,var(--bg) 70%);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    a{color:inherit}.shell{width:min(1180px,calc(100% - 32px));margin:auto;padding:32px 0 64px}
+    .hero{padding:34px 0 26px}.eyebrow{color:var(--gold);font-size:.78rem;font-weight:850;letter-spacing:.16em;text-transform:uppercase;margin:0 0 12px}h1{font-size:clamp(3rem,9vw,7rem);line-height:.88;letter-spacing:-.065em;margin:0;max-width:950px}.lede{font-size:clamp(1.12rem,2.5vw,1.45rem);line-height:1.55;color:var(--muted);max-width:880px;margin:24px 0}.mantra{font-weight:850;font-size:clamp(1rem,2.3vw,1.25rem);line-height:1.7}.mantra span{display:inline-block;margin-right:.45rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{padding:12px 17px;border:1px solid var(--line);border-radius:999px;text-decoration:none;font-weight:760;background:#101824}.btn.primary{background:var(--ink);color:#06080b;border-color:var(--ink)}
+    .boxdee{margin:26px 0 34px;padding:20px 22px;border:1px solid #5a4a27;border-radius:18px;background:linear-gradient(135deg,rgba(239,200,112,.10),rgba(118,230,164,.04))}.boxdee strong{color:var(--gold)}.boxdee code{color:var(--green)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.tile{grid-column:span 4;background:rgba(13,18,26,.84);border:1px solid var(--line);border-radius:18px;padding:19px}.tile h3{margin:0 0 8px;font-size:1rem}.tile p{margin:0;color:var(--muted);line-height:1.55;font-size:.92rem}.arrow{color:var(--green)}
+    .board{margin-top:42px}.board-head{display:flex;justify-content:space-between;gap:20px;align-items:end;flex-wrap:wrap}.board h2{font-size:clamp(2rem,5vw,3.5rem);letter-spacing:-.045em;margin:0}.sub{color:var(--muted);max-width:760px;line-height:1.6}.status{display:inline-flex;align-items:center;gap:8px;border:1px solid #265c3e;background:#0d2519;color:var(--green);border-radius:999px;padding:8px 12px;font-size:.8rem;font-weight:850}.dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 14px var(--green)}
+    .coverage{margin:16px 0;padding:14px 16px;border:1px solid var(--line);border-radius:14px;color:var(--muted);background:#0b1118;font-size:.9rem}.coverage strong{color:var(--ink)}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.filters input{flex:1;min-width:220px;background:#0c121a;border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:12px 14px;font:inherit}.filters button{background:#0c121a;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 13px;cursor:pointer}
+    #cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:linear-gradient(180deg,#0f171f,#0b1017);border:1px solid #263747;border-radius:16px;padding:16px}.card-top{display:flex;justify-content:space-between;gap:10px}.repo{color:var(--blue);font-weight:800;font-size:.85rem}.pr{font-weight:850;color:var(--green)}.card h3{font-size:1rem;line-height:1.35;margin:10px 0}.meta{font-size:.8rem;color:var(--muted);line-height:1.6}.sha{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#d9e3ef}.replay{display:inline-block;margin-top:12px;font-size:.82rem;color:var(--green);font-weight:800;text-decoration:none}.empty{padding:30px;border:1px dashed var(--line);border-radius:16px;color:var(--muted)}
+    .meaning{margin-top:22px;padding:18px;border-left:3px solid var(--green);background:#0b1510;color:var(--muted);line-height:1.6}.meaning strong{color:var(--green)}
+    .footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);color:#7f8998;font-size:.85rem;line-height:1.6}
+    @media(max-width:800px){.tile{grid-column:span 12}#cards{grid-template-columns:1fr}.shell{width:min(100% - 22px,1180px)}h1{font-size:clamp(3rem,17vw,5.5rem)}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <section class="hero">
+    <p class="eyebrow">Jason Wisdom · JSONWisdom · HisStory</p>
+    <h1>Jason's<br>HisStory.</h1>
+    <p class="lede">The human arc sits above the machinery. Repositories preserve work. Pull requests preserve cycles. Receipts preserve what changed. Replay lets the next question start from evidence instead of memory.</p>
+    <div class="mantra"><span>THE WORK IS THERE.</span><span>THE CYCLES ARE THERE.</span><span>THE RECEIPTS ARE THERE.</span><span class="arrow">THE INDEX IS HERE.</span></div>
+    <div class="actions">
+      <a class="btn primary" href="#green-board">See verified completed cycles</a>
+      <a class="btn" href="README.md">Architecture</a>
+      <a class="btn" href="ARCHITECTURE.md">Canonical boundaries</a>
+      <a class="btn" href="data/SKILLS_INDEX.json">Jason's Skills</a>
+      <a class="btn" href="https://github.com/jsonwisdom">GitHub estate</a>
+    </div>
+  </section>
+
+  <section class="boxdee">
+    <strong>Parental BoxDee wrapper:</strong> curiosity and story stay free; promotion does not. A public green must carry its repository, PR, merge commit, timestamp, replay pointer, author, and <code>authority=false</code>. A green lifecycle receipt is never promoted into claim truth, employment proof, credential proof, production deployment, legal authority, or institutional endorsement.
+  </section>
+
+  <section class="grid" aria-label="Jason's HisStory lifecycle">
+    <div class="tile"><h3>Genesis</h3><p>Where the question or project arc began. Origin is preserved instead of overwritten by the latest session.</p></div>
+    <div class="tile"><h3>Epochs</h3><p>Time-ordered transitions. Calendar grouping is navigation; semantic epoch names require separate receipts.</p></div>
+    <div class="tile"><h3>Completed Cycles</h3><p>Closed + merged PRs are indexed as canonical repository-lifecycle transitions. Closed + unmerged paths remain history, not green.</p></div>
+    <div class="tile"><h3>Skills</h3><p>ReverseResumeResilience links capability claims back to completed work and receipts instead of trusting résumé adjectives.</p></div>
+    <div class="tile"><h3>Current Frontier</h3><p>Open/draft PRs are work in progress. They may prove an artifact exists without claiming the cycle is complete.</p></div>
+    <div class="tile"><h3>Next Genesis</h3><p>Replay does not terminate curiosity. A completed cycle should make the next question better.</p></div>
+  </section>
+
+  <section class="board" id="green-board">
+    <div class="board-head">
+      <div><p class="eyebrow">Public lifecycle index</p><h2>NO FAKE GREEN</h2></div>
+      <div class="status"><span class="dot"></span><span id="board-state">LOADING RECEIPTS</span></div>
+    </div>
+    <p class="sub">Every card below is generated from GitHub's public merged-PR metadata at deploy time. The board is a lifecycle index, not a truth engine.</p>
+    <div id="coverage" class="coverage"><strong>Coverage:</strong> loading current public repository estate…</div>
+    <div class="filters"><input id="q" type="search" placeholder="Search repo, PR title, author, epoch…" aria-label="Search green board"><button id="clear">Clear</button></div>
+    <div id="cards"><div class="empty">Loading GREEN_BOARD.json…</div></div>
+    <div class="meaning"><strong>Green means one thing here:</strong> GitHub reports that the PR was merged and the required lifecycle metadata is complete. <strong>Green does not mean the underlying claim is true.</strong> CI success is also not implied; <code>ci_verified=false</code> remains explicit until separately bound.</div>
+  </section>
+
+  <footer class="footer">Jason's HisStory is the public orientation layer. Parental BoxDee is the evidence boundary. GitHub supplies lifecycle provenance. ReceiptOS/RePlayOS handles replay. JOY remains witness/continuity, not the execution home for this index. <code>authority=false</code>.</footer>
+</main>
+<script>
+(async()=>{
+  const cards=document.getElementById('cards'),coverage=document.getElementById('coverage'),state=document.getElementById('board-state'),q=document.getElementById('q');
+  let entries=[];
+  const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  function render(){
+    const needle=q.value.trim().toLowerCase();
+    const shown=entries.filter(e=>!needle||[e.repo,e.pr,e.title,e.author,e.epoch,e.commit_sha].join(' ').toLowerCase().includes(needle));
+    cards.innerHTML=shown.length?shown.map(e=>`<article class="card"><div class="card-top"><span class="repo">${esc(e.repo)}</span><span class="pr">PR #${esc(e.pr)}</span></div><h3>${esc(e.title)}</h3><div class="meta">Merged: ${esc(e.merged_at)}<br>Epoch: ${esc(e.epoch)} · Author: ${esc(e.author)}<br>Merge SHA: <span class="sha">${esc(e.commit_sha.slice(0,12))}…</span><br>Scope: ${esc(e.scope)} · authority=false · claim_truth=false · ci_verified=false</div><a class="replay" href="${esc(e.replay_pointer)}">Open receipt ↗</a></article>`).join(''):`<div class="empty">No lifecycle greens match that search.</div>`;
+  }
+  try{
+    const r=await fetch('GREEN_BOARD.json',{cache:'no-store'}); if(!r.ok) throw new Error(`HTTP ${r.status}`); const board=await r.json(); entries=board.entries||[];
+    const c=board.coverage||{}; coverage.innerHTML=`<strong>Coverage:</strong> ${esc(c.repos_scanned)} public repos scanned · ${esc(c.closed_prs_seen)} closed PRs observed · ${esc(c.merged_prs_indexed)} merged cycles indexed · ${esc(c.closed_unmerged_seen)} closed/unmerged side paths preserved outside the green board · generated ${esc(board.generated_at)}`;
+    state.textContent=`${entries.length} MERGED CYCLES INDEXED`; render();
+  }catch(err){state.textContent='HOLD — INDEX UNAVAILABLE';coverage.innerHTML=`<strong>Coverage HOLD:</strong> the generated lifecycle index could not be loaded (${esc(err.message)}). The page will not fabricate green cards.`;cards.innerHTML='<div class="empty">NO FAKE GREEN: index unavailable, so no green is displayed.</div>';}
+  q.addEventListener('input',render); document.getElementById('clear').addEventListener('click',()=>{q.value='';render();q.focus();});
+})();
+</script>
+</body>
 </html>
