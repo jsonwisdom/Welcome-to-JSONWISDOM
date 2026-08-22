@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jsonwisdom/Welcome-to-JSONWISDOM/schemas/green_board.schema.json",
+  "title": "JSONWisdom NO FAKE GREEN Board v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "board", "generated_at", "owner", "wrapper", "authority", "claim_truth", "green_semantics", "coverage", "entries"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "board": {"const": "JSONWISDOM_NO_FAKE_GREEN_BOARD"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "owner": {"const": "jsonwisdom"},
+    "wrapper": {"const": "PARENTAL_BOXDEE"},
+    "authority": {"const": false},
+    "claim_truth": {"const": false},
+    "green_semantics": {"type": "string", "minLength": 20},
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "repos_scanned", "closed_prs_seen", "merged_prs_indexed", "closed_unmerged_seen"],
+      "properties": {
+        "status": {"const": "LIVE_PUBLIC_REPO_SCAN"},
+        "repos_scanned": {"type": "integer", "minimum": 0},
+        "closed_prs_seen": {"type": "integer", "minimum": 0},
+        "merged_prs_indexed": {"type": "integer", "minimum": 0},
+        "closed_unmerged_seen": {"type": "integer", "minimum": 0}
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "repo", "pr", "title", "commit_sha", "merged_at", "replay_pointer", "author", "authority", "claim_truth", "ci_verified", "green_type", "scope", "status", "epoch", "cycle", "proof_statement"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "repo": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+          "pr": {"type": "integer", "minimum": 1},
+          "title": {"type": "string", "minLength": 1},
+          "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "merged_at": {"type": "string", "format": "date-time"},
+          "replay_pointer": {"type": "string", "pattern": "^https://"},
+          "author": {"type": "string", "minLength": 1},
+          "authority": {"const": false},
+          "claim_truth": {"const": false},
+          "ci_verified": {"const": false},
+          "green_type": {"const": "MERGED_PR_CYCLE"},
+          "scope": {"const": "GITHUB_LIFECYCLE_RECEIPT"},
+          "status": {"const": "GREEN_MERGED_CYCLE"},
+          "epoch": {"type": "string", "pattern": "^\\d{4}-\\d{2}$"},
+          "cycle": {"type": "string", "minLength": 3},
+          "proof_statement": {"type": "string", "minLength": 20}
+        }
+      }
+    }
+  }
+}
