@@ -315,6 +315,7 @@ footer{
   font:700 12px Consolas,monospace;
 }
 </style>
+  <link rel="stylesheet" href="atomic-replay.css">
 </head>
 
 <body>
@@ -386,6 +387,43 @@ footer{
     </div>
   </div>
 </div>
+
+<section id="atomicReplay" class="atomicReplay">
+  <div class="atomicTop">
+    <div>
+      <h2>JASON'S ATOMIC REPLAY</h2>
+      <p>LeeLoo Multi-PASS rotates one leaf every five seconds and shows exactly where independent source paths agree, differ, or cannot yet be compared.</p>
+    </div>
+    <span id="atomicStatus" class="atomicBadge">INITIALIZING...</span>
+  </div>
+
+  <div class="atomicStats">
+    <div class="atomicStat"><div id="atomicLeafCount" class="n">0</div><div class="label">LEAVES</div></div>
+    <div class="atomicStat"><div id="atomicPass" class="n">0</div><div class="label">PASS</div></div>
+    <div class="atomicStat"><div id="atomicDiff" class="n">0</div><div class="label">DIFF</div></div>
+    <div class="atomicStat"><div id="atomicHold" class="n">0</div><div class="label">HOLD</div></div>
+  </div>
+
+  <div class="atomicStage">
+    <div class="atomicCenter">LEELOO MULTI-PASS · CURRENT LEAF</div>
+    <div id="atomicLeafName" class="atomicLeaf">LOADING</div>
+    <div class="atomicCompare">
+      <div class="atomicSide"><b id="atomicAName">SOURCE A</b><div id="atomicAValue" class="atomicValue">—</div></div>
+      <div id="atomicResult" class="atomicResult HOLD">HOLD</div>
+      <div class="atomicSide"><b id="atomicBName">SOURCE B</b><div id="atomicBValue" class="atomicValue">—</div></div>
+    </div>
+    <div id="atomicMeaning" class="detail" style="margin-top:14px">Loading atomic replay.</div>
+    <div class="atomicLinks">
+      <a id="atomicSourceA" target="_blank" rel="noopener">OPEN RECEIPT CORE SOURCE</a>
+      <a id="atomicSourceB" target="_blank" rel="noopener">OPEN PREPARED ANCHOR SOURCE</a>
+    </div>
+  </div>
+
+  <div class="atomicFoot">
+    DIFF ≠ FAILURE · PASS ≠ TRUTH · ATTESTATION ≠ AUTHORITY ·
+    VISUAL ROTATION ≠ NEW EVIDENCE · CHAIN_WRITE=false · AUTHORITY_CREATED=false
+  </div>
+</section>
 
 <div class="railHead">
   <h2>LIVE JSONL RIVER</h2>
@@ -655,6 +693,8 @@ setInterval(refreshPulse,5000);
 </script>
 
 <script src="./ens/ens-rail.js"></script>
+  <script src="atomic-replay.js"></script>
 </body>
 </html>
+
 

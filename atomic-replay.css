@@ -1,0 +1,27 @@
+.atomicReplay{margin-top:28px;border:1px solid var(--line);background:var(--panel)}
+.atomicTop{padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.atomicTop h2{margin:0;font-size:26px;letter-spacing:-.03em}
+.atomicTop p{margin:6px 0 0;color:var(--muted);max-width:760px}
+.atomicBadge{font:700 11px Consolas,monospace;color:var(--green);white-space:nowrap}
+.atomicStats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.atomicStat{background:#0b0f12;padding:13px}
+.atomicStat .n{font-size:22px}
+.atomicStage{padding:20px;min-height:250px}
+.atomicCenter{font:700 11px Consolas,monospace;color:var(--blue);letter-spacing:.12em}
+.atomicLeaf{margin-top:8px;font-size:clamp(24px,5vw,42px);font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere}
+.atomicCompare{margin-top:16px;display:grid;grid-template-columns:1fr 72px 1fr;gap:12px;align-items:stretch}
+.atomicSide{border:1px solid var(--line);padding:14px;background:#090c0f}
+.atomicSide b{display:block;font:700 11px Consolas,monospace;color:var(--muted);margin-bottom:7px}
+.atomicValue{font:700 13px Consolas,monospace;overflow-wrap:anywhere}
+.atomicResult{display:flex;align-items:center;justify-content:center;font:800 12px Consolas,monospace;border:1px solid var(--line)}
+.atomicResult.PASS{color:var(--green)}
+.atomicResult.DIFF{color:var(--yellow)}
+.atomicResult.HOLD{color:var(--blue)}
+.atomicFoot{padding:12px 18px;border-top:1px solid var(--line);color:var(--muted);font:11px Consolas,monospace}
+.atomicLinks{margin-top:12px;display:flex;gap:12px;flex-wrap:wrap}
+.atomicLinks a{color:var(--blue);font:12px Consolas,monospace}
+@media(max-width:720px){
+ .atomicTop{display:block}.atomicBadge{display:block;margin-top:10px}
+ .atomicStats{grid-template-columns:1fr 1fr}
+ .atomicCompare{grid-template-columns:1fr}.atomicResult{min-height:38px}
+}
