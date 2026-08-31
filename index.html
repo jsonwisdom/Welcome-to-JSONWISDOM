@@ -1,700 +1,258 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="JSONWisdom Live Chain Pulse — continuously replaying the last 24 hours.">
-<title>JSONWisdom — LIVE CHAIN PULSE</title>
-
+<title>JSONWisdom — Replay What Remains</title>
+<meta name="description" content="Jason's Atomic Replay — live evidence, receipts, pulse and identity surfaces.">
 <style>
 :root{
   color-scheme:dark;
-  --bg:#07090b;
-  --panel:#0d1115;
-  --line:#26303a;
-  --text:#f2f5f7;
-  --muted:#8997a3;
-  --green:#74ed8b;
-  --yellow:#f0c85c;
-  --blue:#8bc9ff;
+  --bg:#02050a; --panel:rgba(5,12,23,.82); --line:#18344d; --text:#f4f8fb;
+  --muted:#91a6bb; --cyan:#55e8ff; --purple:#c77dff; --green:#49f0a6; --yellow:#ffd86b;
 }
-
 *{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
+html{scroll-behavior:smooth}
+body{margin:0;background:#02050a;color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;
+  background:
+    linear-gradient(180deg,rgba(0,4,10,.18),rgba(0,4,10,.58)),
+    url("jsonwisdom-homepage-art.png") center top/cover fixed no-repeat;
 }
-
-body{
-  overflow-x:hidden;
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(circle at 50% 14%,rgba(67,191,255,.08),transparent 32%),
+             linear-gradient(180deg,rgba(1,5,12,.06),rgba(1,5,12,.76) 70%,#02050a);
+  pointer-events:none;
 }
-
-main{
-  width:min(1080px,calc(100% - 28px));
-  margin:auto;
-  padding:24px 0 48px;
+a,button{font:inherit}
+a{color:inherit}
+.wrap{width:min(1180px,calc(100% - 28px));margin:auto}
+.topbar{
+  position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);
+  background:rgba(2,5,10,.72);border-bottom:1px solid rgba(85,232,255,.15)
 }
-
-header{
-  display:flex;
-  justify-content:space-between;
-  gap:24px;
-  align-items:flex-start;
-  padding-bottom:18px;
-  border-bottom:1px solid var(--line);
+.nav{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0}
+.brand{font-weight:900;letter-spacing:.12em;text-decoration:none}
+.brand small{display:block;color:var(--cyan);font:11px Consolas,monospace;letter-spacing:.16em;margin-top:3px}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.links a,.btn{
+  border:1px solid rgba(85,232,255,.18);background:rgba(5,13,23,.62);color:var(--text);
+  padding:10px 13px;text-decoration:none;border-radius:10px;cursor:pointer;transition:.18s
 }
-
-.kicker{
-  font:700 12px Consolas,monospace;
-  color:var(--muted);
-  letter-spacing:.14em;
+.links a:hover,.btn:hover{border-color:var(--cyan);transform:translateY(-1px);box-shadow:0 0 22px rgba(85,232,255,.12)}
+.live{color:var(--green)}
+.hero{padding:74px 0 38px;display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+.eyebrow{font:700 12px Consolas,monospace;color:var(--cyan);letter-spacing:.16em}
+h1{font-size:clamp(46px,7.5vw,88px);line-height:.9;letter-spacing:-.055em;margin:10px 0 18px}
+h1 span{color:var(--cyan)}
+.lead{font-size:19px;line-height:1.55;color:#cbd7e2;max-width:690px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn.primary{background:linear-gradient(180deg,#27bfe7,#087fa9);border-color:#6ef0ff;font-weight:800}
+.statuscard,.panel,.card{
+  background:linear-gradient(180deg,rgba(7,18,34,.87),rgba(4,10,19,.82));
+  border:1px solid rgba(85,232,255,.20);box-shadow:0 18px 50px rgba(0,0,0,.28);
+  backdrop-filter:blur(14px);border-radius:18px
 }
-
-h1{
-  margin:5px 0 0;
-  font-size:clamp(38px,8vw,74px);
-  line-height:.88;
-  letter-spacing:-.06em;
+.statuscard{padding:20px}
+.statusrow{display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);font:13px Consolas,monospace}
+.statusrow:last-child{border-bottom:0}
+.ok{color:var(--green)} .hold{color:var(--yellow)}
+section{scroll-margin-top:90px}
+.section{padding:28px 0}
+.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:12px}
+.sectionhead h2{font-size:28px;margin:0}
+.sectionhead span{color:var(--muted);font:12px Consolas,monospace}
+.panel{padding:20px}
+.atomicgrid{display:grid;grid-template-columns:1fr 120px 1fr;gap:14px;align-items:stretch}
+.source{padding:18px;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(2,8,16,.6)}
+.source h3{margin:0 0 12px}.source .value{font:13px Consolas,monospace;overflow-wrap:anywhere;color:#dfeaf4}
+.vs{display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:var(--cyan)}
+.atomicMeta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.metric{padding:12px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(2,8,16,.56)}
+.metric b{font:700 22px Consolas,monospace;display:block}.metric span{color:var(--muted);font:11px Consolas,monospace}
+#leafResult.PASS{color:var(--green)} #leafResult.DIFF{color:var(--yellow)} #leafResult.HOLD{color:var(--cyan)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{padding:18px;min-height:180px}.card h3{margin-top:0}.card p{color:var(--muted);line-height:1.5}
+.card .btn{display:inline-block;margin-top:8px}
+.river{max-height:520px;overflow:auto;border-top:1px solid rgba(255,255,255,.08)}
+.event{display:grid;grid-template-columns:110px 90px 1fr;gap:12px;padding:13px 4px;border-bottom:1px solid rgba(255,255,255,.07)}
+.event .time,.event .kind{font:12px Consolas,monospace;color:var(--muted)} .event .kind{font-weight:800;color:var(--cyan)}
+.event h4{margin:0 0 4px}.event p{margin:0;color:var(--muted);font-size:13px}
+.receiptShell{display:grid;grid-template-columns:1fr .8fr;gap:14px}
+.receiptBox{padding:18px;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(2,8,16,.62)}
+.receiptBox textarea{width:100%;height:250px;background:#01060b;color:#cde4f5;border:1px solid var(--line);border-radius:10px;padding:12px;font:12px Consolas,monospace;resize:vertical}
+.receiptActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ensgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.enscard{padding:17px;border:1px solid rgba(255,255,255,.1);border-radius:14px;text-decoration:none;background:rgba(2,8,16,.62)}
+.enscard b{display:block;font-size:22px}.enscard small{color:var(--muted)}
+footer{padding:30px 0 50px;color:#7f93a7;font:11px Consolas,monospace;text-align:center}
+.toast{position:fixed;right:18px;bottom:18px;background:#06131e;border:1px solid var(--cyan);padding:12px 14px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+@media(max-width:850px){
+  .hero,.receiptShell{grid-template-columns:1fr}.atomicgrid{grid-template-columns:1fr}.vs{min-height:54px}
+  .cards{grid-template-columns:1fr 1fr}.atomicMeta{grid-template-columns:1fr 1fr}.links{display:none}
 }
-
-.sub{
-  margin-top:14px;
-  color:#c7ced3;
-  max-width:720px;
-  font-size:18px;
-}
-
-.clock{
-  text-align:right;
-  font-family:Consolas,monospace;
-}
-
-.pulseStatus{
-  margin-top:9px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:8px;
-  font-weight:800;
-}
-
-.dot{
-  width:11px;
-  height:11px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 0 rgba(116,237,139,.7);
-}
-
-.dot.beat{
-  animation:beat .65s ease-out;
-}
-
-@keyframes beat{
-  0%{transform:scale(1);box-shadow:0 0 0 0 rgba(116,237,139,.8)}
-  45%{transform:scale(1.8);box-shadow:0 0 0 14px rgba(116,237,139,.12)}
-  100%{transform:scale(1);box-shadow:0 0 0 24px rgba(116,237,139,0)}
-}
-
-.pulseBar{
-  position:relative;
-  width:100vw;
-  left:50%;
-  margin-left:-50vw;
-  overflow:hidden;
-  border-bottom:1px solid var(--line);
-  background:#0b0f12;
-  height:46px;
-}
-
-.track{
-  position:absolute;
-  white-space:nowrap;
-  height:46px;
-  display:flex;
-  align-items:center;
-  gap:36px;
-  animation:scroll 38s linear infinite;
-  will-change:transform;
-}
-
-.track:hover{
-  animation-play-state:paused;
-}
-
-.tick{
-  font:13px Consolas,monospace;
-  color:#c6d0d7;
-}
-
-.tick b{
-  color:var(--green);
-}
-
-@keyframes scroll{
-  from{transform:translateX(100vw)}
-  to{transform:translateX(-100%)}
-}
-
-.hero{
-  padding:25px 0 18px;
-  border-bottom:1px solid var(--line);
-}
-
-.hero strong{
-  display:block;
-  font-size:clamp(25px,5vw,45px);
-  letter-spacing:-.04em;
-}
-
-.hero p{
-  margin:8px 0 0;
-  color:var(--muted);
-  max-width:760px;
-}
-
-.stats{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  border:1px solid var(--line);
-  background:var(--line);
-  gap:1px;
-}
-
-.stat{
-  background:var(--panel);
-  padding:14px;
-}
-
-.n{
-  font:700 24px Consolas,monospace;
-}
-
-.label{
-  margin-top:4px;
-  color:var(--muted);
-  font:11px Consolas,monospace;
-}
-
-.railHead{
-  margin-top:27px;
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  gap:20px;
-}
-
-.railHead h2{
-  margin:0;
-  font-size:22px;
-}
-
-.railHead span{
-  color:var(--muted);
-  font:12px Consolas,monospace;
-}
-
-.river{
-  margin-top:8px;
-  border-top:1px solid var(--line);
-  max-height:580px;
-  overflow:auto;
-  scroll-behavior:smooth;
-}
-
-.event{
-  display:grid;
-  grid-template-columns:108px 96px 1fr;
-  gap:14px;
-  padding:13px 3px;
-  border-bottom:1px solid var(--line);
-  transition:background .25s;
-}
-
-.event.new{
-  background:#111a14;
-}
-
-.time{
-  color:var(--muted);
-  font:12px Consolas,monospace;
-}
-
-.kind{
-  font:700 11px Consolas,monospace;
-}
-
-.kind.health{color:#91a1ac}
-.kind.delta{color:var(--green)}
-.kind.signal{color:var(--blue)}
-.kind.hold{color:var(--yellow)}
-
-.event h3{
-  margin:0;
-  font-size:16px;
-}
-
-.detail{
-  margin-top:5px;
-  color:var(--muted);
-  font-size:13px;
-}
-
-.meta{
-  margin-top:7px;
-  color:#6f7c86;
-  font:11px Consolas,monospace;
-}
-
-footer{
-  margin-top:30px;
-  padding-top:17px;
-  border-top:1px solid var(--line);
-  color:#68757e;
-  font:11px Consolas,monospace;
-}
-
-@media(max-width:720px){
-  header{display:block}
-  .clock{text-align:left;margin-top:14px}
-  .pulseStatus{justify-content:flex-start}
-  .stats{grid-template-columns:1fr 1fr}
-  .event{grid-template-columns:80px 1fr}
-  .event .body{grid-column:1/-1}
-}
+@media(max-width:560px){.cards,.ensgrid{grid-template-columns:1fr}.event{grid-template-columns:72px 1fr}.event .body{grid-column:1/-1}}
 </style>
-<style id="ens-full-send-css">
-.ensSection{
-  margin-top:28px;
-}
-.ensSection h2{
-  margin:0 0 8px;
-  font-size:22px;
-}
-.ensIntro{
-  color:#8997a3;
-  margin-bottom:10px;
-}
-.ensGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:10px;
-}
-.ensCard{
-  display:block;
-  padding:16px;
-  border:1px solid #26303a;
-  background:#0d1115;
-  color:#f2f5f7;
-  text-decoration:none;
-}
-.ensCard:hover{
-  border-color:#74ed8b;
-}
-.ensLabel{
-  font:700 11px Consolas,monospace;
-  color:#74ed8b;
-  margin-bottom:7px;
-}
-.ensCard strong{
-  display:block;
-  font-size:20px;
-}
-.ensMeta{
-  margin-top:7px;
-  color:#8997a3;
-  font:11px Consolas,monospace;
-}
-.ensState{
-  margin-top:11px;
-  color:#8bc9ff;
-  font:700 12px Consolas,monospace;
-}
-</style>
-  <link rel="stylesheet" href="atomic-replay.css">
 </head>
-
 <body>
-
-<div class="pulseBar">
-  <div id="ticker" class="track">
-    <span class="tick">JSONWISDOM PULSE INITIALIZING...</span>
+<div class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="#home">JSONWISDOM<small>REPLAY WHAT REMAINS.</small></a>
+    <div class="links">
+      <a href="#replay">REPLAY</a><a href="#receipts">RECEIPTS</a><a href="#pulse">PULSE</a><a href="#identity">IDENTITY</a><a href="#about">ABOUT</a>
+    </div>
+    <a class="btn live" href="#pulse">● LIVE PULSE</a>
   </div>
 </div>
 
-<main>
-
-<header>
-  <div>
-    <div class="kicker">JASON · JAY · JSONWISDOM</div>
-    <h1>LIVE CHAIN<br>PULSE</h1>
-    <div class="sub">
-      JSONL moving continuously. Data refresh every five seconds.
-      Screen motion is not promoted as new evidence.
-    </div>
-  </div>
-
-  <div class="clock">
-    <div id="clock">--:--:--</div>
-
-    <div class="pulseStatus">
-      <span id="dot" class="dot"></span>
-      <span id="pulseText">PULSE</span>
-    </div>
-
-    <div id="lastFetch" style="margin-top:5px;color:#8997a3;font-size:11px">
-      waiting
-    </div>
-  </div>
-</header>
-
-<div class="hero">
-  <strong>24 hours. Always moving.</strong>
-  <p>
-    DAY is the newest twelve hours. NIGHT is the twelve before that.
-    Every JSONL row can move through the public river; health remains labeled
-    health instead of becoming a fake accomplishment.
-  </p>
-
-  <div class="stats">
-    <div class="stat">
-      <div class="n" id="allCount">0</div>
-      <div class="label">JSONL ROWS</div>
-    </div>
-
-    <div class="stat">
-      <div class="n" id="dayCount">0</div>
-      <div class="label">DAY 12H</div>
-    </div>
-
-    <div class="stat">
-      <div class="n" id="nightCount">0</div>
-      <div class="label">NIGHT 12H</div>
-    </div>
-
-    <div class="stat">
-      <div class="n" id="deltaCount">0</div>
-      <div class="label">GENUINE DELTAS</div>
-    </div>
-
-    <div class="stat">
-      <div class="n">5s</div>
-      <div class="label">PULSE REFRESH</div>
-    </div>
-  </div>
-</div>
-
-<section id="atomicReplay" class="atomicReplay">
-  <div class="atomicTop">
+<main class="wrap" id="home">
+  <section class="hero">
     <div>
-      <h2>JASON'S ATOMIC REPLAY</h2>
-      <p>LeeLoo Multi-PASS rotates one leaf every five seconds and shows exactly where independent source paths agree, differ, or cannot yet be compared.</p>
+      <div class="eyebrow">JASON · JAY · JSONWISDOM</div>
+      <h1>THE GIBSON →<br>REPLAY →<br>RECEIPT →<br><span>NEXT QUESTION</span></h1>
+      <div class="lead">The homepage is the product now — not a doorway to GitHub. GitHub, Drive, ENS and chain surfaces stay underneath as evidence rails. The public experience stays here.</div>
+      <div class="actions">
+        <a class="btn primary" href="#replay">VIEW LIVE REPLAY ⚡</a>
+        <a class="btn" href="#pulse">READ THE PULSE</a>
+        <button class="btn" id="makeReceiptTop">PRODUCE RECEIPT</button>
+      </div>
     </div>
-    <span id="atomicStatus" class="atomicBadge">INITIALIZING...</span>
-  </div>
-
-  <div class="atomicStats">
-    <div class="atomicStat"><div id="atomicLeafCount" class="n">0</div><div class="label">LEAVES</div></div>
-    <div class="atomicStat"><div id="atomicPass" class="n">0</div><div class="label">PASS</div></div>
-    <div class="atomicStat"><div id="atomicDiff" class="n">0</div><div class="label">DIFF</div></div>
-    <div class="atomicStat"><div id="atomicHold" class="n">0</div><div class="label">HOLD</div></div>
-  </div>
-
-  <div class="atomicStage">
-    <div class="atomicCenter">LEELOO MULTI-PASS · CURRENT LEAF</div>
-    <div id="atomicLeafName" class="atomicLeaf">LOADING</div>
-    <div class="atomicCompare">
-      <div class="atomicSide"><b id="atomicAName">SOURCE A</b><div id="atomicAValue" class="atomicValue">—</div></div>
-      <div id="atomicResult" class="atomicResult HOLD">HOLD</div>
-      <div class="atomicSide"><b id="atomicBName">SOURCE B</b><div id="atomicBValue" class="atomicValue">—</div></div>
+    <div class="statuscard">
+      <div class="sectionhead"><h2>SYSTEM STATUS</h2><span class="ok">● LIVE</span></div>
+      <div class="statusrow"><span>PULSE INTERVAL</span><b>5 SECONDS</b></div>
+      <div class="statusrow"><span>CENTER</span><b>LEELOO_MULTIPASS</b></div>
+      <div class="statusrow"><span>AUTHORITY CREATED</span><b class="ok">FALSE</b></div>
+      <div class="statusrow"><span>CHAIN WRITE</span><b class="ok">FALSE</b></div>
+      <div class="statusrow"><span>LAST REFRESH</span><b id="lastRefresh">WAITING</b></div>
     </div>
-    <div id="atomicMeaning" class="detail" style="margin-top:14px">Loading atomic replay.</div>
-    <div class="atomicLinks">
-      <a id="atomicSourceA" target="_blank" rel="noopener">OPEN RECEIPT CORE SOURCE</a>
-      <a id="atomicSourceB" target="_blank" rel="noopener">OPEN PREPARED ANCHOR SOURCE</a>
+  </section>
+
+  <section class="section" id="replay">
+    <div class="sectionhead"><h2>JASON'S ATOMIC REPLAY</h2><span>LEELOO MULTI-PASS · ROTATES EVERY 5 SECONDS</span></div>
+    <div class="panel">
+      <div class="atomicMeta">
+        <div class="metric"><b id="leafCount">0</b><span>LEAVES</span></div>
+        <div class="metric"><b id="passCount">0</b><span>PASS</span></div>
+        <div class="metric"><b id="diffCount">0</b><span>DIFF</span></div>
+        <div class="metric"><b id="holdCount">0</b><span>HOLD</span></div>
+      </div>
+      <div class="atomicgrid">
+        <div class="source"><h3 id="sourceAName">SOURCE A</h3><div id="sourceAValue" class="value">LOADING…</div></div>
+        <div class="vs"><span id="leafResult" class="HOLD">HOLD</span></div>
+        <div class="source"><h3 id="sourceBName">SOURCE B</h3><div id="sourceBValue" class="value">LOADING…</div></div>
+      </div>
+      <div style="margin-top:14px"><span class="eyebrow">CURRENT LEAF</span><h3 id="leafName" style="font-size:30px;margin:5px 0">LOADING</h3><div id="leafMeaning" style="color:var(--muted)">Loading atomic replay.</div></div>
     </div>
-  </div>
+  </section>
 
-  <div class="atomicFoot">
-    DIFF ≠ FAILURE · PASS ≠ TRUTH · ATTESTATION ≠ AUTHORITY ·
-    VISUAL ROTATION ≠ NEW EVIDENCE · CHAIN_WRITE=false · AUTHORITY_CREATED=false
-  </div>
-</section>
+  <section class="section" id="receipts">
+    <div class="sectionhead"><h2>RECEIPTS — STAY ON THE AWESOME PAGE</h2><span>NO GITHUB DEAD-END</span></div>
+    <div class="panel receiptShell">
+      <div class="receiptBox">
+        <h3>Produce a portable receipt</h3>
+        <p style="color:var(--muted)">Creates a browser-local JSON receipt from the currently visible atomic leaf. It downloads here and copies here. It does not redirect you to a repository.</p>
+        <div class="receiptActions">
+          <button class="btn primary" id="produceReceipt">PRODUCE RECEIPT</button>
+          <button class="btn" id="copyReceipt">COPY</button>
+          <button class="btn" id="downloadReceipt">DOWNLOAD JSON</button>
+          <button class="btn" id="printReceipt">PRINT</button>
+        </div>
+      </div>
+      <div class="receiptBox">
+        <textarea id="receiptText" spellcheck="false" aria-label="Generated receipt">Press PRODUCE RECEIPT.</textarea>
+      </div>
+    </div>
+  </section>
 
-<div class="railHead">
-  <h2>LIVE JSONL RIVER</h2>
-  <span id="status">READING pulse.jsonl</span>
-</div>
+  <section class="section" id="pulse">
+    <div class="sectionhead"><h2>LIVE JSONL RIVER</h2><span id="pulseStatus">READING pulse.jsonl</span></div>
+    <div class="panel"><div id="river" class="river"></div></div>
+  </section>
 
-<div id="river" class="river"></div>
+  <section class="section" id="identity">
+    <div class="sectionhead"><h2>PUBLIC IDENTITY RAIL</h2><span>DISCOVERY ≠ AUTHORITY</span></div>
+    <div class="ensgrid">
+      <a class="enscard" href="https://app.ens.domains/jaywisdom.eth" target="_blank" rel="noopener"><small>ETHEREUM NAME</small><b>jaywisdom.eth</b><small>Open ENS protocol surface ↗</small></a>
+      <a class="enscard" href="https://www.base.org/name/jaywisdom" target="_blank" rel="noopener"><small>BASE NAME</small><b>jaywisdom.base.eth</b><small>Open Base name surface ↗</small></a>
+    </div>
+  </section>
 
-<section class="ensSection">
-  <div class="railHead">
-    <h2>JAYWISDOM IDENTITY RAIL</h2>
-    <span>DISCOVERY ≠ AUTHORITY</span>
-  </div>
-
-  <div class="ensIntro">
-    Forward resolution, reverse resolution and public identity witnesses.
-    Click either root to inspect the live protocol surface.
-  </div>
-
-  <div id="ensRail" class="ensGrid">
-    <div class="ensCard">LOADING ENS ROOTS...</div>
-  </div>
-</section>
-<footer>
-PULSE_INTERVAL=5s ·
-SCREEN_MOTION ≠ NEW_EVIDENCE ·
-HEALTH ≠ ACCOMPLISHMENT ·
-REPEATED_SIGNAL ≠ NEW_FACT ·
-CHAIN_WRITE=false ·
-AUTHORITY_CREATED=false
-</footer>
-
+  <section class="section" id="about">
+    <div class="sectionhead"><h2>HOW THIS SITE WORKS</h2><span>HUMAN PAGE FIRST · EVIDENCE RAILS UNDERNEATH</span></div>
+    <div class="cards">
+      <div class="card"><h3>Replay</h3><p>Compare leaves atomically. Agreement becomes PASS; disagreement becomes DIFF; missing comparison stays HOLD.</p><a class="btn" href="#replay">OPEN REPLAY</a></div>
+      <div class="card"><h3>Receipts</h3><p>Generate a portable JSON receipt in-browser, copy it, download it, or print it without leaving the site.</p><a class="btn" href="#receipts">MAKE RECEIPT</a></div>
+      <div class="card"><h3>Pulse</h3><p>Read the deployed JSONL river. Screen animation is not promoted to new evidence.</p><a class="btn" href="#pulse">READ PULSE</a></div>
+    </div>
+  </section>
 </main>
 
+<footer>REPLAY WHAT REMAINS · DIFF ≠ FAILURE · PASS ≠ TRUTH · RECEIPT ≠ AUTHORITY · CHAIN_WRITE=false · AUTHORITY_CREATED=false</footer>
+<div class="toast" id="toast">COPIED</div>
+
 <script>
-const state = {
-  raw:"",
-  rows:[],
-  seen:new Set()
-};
-
-const $ = s => document.querySelector(s);
-
-function parseMs(e){
-  const x = Date.parse(e.timestamp || "");
-  return Number.isFinite(x) ? x : 0;
+const S={atomic:null,leaves:[],i:0,current:null,receipt:null};
+const $=s=>document.querySelector(s);
+function norm(v){if(v===undefined||v===null||v==="")return null;if(typeof v==="boolean")return v?"TRUE":"FALSE";return String(v)}
+function cmp(a,b){const A=norm(a),B=norm(b);if(A===null||B===null)return"HOLD";return A===B?"PASS":"DIFF"}
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1600)}
+function buildLeaves(){
+  const [a,b]=S.atomic.sources;
+  S.leaves=S.atomic.comparison.fields.map(field=>({field,a:a.state[field],b:b.state[field],result:cmp(a.state[field],b.state[field])}));
 }
-
-function hoursOld(e){
-  const t = parseMs(e);
-  return t ? (Date.now()-t)/3600000 : Infinity;
+function renderAtomic(){
+  if(!S.leaves.length)return;
+  const x=S.leaves[S.i%S.leaves.length], [a,b]=S.atomic.sources; S.current=x; S.i++;
+  $("#sourceAName").textContent=a.label; $("#sourceBName").textContent=b.label;
+  $("#sourceAValue").textContent=norm(x.a)??"NOT PRESENT"; $("#sourceBValue").textContent=norm(x.b)??"NOT PRESENT";
+  $("#leafName").textContent=x.field.toUpperCase(); $("#leafResult").textContent=x.result; $("#leafResult").className=x.result;
+  $("#leafMeaning").textContent=x.result==="PASS"?"Both source leaves agree after normalization.":x.result==="DIFF"?"The source leaves differ. Difference is surfaced, not judged.":"One path lacks a comparable value; meaning remains HOLD.";
 }
-
-function isHealth(e){
-  const kind = String(e.kind || "").toLowerCase();
-  const ev = String(e.event || "").toLowerCase();
-  return (
-    kind === "health" ||
-    ev.includes("directory pulse") ||
-    ev.includes("cursor changed") ||
-    ev.includes("heartbeat")
-  );
+function renderCounts(){
+  const c={PASS:0,DIFF:0,HOLD:0};S.leaves.forEach(x=>c[x.result]++);
+  $("#leafCount").textContent=S.leaves.length;$("#passCount").textContent=c.PASS;$("#diffCount").textContent=c.DIFF;$("#holdCount").textContent=c.HOLD;
 }
-
-function rowKind(e){
-  if(isHealth(e)) return "health";
-  if(String(e.status || "").toUpperCase()==="HOLD") return "hold";
-  if(String(e.kind || "").toLowerCase()==="delta") return "delta";
-  return "signal";
-}
-
-function title(e){
-  return e.headline || e.event || e.message || e.type || "Observed event";
-}
-
-function escapeHtml(v){
-  return String(v ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;");
-}
-
-function clockTime(e){
-  const t = parseMs(e);
-  if(!t) return "TIME ?";
-  return new Date(t).toLocaleTimeString([],{
-    hour:"numeric",
-    minute:"2-digit",
-    second:"2-digit"
-  });
-}
-
-function keyFor(e){
-  return [
-    e.timestamp,
-    e.source,
-    e.event,
-    e.headline,
-    e.cycle,
-    e.cursor
-  ].join("|");
-}
-
-function renderStats(){
-  $("#allCount").textContent = state.rows.length;
-
-  $("#dayCount").textContent =
-    state.rows.filter(e => {
-      const h=hoursOld(e);
-      return h>=0 && h<12;
-    }).length;
-
-  $("#nightCount").textContent =
-    state.rows.filter(e => {
-      const h=hoursOld(e);
-      return h>=12 && h<24;
-    }).length;
-
-  $("#deltaCount").textContent =
-    state.rows.filter(e => !isHealth(e)).length;
-}
-
-function renderTicker(){
-  const latest = [...state.rows]
-    .sort((a,b)=>parseMs(b)-parseMs(a))
-    .slice(0,40);
-
-  if(!latest.length){
-    $("#ticker").innerHTML =
-      '<span class="tick">WAITING FOR JSONL...</span>';
-    return;
-  }
-
-  $("#ticker").innerHTML = latest.map(e => `
-    <span class="tick">
-      <b>${escapeHtml(clockTime(e))}</b>
-      ${escapeHtml(String(e.source || "unknown").toUpperCase())}
-      ·
-      ${escapeHtml(title(e))}
-    </span>
-  `).join("");
-}
-
-function renderRiver(){
-  const rows = [...state.rows]
-    .sort((a,b)=>parseMs(b)-parseMs(a))
-    .slice(0,100);
-
-  $("#river").innerHTML = rows.map(e => {
-    const k = keyFor(e);
-    const fresh = state.seen.has(k) ? "" : " new";
-    const kind = rowKind(e);
-
-    return `
-      <article class="event${fresh}">
-        <div class="time">${escapeHtml(clockTime(e))}</div>
-
-        <div class="kind ${kind}">
-          ${escapeHtml(kind.toUpperCase())}
-        </div>
-
-        <div class="body">
-          <h3>${escapeHtml(title(e))}</h3>
-
-          ${e.detail
-            ? `<div class="detail">${escapeHtml(e.detail)}</div>`
-            : ""}
-
-          <div class="meta">
-            SOURCE=${escapeHtml(e.source || "unknown")}
-            ${e.cycle !== undefined
-              ? ` · CYCLE=${escapeHtml(e.cycle)}`
-              : ""}
-            ${e.candidates !== undefined
-              ? ` · CANDIDATES=${escapeHtml(e.candidates)}`
-              : ""}
-            ${e.cursor !== undefined
-              ? ` · CURSOR=${escapeHtml(e.cursor)}`
-              : ""}
-            ${e.status
-              ? ` · STATUS=${escapeHtml(e.status)}`
-              : ""}
-          </div>
-        </div>
-      </article>
-    `;
-  }).join("");
-
-  rows.forEach(e => state.seen.add(keyFor(e)));
-
-  setTimeout(()=>{
-    document.querySelectorAll(".event.new")
-      .forEach(x=>x.classList.remove("new"));
-  },1200);
-}
-
-function render(){
-  renderStats();
-  renderTicker();
-  renderRiver();
-}
-
-function beat(){
-  const dot=$("#dot");
-  dot.classList.remove("beat");
-  void dot.offsetWidth;
-  dot.classList.add("beat");
-
-  $("#pulseText").textContent="PULSE";
-}
-
-async function refreshPulse(){
-  beat();
-
+async function loadAtomic(){
   try{
-    const r = await fetch(
-      "./pulse.jsonl?pulse="+Date.now(),
-      {cache:"no-store"}
-    );
-
-    if(!r.ok) throw new Error("HTTP "+r.status);
-
-    const raw = await r.text();
-
-    $("#lastFetch").textContent =
-      "FETCH " + new Date().toLocaleTimeString();
-
-    $("#status").textContent =
-      "pulse.jsonl · " + raw.length + " bytes";
-
-    if(raw !== state.raw){
-      state.raw=raw;
-
-      state.rows=raw
-        .split(/\r?\n/)
-        .map(x=>x.trim())
-        .filter(Boolean)
-        .map(line=>{
-          try{
-            return JSON.parse(line);
-          }catch{
-            return {
-              timestamp:new Date().toISOString(),
-              source:"JSONL",
-              event:"parse error",
-              kind:"health"
-            };
-          }
-        });
-
-      render();
-    }
-
-  }catch(err){
-    $("#pulseText").textContent="READ ERROR";
-    $("#status").textContent=err.message;
-  }
+    const r=await fetch("atomic-replay.json?ts="+Date.now(),{cache:"no-store"}); if(!r.ok)throw new Error("HTTP "+r.status);
+    S.atomic=await r.json();buildLeaves();renderCounts();if(!S.current)renderAtomic();$("#lastRefresh").textContent=new Date().toLocaleTimeString();
+  }catch(e){$("#lastRefresh").textContent="HOLD"}
 }
-
-setInterval(()=>{
-  $("#clock").textContent =
-    new Date().toLocaleTimeString();
-},1000);
-
-refreshPulse();
-setInterval(refreshPulse,5000);
+async function loadPulse(){
+  try{
+    const r=await fetch("pulse.jsonl?ts="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
+    const raw=await r.text(), rows=raw.split(/\r?\n/).filter(Boolean).map(line=>{try{return JSON.parse(line)}catch{return null}}).filter(Boolean);
+    const latest=rows.sort((a,b)=>Date.parse(b.timestamp||0)-Date.parse(a.timestamp||0)).slice(0,40);
+    $("#river").innerHTML=latest.map(e=>`<div class="event"><div class="time">${esc(new Date(e.timestamp).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}))}</div><div class="kind">${esc(String(e.status||e.kind||"OBSERVED").toUpperCase())}</div><div class="body"><h4>${esc(e.headline||e.event||"Observed event")}</h4><p>${esc(e.detail||e.source||"")}</p></div></div>`).join("")||"<div class='event'>WAITING FOR JSONL…</div>";
+    $("#pulseStatus").textContent=`${rows.length} ROWS · REFRESH 5s`;
+  }catch(e){$("#pulseStatus").textContent="HOLD · "+e.message}
+}
+function makeReceipt(){
+  if(!S.current||!S.atomic)return;
+  const [a,b]=S.atomic.sources;
+  S.receipt={
+    spec:"JSONWISDOM_BROWSER_RECEIPT_V1",
+    generated_at:new Date().toISOString(),
+    center:S.atomic.center,
+    leaf:S.current.field,
+    result:S.current.result,
+    source_a:{id:a.id,label:a.label,value:S.current.a},
+    source_b:{id:b.id,label:b.label,value:S.current.b},
+    rule:"DIFF means sources differ; PASS means normalized values match; HOLD means comparison incomplete.",
+    chain_write:false,authority_created:false
+  };
+  $("#receiptText").value=JSON.stringify(S.receipt,null,2);toast("RECEIPT PRODUCED");
+  location.hash="#receipts";
+}
+$("#produceReceipt").onclick=makeReceipt;$("#makeReceiptTop").onclick=makeReceipt;
+$("#copyReceipt").onclick=async()=>{if(!S.receipt)makeReceipt();await navigator.clipboard.writeText($("#receiptText").value);toast("COPIED")};
+$("#downloadReceipt").onclick=()=>{if(!S.receipt)makeReceipt();const blob=new Blob([$("#receiptText").value],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`jsonwisdom-receipt-${Date.now()}.json`;a.click();URL.revokeObjectURL(a.href);toast("DOWNLOADED")};
+$("#printReceipt").onclick=()=>window.print();
+loadAtomic();loadPulse();setInterval(()=>{if(S.atomic)renderAtomic();loadAtomic();loadPulse()},5000);
 </script>
-
-<script src="./ens/ens-rail.js"></script>
-  <script src="atomic-replay.js"></script>
 </body>
 </html>
-
-
