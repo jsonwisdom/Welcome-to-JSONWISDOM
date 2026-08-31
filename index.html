@@ -267,6 +267,54 @@ footer{
   .event .body{grid-column:1/-1}
 }
 </style>
+<style id="ens-full-send-css">
+.ensSection{
+  margin-top:28px;
+}
+.ensSection h2{
+  margin:0 0 8px;
+  font-size:22px;
+}
+.ensIntro{
+  color:#8997a3;
+  margin-bottom:10px;
+}
+.ensGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:10px;
+}
+.ensCard{
+  display:block;
+  padding:16px;
+  border:1px solid #26303a;
+  background:#0d1115;
+  color:#f2f5f7;
+  text-decoration:none;
+}
+.ensCard:hover{
+  border-color:#74ed8b;
+}
+.ensLabel{
+  font:700 11px Consolas,monospace;
+  color:#74ed8b;
+  margin-bottom:7px;
+}
+.ensCard strong{
+  display:block;
+  font-size:20px;
+}
+.ensMeta{
+  margin-top:7px;
+  color:#8997a3;
+  font:11px Consolas,monospace;
+}
+.ensState{
+  margin-top:11px;
+  color:#8bc9ff;
+  font:700 12px Consolas,monospace;
+}
+</style>
 </head>
 
 <body>
@@ -346,6 +394,21 @@ footer{
 
 <div id="river" class="river"></div>
 
+<section class="ensSection">
+  <div class="railHead">
+    <h2>JAYWISDOM IDENTITY RAIL</h2>
+    <span>DISCOVERY ≠ AUTHORITY</span>
+  </div>
+
+  <div class="ensIntro">
+    Forward resolution, reverse resolution and public identity witnesses.
+    Click either root to inspect the live protocol surface.
+  </div>
+
+  <div id="ensRail" class="ensGrid">
+    <div class="ensCard">LOADING ENS ROOTS...</div>
+  </div>
+</section>
 <footer>
 PULSE_INTERVAL=5s ·
 SCREEN_MOTION ≠ NEW_EVIDENCE ·
@@ -591,5 +654,7 @@ refreshPulse();
 setInterval(refreshPulse,5000);
 </script>
 
+<script src="./ens/ens-rail.js"></script>
 </body>
 </html>
+

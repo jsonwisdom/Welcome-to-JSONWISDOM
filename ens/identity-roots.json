@@ -1,0 +1,23 @@
+﻿{
+  "names": [
+    {
+      "name": "jaywisdom.eth",
+      "network": "ethereum",
+      "role": "DISCOVERY_ROOT",
+      "authority": false
+    },
+    {
+      "name": "jaywisdom.base.eth",
+      "network": "base",
+      "role": "DISCOVERY_ROOT",
+      "authority": false
+    }
+  ],
+  "rules": {
+    "forward_resolution": true,
+    "reverse_resolution": true,
+    "reverse_must_match_forward": true,
+    "discovery_is_not_authority": true,
+    "screen_refresh_is_not_evidence": true
+  }
+}
