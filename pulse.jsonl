@@ -1,0 +1,19 @@
+﻿{"timestamp":"2026-08-31T09:59:59.8236233-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":38,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T09:59:59.8236233-05:00","source":"content","event":"content cursor changed","worker":"observed","cursor":205,"queue_length":58903,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:00:45.3326439-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":39,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:01:46.1008449-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":40,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:02:45.7697133-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":41,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:03:45.5232030-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":42,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:04:46.2454048-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":43,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:05:45.9981722-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":44,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:06:45.7171068-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":45,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:07:46.3507907-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":46,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:08:45.9751133-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":47,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:09:45.7098297-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":48,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:10:46.4516876-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":49,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:11:46.1191371-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":50,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:12:45.8381406-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":14619,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:12:46.8423566-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":51,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:13:46.5881245-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":52,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T10:14:46.2983540-05:00","source":"directory","event":"directory pulse","worker":"live","cycle":53,"candidates":14619,"chain_write":false,"authority_created":false}
+{"timestamp":"2026-08-31T15:15:24.1719752Z","kind":"delta","source":"JSONWisdom","type":"BUILD","headline":"LIVE CHAIN PULSE became the JSONWisdom front door","detail":"24-hour public Pulse installed with sliding Day 12H and Night 12H windows.","status":"PASS","chain_write":false,"authority_created":false}
