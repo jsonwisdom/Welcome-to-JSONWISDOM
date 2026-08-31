@@ -3,35 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="JSONWisdom Live Chain Pulse — the last 24 hours of builds, discoveries, verification, replay and evidence.">
-<title>JSONWisdom — Live Chain Pulse</title>
+<meta name="description" content="JSONWisdom Live Chain Pulse — continuously replaying the last 24 hours.">
+<title>JSONWisdom — LIVE CHAIN PULSE</title>
 
 <style>
 :root{
   color-scheme:dark;
-  --bg:#090b0d;
-  --panel:#101317;
-  --line:#252b31;
-  --text:#f1f4f6;
-  --muted:#89949e;
-  --live:#71df8a;
-  --hold:#e7bf54;
-  --link:#8fc9ff;
+  --bg:#07090b;
+  --panel:#0d1115;
+  --line:#26303a;
+  --text:#f2f5f7;
+  --muted:#8997a3;
+  --green:#74ed8b;
+  --yellow:#f0c85c;
+  --blue:#8bc9ff;
 }
 
 *{box-sizing:border-box}
 
-body{
+html,body{
   margin:0;
   background:var(--bg);
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
 }
 
+body{
+  overflow-x:hidden;
+}
+
 main{
-  width:min(1000px,calc(100% - 28px));
+  width:min(1080px,calc(100% - 28px));
   margin:auto;
-  padding:28px 0 48px;
+  padding:24px 0 48px;
 }
 
 header{
@@ -39,64 +43,123 @@ header{
   justify-content:space-between;
   gap:24px;
   align-items:flex-start;
-  padding-bottom:22px;
+  padding-bottom:18px;
   border-bottom:1px solid var(--line);
 }
 
 .kicker{
+  font:700 12px Consolas,monospace;
   color:var(--muted);
-  font-size:12px;
-  font-weight:700;
   letter-spacing:.14em;
 }
 
 h1{
-  margin:6px 0 0;
-  font-size:clamp(38px,8vw,72px);
+  margin:5px 0 0;
+  font-size:clamp(38px,8vw,74px);
   line-height:.88;
   letter-spacing:-.06em;
 }
 
-.lede{
-  margin:15px 0 0;
-  color:#c7cdd2;
+.sub{
+  margin-top:14px;
+  color:#c7ced3;
+  max-width:720px;
   font-size:18px;
-  max-width:700px;
 }
 
 .clock{
   text-align:right;
   font-family:Consolas,monospace;
-  white-space:nowrap;
 }
 
-#live{
-  margin-top:5px;
+.pulseStatus{
+  margin-top:9px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
   font-weight:800;
-  color:var(--live);
+}
+
+.dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 rgba(116,237,139,.7);
+}
+
+.dot.beat{
+  animation:beat .65s ease-out;
+}
+
+@keyframes beat{
+  0%{transform:scale(1);box-shadow:0 0 0 0 rgba(116,237,139,.8)}
+  45%{transform:scale(1.8);box-shadow:0 0 0 14px rgba(116,237,139,.12)}
+  100%{transform:scale(1);box-shadow:0 0 0 24px rgba(116,237,139,0)}
+}
+
+.pulseBar{
+  position:relative;
+  width:100vw;
+  left:50%;
+  margin-left:-50vw;
+  overflow:hidden;
+  border-bottom:1px solid var(--line);
+  background:#0b0f12;
+  height:46px;
+}
+
+.track{
+  position:absolute;
+  white-space:nowrap;
+  height:46px;
+  display:flex;
+  align-items:center;
+  gap:36px;
+  animation:scroll 38s linear infinite;
+  will-change:transform;
+}
+
+.track:hover{
+  animation-play-state:paused;
+}
+
+.tick{
+  font:13px Consolas,monospace;
+  color:#c6d0d7;
+}
+
+.tick b{
+  color:var(--green);
+}
+
+@keyframes scroll{
+  from{transform:translateX(100vw)}
+  to{transform:translateX(-100%)}
 }
 
 .hero{
-  padding:26px 0;
+  padding:25px 0 18px;
   border-bottom:1px solid var(--line);
 }
 
 .hero strong{
   display:block;
-  font-size:clamp(24px,5vw,42px);
-  letter-spacing:-.035em;
+  font-size:clamp(25px,5vw,45px);
+  letter-spacing:-.04em;
 }
 
 .hero p{
+  margin:8px 0 0;
   color:var(--muted);
   max-width:760px;
-  margin:9px 0 0;
 }
 
 .stats{
-  margin-top:22px;
+  margin-top:20px;
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(5,1fr);
   border:1px solid var(--line);
   background:var(--line);
   gap:1px;
@@ -104,74 +167,56 @@ h1{
 
 .stat{
   background:var(--panel);
-  padding:15px;
+  padding:14px;
 }
 
 .n{
-  font:700 25px Consolas,monospace;
+  font:700 24px Consolas,monospace;
 }
 
 .label{
-  color:var(--muted);
-  font-size:11px;
   margin-top:4px;
+  color:var(--muted);
+  font:11px Consolas,monospace;
 }
 
-nav{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  padding-top:20px;
-}
-
-button{
-  min-height:42px;
-  padding:0 14px;
-  background:transparent;
-  color:var(--text);
-  border:1px solid var(--line);
-  border-radius:5px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-button.active{
-  background:var(--text);
-  color:var(--bg);
-}
-
-section{
-  margin-top:28px;
-}
-
-.sectionHead{
+.railHead{
+  margin-top:27px;
   display:flex;
   justify-content:space-between;
-  gap:15px;
   align-items:end;
-  margin-bottom:8px;
+  gap:20px;
 }
 
-.sectionHead h2{
+.railHead h2{
   margin:0;
-  font-size:21px;
+  font-size:22px;
 }
 
-.small{
+.railHead span{
   color:var(--muted);
   font:12px Consolas,monospace;
 }
 
-.feed{
+.river{
+  margin-top:8px;
   border-top:1px solid var(--line);
+  max-height:580px;
+  overflow:auto;
+  scroll-behavior:smooth;
 }
 
 .event{
   display:grid;
-  grid-template-columns:105px 90px 1fr;
+  grid-template-columns:108px 96px 1fr;
   gap:14px;
-  padding:15px 2px;
+  padding:13px 3px;
   border-bottom:1px solid var(--line);
+  transition:background .25s;
+}
+
+.event.new{
+  background:#111a14;
 }
 
 .time{
@@ -179,150 +224,132 @@ section{
   font:12px Consolas,monospace;
 }
 
-.type{
+.kind{
   font:700 11px Consolas,monospace;
 }
 
+.kind.health{color:#91a1ac}
+.kind.delta{color:var(--green)}
+.kind.signal{color:var(--blue)}
+.kind.hold{color:var(--yellow)}
+
 .event h3{
   margin:0;
-  font-size:17px;
+  font-size:16px;
 }
 
 .detail{
-  color:var(--muted);
   margin-top:5px;
-  font-size:14px;
+  color:var(--muted);
+  font-size:13px;
 }
 
 .meta{
   margin-top:7px;
-  color:#727d86;
+  color:#6f7c86;
   font:11px Consolas,monospace;
-}
-
-.healthgrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:8px;
-}
-
-.health{
-  border:1px solid var(--line);
-  padding:11px;
-  font:12px Consolas,monospace;
-}
-
-.health b{
-  display:block;
-  margin-bottom:4px;
-}
-
-.empty{
-  color:var(--muted);
-  padding:22px 2px;
-  border-bottom:1px solid var(--line);
 }
 
 footer{
-  margin-top:38px;
-  padding-top:18px;
+  margin-top:30px;
+  padding-top:17px;
   border-top:1px solid var(--line);
-  color:#707a82;
+  color:#68757e;
   font:11px Consolas,monospace;
 }
 
-@media(max-width:700px){
+@media(max-width:720px){
   header{display:block}
-  .clock{text-align:left;margin-top:16px}
+  .clock{text-align:left;margin-top:14px}
+  .pulseStatus{justify-content:flex-start}
   .stats{grid-template-columns:1fr 1fr}
-
-  .event{
-    grid-template-columns:80px 1fr;
-  }
-
-  .body{
-    grid-column:1/-1;
-  }
+  .event{grid-template-columns:80px 1fr}
+  .event .body{grid-column:1/-1}
 }
 </style>
 </head>
 
 <body>
+
+<div class="pulseBar">
+  <div id="ticker" class="track">
+    <span class="tick">JSONWISDOM PULSE INITIALIZING...</span>
+  </div>
+</div>
+
 <main>
 
 <header>
   <div>
     <div class="kicker">JASON · JAY · JSONWISDOM</div>
     <h1>LIVE CHAIN<br>PULSE</h1>
-    <p class="lede">
-      What got built, tested, discovered, broken, replayed or verified.
-    </p>
+    <div class="sub">
+      JSONL moving continuously. Data refresh every five seconds.
+      Screen motion is not promoted as new evidence.
+    </div>
   </div>
 
   <div class="clock">
     <div id="clock">--:--:--</div>
-    <div id="live">● LIVE</div>
+
+    <div class="pulseStatus">
+      <span id="dot" class="dot"></span>
+      <span id="pulseText">PULSE</span>
+    </div>
+
+    <div id="lastFetch" style="margin-top:5px;color:#8997a3;font-size:11px">
+      waiting
+    </div>
   </div>
 </header>
 
 <div class="hero">
-  <strong>24 hours. No memory gap.</strong>
+  <strong>24 hours. Always moving.</strong>
   <p>
-    Latest twelve hours = DAY. Previous twelve hours = NIGHT.
-    The window slides continuously. Machine heartbeat stays under the hood.
-    Genuine deltas become the story.
+    DAY is the newest twelve hours. NIGHT is the twelve before that.
+    Every JSONL row can move through the public river; health remains labeled
+    health instead of becoming a fake accomplishment.
   </p>
 
   <div class="stats">
     <div class="stat">
-      <div class="n" id="c24">0</div>
-      <div class="label">24H SIGNALS</div>
+      <div class="n" id="allCount">0</div>
+      <div class="label">JSONL ROWS</div>
     </div>
 
     <div class="stat">
-      <div class="n" id="cday">0</div>
+      <div class="n" id="dayCount">0</div>
       <div class="label">DAY 12H</div>
     </div>
 
     <div class="stat">
-      <div class="n" id="cnight">0</div>
+      <div class="n" id="nightCount">0</div>
       <div class="label">NIGHT 12H</div>
     </div>
 
     <div class="stat">
-      <div class="n" id="chealth">0</div>
-      <div class="label">HEALTH RAILS</div>
+      <div class="n" id="deltaCount">0</div>
+      <div class="label">GENUINE DELTAS</div>
+    </div>
+
+    <div class="stat">
+      <div class="n">5s</div>
+      <div class="label">PULSE REFRESH</div>
     </div>
   </div>
 </div>
 
-<nav>
-  <button class="active" data-view="day">☀ DAY 12H</button>
-  <button data-view="night">☾ NIGHT 12H</button>
-  <button data-view="all">⚡ 24H CHAIN</button>
-</nav>
+<div class="railHead">
+  <h2>LIVE JSONL RIVER</h2>
+  <span id="status">READING pulse.jsonl</span>
+</div>
 
-<section>
-  <div class="sectionHead">
-    <h2 id="title">DAY PULSE</h2>
-    <div class="small" id="updated">waiting</div>
-  </div>
-
-  <div class="feed" id="feed"></div>
-</section>
-
-<section>
-  <div class="sectionHead">
-    <h2>Machine health</h2>
-    <div class="small">not headline news</div>
-  </div>
-
-  <div class="healthgrid" id="health"></div>
-</section>
+<div id="river" class="river"></div>
 
 <footer>
-GitHub = JSONWisdom public code/evidence rail ·
-SCREEN_REFRESH ≠ NEW_EVIDENCE ·
+PULSE_INTERVAL=5s ·
+SCREEN_MOTION ≠ NEW_EVIDENCE ·
+HEALTH ≠ ACCOMPLISHMENT ·
 REPEATED_SIGNAL ≠ NEW_FACT ·
 CHAIN_WRITE=false ·
 AUTHORITY_CREATED=false
@@ -333,188 +360,203 @@ AUTHORITY_CREATED=false
 <script>
 const state = {
   raw:"",
-  events:[],
-  view:"day"
+  rows:[],
+  seen:new Set()
 };
 
 const $ = s => document.querySelector(s);
 
-function ms(e){
-  const v = Date.parse(e.timestamp || "");
-  return Number.isFinite(v) ? v : 0;
+function parseMs(e){
+  const x = Date.parse(e.timestamp || "");
+  return Number.isFinite(x) ? x : 0;
 }
 
 function hoursOld(e){
-  const t = ms(e);
+  const t = parseMs(e);
   return t ? (Date.now()-t)/3600000 : Infinity;
 }
 
-function health(e){
-  const source = String(e.source || "").toLowerCase();
-  const event = String(e.event || "").toLowerCase();
+function isHealth(e){
   const kind = String(e.kind || "").toLowerCase();
-
+  const ev = String(e.event || "").toLowerCase();
   return (
     kind === "health" ||
-    event.includes("heartbeat") ||
-    event.includes("directory pulse") ||
-    (source === "content" && event.includes("cursor"))
+    ev.includes("directory pulse") ||
+    ev.includes("cursor changed") ||
+    ev.includes("heartbeat")
   );
 }
 
-function genuine(){
-  return state.events.filter(e => !health(e));
+function rowKind(e){
+  if(isHealth(e)) return "health";
+  if(String(e.status || "").toUpperCase()==="HOLD") return "hold";
+  if(String(e.kind || "").toLowerCase()==="delta") return "delta";
+  return "signal";
 }
 
-function windowRows(view){
-  return genuine()
-    .filter(e => {
-      const h = hoursOld(e);
-
-      if(view==="day")   return h>=0 && h<12;
-      if(view==="night") return h>=12 && h<24;
-
-      return h>=0 && h<24;
-    })
-    .sort((a,b)=>ms(b)-ms(a));
+function title(e){
+  return e.headline || e.event || e.message || e.type || "Observed event";
 }
 
-function esc(v){
+function escapeHtml(v){
   return String(v ?? "")
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;");
 }
 
-function time(e){
-  if(!ms(e)) return "TIME ?";
-  return new Date(ms(e)).toLocaleTimeString([],{
+function clockTime(e){
+  const t = parseMs(e);
+  if(!t) return "TIME ?";
+  return new Date(t).toLocaleTimeString([],{
     hour:"numeric",
-    minute:"2-digit"
+    minute:"2-digit",
+    second:"2-digit"
   });
 }
 
-function renderStats(){
-  $("#c24").textContent = windowRows("all").length;
-  $("#cday").textContent = windowRows("day").length;
-  $("#cnight").textContent = windowRows("night").length;
+function keyFor(e){
+  return [
+    e.timestamp,
+    e.source,
+    e.event,
+    e.headline,
+    e.cycle,
+    e.cursor
+  ].join("|");
 }
 
-function renderFeed(){
-  const rows = windowRows(state.view);
+function renderStats(){
+  $("#allCount").textContent = state.rows.length;
 
-  $("#title").textContent =
-    state.view==="day"
-      ? "DAY PULSE — latest 12 hours"
-      : state.view==="night"
-      ? "NIGHT PULSE — previous 12 hours"
-      : "24H CHAIN — what changed";
+  $("#dayCount").textContent =
+    state.rows.filter(e => {
+      const h=hoursOld(e);
+      return h>=0 && h<12;
+    }).length;
 
-  if(!rows.length){
-    $("#feed").innerHTML =
-      '<div class="empty">No genuine delta in this window yet.</div>';
+  $("#nightCount").textContent =
+    state.rows.filter(e => {
+      const h=hoursOld(e);
+      return h>=12 && h<24;
+    }).length;
+
+  $("#deltaCount").textContent =
+    state.rows.filter(e => !isHealth(e)).length;
+}
+
+function renderTicker(){
+  const latest = [...state.rows]
+    .sort((a,b)=>parseMs(b)-parseMs(a))
+    .slice(0,40);
+
+  if(!latest.length){
+    $("#ticker").innerHTML =
+      '<span class="tick">WAITING FOR JSONL...</span>';
     return;
   }
 
-  $("#feed").innerHTML = rows.map(e => {
-    const headline =
-      e.headline ||
-      e.event ||
-      e.message ||
-      e.type ||
-      "Observed signal";
+  $("#ticker").innerHTML = latest.map(e => `
+    <span class="tick">
+      <b>${escapeHtml(clockTime(e))}</b>
+      ${escapeHtml(String(e.source || "unknown").toUpperCase())}
+      ·
+      ${escapeHtml(title(e))}
+    </span>
+  `).join("");
+}
+
+function renderRiver(){
+  const rows = [...state.rows]
+    .sort((a,b)=>parseMs(b)-parseMs(a))
+    .slice(0,100);
+
+  $("#river").innerHTML = rows.map(e => {
+    const k = keyFor(e);
+    const fresh = state.seen.has(k) ? "" : " new";
+    const kind = rowKind(e);
 
     return `
-      <article class="event">
-        <div class="time">${esc(time(e))}</div>
-        <div class="type">${esc(e.type || e.status || "SIGNAL")}</div>
+      <article class="event${fresh}">
+        <div class="time">${escapeHtml(clockTime(e))}</div>
+
+        <div class="kind ${kind}">
+          ${escapeHtml(kind.toUpperCase())}
+        </div>
 
         <div class="body">
-          <h3>${esc(headline)}</h3>
+          <h3>${escapeHtml(title(e))}</h3>
 
           ${e.detail
-            ? `<div class="detail">${esc(e.detail)}</div>`
+            ? `<div class="detail">${escapeHtml(e.detail)}</div>`
             : ""}
 
           <div class="meta">
-            SOURCE=${esc(e.source || "unknown")}
-            ${e.status ? " · STATUS="+esc(e.status) : ""}
-            ${e.chain_write !== undefined
-              ? " · CHAIN_WRITE="+esc(e.chain_write)
+            SOURCE=${escapeHtml(e.source || "unknown")}
+            ${e.cycle !== undefined
+              ? ` · CYCLE=${escapeHtml(e.cycle)}`
               : ""}
-            ${e.authority_created !== undefined
-              ? " · AUTHORITY_CREATED="+esc(e.authority_created)
+            ${e.candidates !== undefined
+              ? ` · CANDIDATES=${escapeHtml(e.candidates)}`
+              : ""}
+            ${e.cursor !== undefined
+              ? ` · CURSOR=${escapeHtml(e.cursor)}`
+              : ""}
+            ${e.status
+              ? ` · STATUS=${escapeHtml(e.status)}`
               : ""}
           </div>
         </div>
       </article>
     `;
   }).join("");
-}
 
-function renderHealth(){
-  const rows = state.events
-    .filter(health)
-    .sort((a,b)=>ms(b)-ms(a));
+  rows.forEach(e => state.seen.add(keyFor(e)));
 
-  const latest = new Map();
-
-  rows.forEach(e => {
-    const source = e.source || "unknown";
-    if(!latest.has(source)) latest.set(source,e);
-  });
-
-  $("#chealth").textContent = latest.size;
-
-  if(!latest.size){
-    $("#health").innerHTML =
-      '<div class="health">No health telemetry loaded.</div>';
-    return;
-  }
-
-  $("#health").innerHTML =
-    [...latest.entries()].map(([source,e]) => {
-      let value =
-        e.cycle !== undefined
-          ? `cycle ${e.cycle} · ${e.candidates ?? "?"} candidates`
-          : e.cursor !== undefined
-          ? `${e.cursor} / ${e.queue_length ?? "?"}`
-          : e.event || e.status || "observed";
-
-      return `
-        <div class="health">
-          <b>${esc(source)}</b>
-          ${esc(value)}
-        </div>
-      `;
-    }).join("");
+  setTimeout(()=>{
+    document.querySelectorAll(".event.new")
+      .forEach(x=>x.classList.remove("new"));
+  },1200);
 }
 
 function render(){
   renderStats();
-  renderFeed();
-  renderHealth();
+  renderTicker();
+  renderRiver();
 }
 
-async function poll(){
-  $("#clock").textContent =
-    new Date().toLocaleTimeString();
+function beat(){
+  const dot=$("#dot");
+  dot.classList.remove("beat");
+  void dot.offsetWidth;
+  dot.classList.add("beat");
+
+  $("#pulseText").textContent="PULSE";
+}
+
+async function refreshPulse(){
+  beat();
 
   try{
     const r = await fetch(
-      "./pulse.jsonl?t="+Date.now(),
+      "./pulse.jsonl?pulse="+Date.now(),
       {cache:"no-store"}
     );
 
-    if(!r.ok)
-      throw new Error("HTTP "+r.status);
+    if(!r.ok) throw new Error("HTTP "+r.status);
 
     const raw = await r.text();
 
-    if(raw !== state.raw){
-      state.raw = raw;
+    $("#lastFetch").textContent =
+      "FETCH " + new Date().toLocaleTimeString();
 
-      state.events = raw
+    $("#status").textContent =
+      "pulse.jsonl · " + raw.length + " bytes";
+
+    if(raw !== state.raw){
+      state.raw=raw;
+
+      state.rows=raw
         .split(/\r?\n/)
         .map(x=>x.trim())
         .filter(Boolean)
@@ -524,9 +566,9 @@ async function poll(){
           }catch{
             return {
               timestamp:new Date().toISOString(),
-              kind:"health",
               source:"JSONL",
-              event:"parse error"
+              event:"parse error",
+              kind:"health"
             };
           }
         });
@@ -534,29 +576,19 @@ async function poll(){
       render();
     }
 
-    $("#live").textContent = "● LIVE";
-    $("#updated").textContent =
-      new Date().toLocaleTimeString();
-
   }catch(err){
-    $("#live").textContent = "● READ ERROR";
-    $("#updated").textContent = err.message;
+    $("#pulseText").textContent="READ ERROR";
+    $("#status").textContent=err.message;
   }
 }
 
-document.querySelectorAll("button[data-view]").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll("button[data-view]")
-      .forEach(x=>x.classList.remove("active"));
+setInterval(()=>{
+  $("#clock").textContent =
+    new Date().toLocaleTimeString();
+},1000);
 
-    btn.classList.add("active");
-    state.view = btn.dataset.view;
-    renderFeed();
-  });
-});
-
-poll();
-setInterval(poll,1000);
+refreshPulse();
+setInterval(refreshPulse,5000);
 </script>
 
 </body>
