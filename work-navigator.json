@@ -1,0 +1,39 @@
+{
+  "spec": "BRING_JAYS_WORK_TO_LIFE_V1",
+  "status": "REVIEWABLE_BRANCH",
+  "authority_created": false,
+  "default_branch_mutated": false,
+  "navigator": [
+    {
+      "name": "CITIZEN_ROOT",
+      "role": "deterministic machines + root continuity",
+      "repo": "jsonwisdom/CITIZEN_ROOT"
+    },
+    {
+      "name": "COMPUTERWISDOM",
+      "role": "research + verification + receipts",
+      "repo": "jsonwisdom/COMPUTERWISDOM"
+    },
+    {
+      "name": "JOY",
+      "role": "family + story + human layer",
+      "repo": "jsonwisdom/JOY"
+    },
+    {
+      "name": "AL",
+      "role": "audit + pipeline",
+      "repo": "jsonwisdom/AL"
+    },
+    {
+      "name": "ZORA",
+      "role": "publication + distribution mirror",
+      "repo": "jsonwisdom/jay-zora-portal"
+    },
+    {
+      "name": "GPKMONSTER",
+      "role": "kernel work",
+      "repo": "jsonwisdom/GPKMONSTER"
+    }
+  ],
+  "next_human_gate": "JASON_DECIDES"
+}
