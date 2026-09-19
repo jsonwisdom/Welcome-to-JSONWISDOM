@@ -1,0 +1,81 @@
+{
+  "spec": "JAY_WORK_NAVIGATOR_V1",
+  "observed_at": "2026-09-19T20:29:00Z",
+  "authority_created": false,
+  "chain_write": false,
+  "rule": "Narration and pointers only. Do not bootstrap authority. Do not promote claims to proof. Zora surface is not proof. ENS discovery is not authority. Receipt is not authority.",
+  "root": {
+    "id": "JSONWISDOM",
+    "label": "JSONWISDOM",
+    "href": "#home",
+    "role": "Identity root and living homepage"
+  },
+  "what_jay_built": {
+    "id": "WHAT_JAY_BUILT",
+    "label": "WHAT JAY BUILT",
+    "role": "Public work surfaces. Pointers, not verdicts."
+  },
+  "nodes": [
+    {
+      "id": "CITIZENROOT",
+      "label": "CITIZENROOT",
+      "role": "deterministic machines",
+      "repo": "jsonwisdom/CITIZEN_ROOT",
+      "href": "https://github.com/jsonwisdom/CITIZEN_ROOT",
+      "note": "Public GitHub name is CITIZEN_ROOT. Pointer only."
+    },
+    {
+      "id": "COMPUTERWISDOM",
+      "label": "COMPUTERWISDOM",
+      "role": "research / verification",
+      "repo": "jsonwisdom/COMPUTERWISDOM",
+      "href": "https://github.com/jsonwisdom/COMPUTERWISDOM",
+      "note": "Operational control plane. Pointer only."
+    },
+    {
+      "id": "JOY",
+      "label": "JOY",
+      "role": "family / story / human layer",
+      "repo": "jsonwisdom/JOY",
+      "href": "https://github.com/jsonwisdom/JOY",
+      "note": "Witness and continuity. Pointer only."
+    },
+    {
+      "id": "AL",
+      "label": "AL",
+      "role": "audit / pipeline",
+      "repo": "jsonwisdom/AL",
+      "href": "https://github.com/jsonwisdom/AL",
+      "note": "Registry / courthouse / receipt machinery. Pointer only."
+    },
+    {
+      "id": "ZORA",
+      "label": "ZORA",
+      "role": "publication surface",
+      "repo": "jsonwisdom/jay-zora-portal",
+      "href": "https://github.com/jsonwisdom/jay-zora-portal",
+      "note": "Zora surface ≠ proof. Ingestion portal only."
+    },
+    {
+      "id": "GPKMONSTER",
+      "label": "GPKMONSTER",
+      "role": "kernel work",
+      "repo": "jsonwisdom/GPKMONSTER",
+      "href": "https://github.com/jsonwisdom/GPKMONSTER",
+      "note": "Kernel / early-system work. Pointer only."
+    }
+  ],
+  "status_sources": {
+    "pulse": "pulse.jsonl",
+    "atomic": "atomic-replay.json",
+    "rule": "Derive LATEST RECEIPT / DELTA / HOLD from existing pulse and atomic data. Do not invent green status."
+  },
+  "next_human_gate": {
+    "label": "Human review of Atomic Replay DIFF and HOLD leaves",
+    "detail": "PASS is agreement after normalization, not truth. DIFF is difference, not failure. HOLD stays HOLD. Do not write chain. Do not create authority.",
+    "status": "HOLD",
+    "source": "atomic-replay.json",
+    "authority_created": false,
+    "chain_write": false
+  }
+}
