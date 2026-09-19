@@ -1,0 +1,52 @@
+{
+  "spec": "JAYS_GAMBIT_FULL_MATH_V1",
+  "family_story_form": "FamilyStoryFormAppleAwesome",
+  "delta_participants": [
+    {
+      "delta_id": 10,
+      "type": "ANONYMOUS_PROTOCOL_SLOT",
+      "human_bound": false
+    },
+    {
+      "delta_id": 13,
+      "type": "ANONYMOUS_PROTOCOL_SLOT",
+      "human_bound": false
+    },
+    {
+      "delta_id": 16,
+      "type": "ANONYMOUS_PROTOCOL_SLOT",
+      "human_bound": false
+    },
+    {
+      "delta_id": 17,
+      "type": "ANONYMOUS_PROTOCOL_SLOT",
+      "human_bound": false
+    }
+  ],
+  "boxdee": {
+    "authority": false,
+    "invent_missing_role": false,
+    "directories_first": true,
+    "receipt_before_promotion": true,
+    "human_gate": "required"
+  },
+  "librarian_joy_defaults": {
+    "default": "ON",
+    "mode": "librarian_suggestions_during_gameplay",
+    "alms_engine": "ON",
+    "flywheel_maintenance": "OFF",
+    "autopilot": false,
+    "authority": false,
+    "no_fake_green": true,
+    "source": "jsonwisdom/JOY:docs/school-of-wisdom/LIBRARIAN_SUGGESTIONS_GAMEPLAY_ALMS_ON_V0_1.md"
+  },
+  "full_math_rules": [
+    "SLOT != PERSON",
+    "ROLL != CONSENT",
+    "STORY != FACT",
+    "MEMORY != RECEIPT",
+    "RESULT != AUTHORITY"
+  ],
+  "default_branch_mutated": false,
+  "authority_created": false
+}

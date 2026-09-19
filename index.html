@@ -102,7 +102,7 @@ footer{padding:30px 0 50px;color:#7f93a7;font:11px Consolas,monospace;text-align
   <div class="wrap nav">
     <a class="brand" href="#home">JSONWISDOM<small>REPLAY WHAT REMAINS.</small></a>
     <div class="links">
-      <a href="#replay">REPLAY</a><a href="#receipts">RECEIPTS</a><a href="#pulse">PULSE</a><a href="#identity">IDENTITY</a><a href="#about">ABOUT</a>
+      <a href="#replay">REPLAY</a><a href="#gambit">GAMBIT</a><a href="#receipts">RECEIPTS</a><a href="#pulse">PULSE</a><a href="#identity">IDENTITY</a><a href="#about">ABOUT</a>
     </div>
     <a class="btn live" href="#pulse">● LIVE PULSE</a>
   </div>
@@ -180,7 +180,60 @@ footer{padding:30px 0 50px;color:#7f93a7;font:11px Consolas,monospace;text-align
     </div>
   </section>
 
-  <section class="section" id="about">
+  
+  <section class="section" id="work">
+    <div class="sectionhead"><h2>CHATGPT FIRST · JASON’S WORK</h2><span>RECOVER CONTEXT → SHOW THE WORK → NEXT HUMAN GATE</span></div>
+    <div class="cards" id="workNavigator">
+      <div class="card"><h3>CHATGPT</h3><p>First context layer: recover Jason’s project arc, current state, receipts, holds, and next gate before creating new context.</p><span class="btn" style="display:inline-block;cursor:default">FIRST</span></div>
+      <div class="card"><h3>CITIZEN_ROOT</h3><p>Deterministic idea machines, root continuity, and bounded execution concepts.</p><a class="btn" href="https://github.com/jsonwisdom/CITIZEN_ROOT" target="_blank" rel="noopener">OPEN ROOT</a></div>
+      <div class="card"><h3>COMPUTERWISDOM</h3><p>Research, verification, receipts, public audit scaffolds, and proof-oriented engineering.</p><a class="btn" href="https://github.com/jsonwisdom/COMPUTERWISDOM" target="_blank" rel="noopener">OPEN RESEARCH</a></div>
+      <div class="card"><h3>JOY</h3><p>Family-safe story, replay, human-chair, porch, and education layers.</p><a class="btn" href="https://github.com/jsonwisdom/JOY" target="_blank" rel="noopener">OPEN JOY</a></div>
+      <div class="card"><h3>AL</h3><p>Audit pipeline, runtime truth surfaces, alert state, and replay infrastructure.</p><a class="btn" href="https://github.com/jsonwisdom/AL" target="_blank" rel="noopener">OPEN AL</a></div>
+      <div class="card"><h3>ZORA</h3><p>Publication and distribution surface. Mirror, not proof.</p><a class="btn" href="https://github.com/jsonwisdom/jay-zora-portal" target="_blank" rel="noopener">OPEN ZORA</a></div>
+      <div class="card"><h3>GPKMONSTER</h3><p>Kernel work and sealed technical artifacts.</p><a class="btn" href="https://github.com/jsonwisdom/GPKMONSTER" target="_blank" rel="noopener">OPEN KERNEL</a></div>
+    </div>
+    <div class="panel" style="margin-top:12px">
+      <div class="statusrow"><span>NEXT HUMAN GATE</span><b class="hold">JASON DECIDES</b></div>
+      <div class="statusrow"><span>DEFAULT BRANCH MUTATED</span><b class="ok">FALSE</b></div>
+      <div class="statusrow"><span>AUTHORITY CREATED</span><b class="ok">FALSE</b></div>
+    </div>
+  </section>
+
+
+  <section class="section" id="gambit">
+    <div class="sectionhead"><h2>JAY'S GAMBIT · FULL MATH</h2><span>Δ10 · Δ13 · Δ16 · Δ17 · BOXDEE</span></div>
+    <div class="panel">
+      <p style="color:var(--muted);margin-top:0">FamilyStoryFormAppleAwesome is a browser-local story/game surface. Delta seats are anonymous protocol slots until a human chooses to bind their own words.</p>
+      <div class="atomicMeta">
+        <div class="metric"><b>Δ10</b><span>ANONYMOUS SLOT</span></div>
+        <div class="metric"><b>Δ13</b><span>ANONYMOUS SLOT</span></div>
+        <div class="metric"><b>Δ16</b><span>ANONYMOUS SLOT</span></div>
+        <div class="metric"><b>Δ17</b><span>ANONYMOUS SLOT</span></div>
+      </div>
+      <div class="receiptShell">
+        <div class="receiptBox">
+          <h3>FamilyStoryFormAppleAwesome</h3>
+          <p style="color:var(--muted)">OBSERVE → QUESTION → ROLL → STORY → CHECK → DELTA → REPLAY</p>
+          <div class="statusrow"><span>LIBRARIAN JOY</span><b class="ok">ON</b></div>
+          <div class="statusrow"><span>ALMS ENGINE</span><b class="ok">ON</b></div>
+          <div class="statusrow"><span>FLYWHEEL MAINTENANCE</span><b class="hold">OFF</b></div>
+          <div class="statusrow"><span>AUTOPILOT</span><b class="hold">FALSE</b></div>
+          <div class="statusrow"><span>BOXDEE</span><b class="hold">PRESERVE BEFORE PROMOTION</b></div>
+          <div class="statusrow"><span>HUMAN SEAT</span><b class="hold">NOT BOUND</b></div>
+          <div class="receiptActions">
+            <button class="btn primary" id="rollGambit">ROLL DELTA DICE</button>
+            <button class="btn" id="copyGambit">COPY RECEIPT</button>
+            <button class="btn" id="clearGambit">CLEAR</button>
+          </div>
+        </div>
+        <div class="receiptBox">
+          <textarea id="gambitReceipt" spellcheck="false" aria-label="Gambit receipt">Press ROLL DELTA DICE.</textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="section" id="about">
     <div class="sectionhead"><h2>HOW THIS SITE WORKS</h2><span>HUMAN PAGE FIRST · EVIDENCE RAILS UNDERNEATH</span></div>
     <div class="cards">
       <div class="card"><h3>Replay</h3><p>Compare leaves atomically. Agreement becomes PASS; disagreement becomes DIFF; missing comparison stays HOLD.</p><a class="btn" href="#replay">OPEN REPLAY</a></div>
@@ -231,6 +284,48 @@ async function loadPulse(){
     $("#pulseStatus").textContent=`${rows.length} ROWS · REFRESH 5s`;
   }catch(e){$("#pulseStatus").textContent="HOLD · "+e.message}
 }
+
+const G={slots:[10,13,16,17],last:null};
+function rollGambit(){
+  const r=new Uint32Array(2);crypto.getRandomValues(r);
+  const seat=G.slots[r[0]%G.slots.length];
+  const die=(r[1]%6)+1;
+  G.last={
+    spec:"JAYS_GAMBIT_FULL_MATH_V1",
+    form:"FamilyStoryFormAppleAwesome",
+    participant:{type:"ANONYMOUS_PROTOCOL_SLOT",delta_id:seat,human_bound:false},
+    dice:{sides:6,result:die,delta_total:seat+die},
+    librarian_joy:{
+      default:"ON",
+      mode:"suggestions_during_gameplay",
+      alms_engine:"ON",
+      flywheel_maintenance:"OFF",
+      autopilot:false,
+      authority:false,
+      no_fake_green:true
+    },
+    boxdee:{
+      preserve_before_promotion:true,
+      receipt_before_promotion:true,
+      human_gate:"REQUIRED"
+    },
+    full_math:[
+      "SLOT != PERSON",
+      "ROLL != CONSENT",
+      "STORY != FACT",
+      "MEMORY != RECEIPT",
+      "RESULT != AUTHORITY"
+    ],
+    route:"HOLD_UNTIL_HUMAN_BINDS_OWN_WORDS",
+    authority_created:false
+  };
+  $("#gambitReceipt").value=JSON.stringify(G.last,null,2);
+  toast("GAMBIT ROLLED");
+}
+$("#rollGambit").onclick=rollGambit;
+$("#copyGambit").onclick=async()=>{if(!G.last)rollGambit();await navigator.clipboard.writeText($("#gambitReceipt").value);toast("GAMBIT COPIED")};
+$("#clearGambit").onclick=()=>{G.last=null;$("#gambitReceipt").value="Press ROLL DELTA DICE.";toast("CLEARED")};
+
 function makeReceipt(){
   if(!S.current||!S.atomic)return;
   const [a,b]=S.atomic.sources;
