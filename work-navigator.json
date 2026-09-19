@@ -5,6 +5,12 @@
   "default_branch_mutated": false,
   "navigator": [
     {
+      "name": "CHATGPT",
+      "role": "first context layer + project-arc recovery",
+      "repo": null,
+      "boundary": "conversation/runtime surface; not authority; recover before creating"
+    },
+    {
       "name": "CITIZEN_ROOT",
       "role": "deterministic machines + root continuity",
       "repo": "jsonwisdom/CITIZEN_ROOT"
@@ -35,5 +41,15 @@
       "repo": "jsonwisdom/GPKMONSTER"
     }
   ],
-  "next_human_gate": "JASON_DECIDES"
+  "next_human_gate": "JASON_DECIDES",
+  "root_order": [
+    "CHATGPT",
+    "JASONS_WORK",
+    "CITIZEN_ROOT",
+    "COMPUTERWISDOM",
+    "JOY",
+    "AL",
+    "ZORA",
+    "GPKMONSTER"
+  ]
 }
