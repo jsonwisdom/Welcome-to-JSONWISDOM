@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1",
+  "owner": "jsonwisdom",
+  "generated_from": "live GitHub connector scan",
+  "authority": "OBSERVATION_ONLY",
+  "canonical_designations": false,
+  "repositories": [
+    {"name":"ReceiptOS","family":"receiptos","classification":"ACTIVE_CANDIDATE"},
+    {"name":"receiptos-base","family":"receiptos","classification":"ACTIVE_CANDIDATE"},
+    {"name":"receipts-engine-v1","family":"receiptos","classification":"DUPLICATE_CANDIDATE"},
+    {"name":"-replayos-receiptos-spec","family":"receiptos-replayos","classification":"DUPLICATE_CANDIDATE"},
+    {"name":"replay-membrane","family":"replayos","classification":"ACTIVE_CANDIDATE"},
+    {"name":"replay-membrane-v0","family":"replayos","classification":"DUPLICATE_CANDIDATE"},
+    {"name":"agentos","family":"agents","classification":"ACTIVE_CANDIDATE"},
+    {"name":"agents","family":"agents","classification":"ACTIVE_CANDIDATE"},
+    {"name":"sovereign-copilot","family":"agents","classification":"ACTIVE_CANDIDATE"},
+    {"name":"provenance-audit-kit","family":"verification","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"public-proof","family":"verification","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"verifygate","family":"verification","classification":"ACTIVE_CANDIDATE"},
+    {"name":"jay-zora-portal","family":"onchain-reputation","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"EV-012-ZORA-MARKET-SNAPSHOT","family":"onchain-reputation","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"signal-multisig-zora","family":"onchain-reputation","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"ENS","family":"identity","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"base","family":"onchain-reputation","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"base-live","family":"onchain-reputation","classification":"EVIDENCE_CANDIDATE"},
+    {"name":"COMPUTERWISDOM","family":"identity-control","classification":"ACTIVE_CANDIDATE"},
+    {"name":"Welcome-to-JSONWISDOM","family":"identity-control","classification":"ACTIVE_CANDIDATE"}
+  ],
+  "warning": "These are provisional review labels only. Jay has not declared any repository canonical."
+}
