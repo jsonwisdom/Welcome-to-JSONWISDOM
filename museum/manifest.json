@@ -1,0 +1,248 @@
+{
+  "version": "museum-v0.1-draft",
+  "algorithm_version": "renderers.js@2026-10-28",
+  "width": 200,
+  "height": 200,
+  "exhibits": [
+    {
+      "id": "julia-001",
+      "title": "Classic Julia",
+      "type": "julia",
+      "params": {
+        "cRe": -0.8,
+        "cIm": 0.156,
+        "maxIter": 128,
+        "zoom": 3
+      },
+      "reference_hash": "2de556e187d3a1f03fc5e18c7627650818aa95651bf0d65785df74b2b21b518e"
+    },
+    {
+      "id": "julia-002",
+      "title": "Deep Zoom Julia",
+      "type": "julia",
+      "params": {
+        "cRe": -0.7269,
+        "cIm": 0.1889,
+        "maxIter": 200,
+        "zoom": 1.5
+      },
+      "reference_hash": "5cec6db93ec0291733680d56e7693439d43e09ec61d35cc9f825c767cceff4c4"
+    },
+    {
+      "id": "julia-003",
+      "title": "Spiral Julia",
+      "type": "julia",
+      "params": {
+        "cRe": 0.285,
+        "cIm": 0.01,
+        "maxIter": 100,
+        "zoom": 2.8
+      },
+      "reference_hash": "c9f98d2ba5a227bdbdd19ff95150b542ed343467a977290b5293aec6c672b47d"
+    },
+    {
+      "id": "julia-004",
+      "title": "Dendrite",
+      "type": "julia",
+      "params": {
+        "cRe": -0.4,
+        "cIm": 0.6,
+        "maxIter": 150,
+        "zoom": 3.2
+      },
+      "reference_hash": "dc4d839354cd229771cef5170b6a5c3112815b387203bedf92912faa875eecf6"
+    },
+    {
+      "id": "julia-005",
+      "title": "Seahorse",
+      "type": "julia",
+      "params": {
+        "cRe": -0.75,
+        "cIm": 0.11,
+        "maxIter": 180,
+        "zoom": 2.5
+      },
+      "reference_hash": "e6a9181ccfbc3164c66a4d5d7d375c7766d2fcd0dc313eb2506e0a83cf04cc80"
+    },
+    {
+      "id": "julia-006",
+      "title": "Rabbit",
+      "type": "julia",
+      "params": {
+        "cRe": -0.123,
+        "cIm": 0.745,
+        "maxIter": 120,
+        "zoom": 3.5
+      },
+      "reference_hash": "5ffc3c8d1126d79813c53f53ea72039cf89ebc7952ef45613cdb3f91e56a1cb6"
+    },
+    {
+      "id": "julia-007",
+      "title": "Dragon",
+      "type": "julia",
+      "params": {
+        "cRe": -0.8,
+        "cIm": 0,
+        "maxIter": 100,
+        "zoom": 4
+      },
+      "reference_hash": "c1c8a1758acf92753d72b53a8cd77b66d021a7187e67a9252cf8d5527d7efe92"
+    },
+    {
+      "id": "julia-008",
+      "title": "Siegel Disk",
+      "type": "julia",
+      "params": {
+        "cRe": -0.39054,
+        "cIm": -0.58679,
+        "maxIter": 160,
+        "zoom": 2.2
+      },
+      "reference_hash": "2c13b428d0d849c82a685701fe1d338b17be90d9d24538c0a23a4e6eb7ede6de"
+    },
+    {
+      "id": "julia-009",
+      "title": "Basilica",
+      "type": "julia",
+      "params": {
+        "cRe": -1,
+        "cIm": 0,
+        "maxIter": 80,
+        "zoom": 3.8
+      },
+      "reference_hash": "a74ecc48706514a8c3de7b1bcb22809e358c60c1f204a830d16a8534d15d9daa"
+    },
+    {
+      "id": "julia-010",
+      "title": "Airplane",
+      "type": "julia",
+      "params": {
+        "cRe": -1.7548,
+        "cIm": 0,
+        "maxIter": 140,
+        "zoom": 2
+      },
+      "reference_hash": "6a13338b48b5af7ff1786a49857be143ca7d7ce4fe83f2ae1c55f04c7c940313"
+    },
+    {
+      "id": "flow-001",
+      "title": "Calm River",
+      "type": "flowfield",
+      "params": {
+        "seed": 42,
+        "steps": 100,
+        "particles": 500,
+        "zoom": 2
+      },
+      "reference_hash": "ad8271dfc65956b26f1f2e0b8ee33744dcca32ae9fb21f95f7bfd038bfece3f8"
+    },
+    {
+      "id": "flow-002",
+      "title": "Turbulent",
+      "type": "flowfield",
+      "params": {
+        "seed": 137,
+        "steps": 60,
+        "particles": 800,
+        "zoom": 3
+      },
+      "reference_hash": "f40e0a792dc44895df62551d32b07ef4a5adcf100c3d57078d8594c9236e4783"
+    },
+    {
+      "id": "flow-003",
+      "title": "Vortex",
+      "type": "flowfield",
+      "params": {
+        "seed": 999,
+        "steps": 120,
+        "particles": 300,
+        "zoom": 1.8
+      },
+      "reference_hash": "2628dc89a54a36e9fc065eb01e55c7397416fcca5f936f7cf5753f430b9a8b50"
+    },
+    {
+      "id": "flow-004",
+      "title": "Lattice",
+      "type": "flowfield",
+      "params": {
+        "seed": 7,
+        "steps": 80,
+        "particles": 600,
+        "zoom": 2.5
+      },
+      "reference_hash": "f6b347ebc9241bce5b3565dfc637b6c6e6e7c08d4b3417d2f065c267315114da"
+    },
+    {
+      "id": "flow-005",
+      "title": "Drift",
+      "type": "flowfield",
+      "params": {
+        "seed": 2026,
+        "steps": 90,
+        "particles": 450,
+        "zoom": 2.2
+      },
+      "reference_hash": "4db78ed9c3ba7b19ca995cdf911503f34a1af0c03a9cab1cc8744e65f1885a7d"
+    },
+    {
+      "id": "flow-006",
+      "title": "Pulse",
+      "type": "flowfield",
+      "params": {
+        "seed": 314,
+        "steps": 70,
+        "particles": 700,
+        "zoom": 2.8
+      },
+      "reference_hash": "14cae46082e31e9ef1e0c39d39eafe0babf054e58650226d919ecdd3dd9a1291"
+    },
+    {
+      "id": "flow-007",
+      "title": "Cascade",
+      "type": "flowfield",
+      "params": {
+        "seed": 512,
+        "steps": 110,
+        "particles": 350,
+        "zoom": 1.6
+      },
+      "reference_hash": "2c7a09f9ed6d72420e2d6acc6dec297328318d10cd25aa10472701136c6bd34d"
+    },
+    {
+      "id": "flow-008",
+      "title": "Echo",
+      "type": "flowfield",
+      "params": {
+        "seed": 64,
+        "steps": 85,
+        "particles": 550,
+        "zoom": 2.4
+      },
+      "reference_hash": "f99768e221183d2861329d4227e3de1424885b53230582f4142d2111a44d8531"
+    },
+    {
+      "id": "flow-009",
+      "title": "Current",
+      "type": "flowfield",
+      "params": {
+        "seed": 888,
+        "steps": 95,
+        "particles": 400,
+        "zoom": 2.1
+      },
+      "reference_hash": "7fbe6e90a2e922926e6fd7401a0a3316ac65b549d238365ee697e44161847b82"
+    },
+    {
+      "id": "flow-010",
+      "title": "Horizon",
+      "type": "flowfield",
+      "params": {
+        "seed": 1,
+        "steps": 75,
+        "particles": 650,
+        "zoom": 3.2
+      },
+      "reference_hash": "ef868eb7b22137b1bdd610bcb6ec5b92a65f28c107580f4eeceb8f92b6676c9c"
+    }
+  ]
+}
