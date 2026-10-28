@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSONWisdom Digital Museum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0c0e; --surface: #161618; --border: #2a2a2e; --text: #f0f0f2;
+      --text-muted: #9a9aa3; --accent: #c9a87c; --match: #3dd68c; --mismatch: #ff6b6b; --unverified: #f0c674;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+    header { border-bottom: 1px solid var(--border); padding: 32px 24px 28px; text-align: center; background: linear-gradient(180deg, #121214 0%, var(--bg) 100%); }
+    .eyebrow { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 12px; }
+    h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 500; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 640px; margin: 0 auto 20px; font-weight: 300; }
+    .meta-bar { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; font-size: 13px; color: var(--text-muted); }
+    .meta-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 6px; }
+    main { max-width: 1400px; margin: 0 auto; padding: 40px 24px 80px; }
+    .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+    button.primary { background: var(--accent); color: #0c0c0e; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+    .exhibit { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .canvas-wrap { background: #000; display: flex; justify-content: center; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); }
+    canvas { width: 240px; height: 240px; image-rendering: pixelated; }
+    .card-body { padding: 16px 18px 18px; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .exhibit-id { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+    .type-badge { font-size: 10px; padding: 3px 8px; border-radius: 999px; background: rgba(201,168,124,0.12); color: var(--accent); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+    h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; font-weight: 500; margin-bottom: 12px; }
+    .verify-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    button.verify { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; }
+    .status { font-size: 12px; font-weight: 500; }
+    .status.MATCH { color: var(--match); }
+    .status.MISMATCH { color: var(--mismatch); }
+    .status.UNVERIFIED, .status.PENDING { color: var(--unverified); }
+    .hash { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; color: var(--text-muted); word-break: break-all; line-height: 1.4; margin-top: 6px; }
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; color: var(--text-muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">Independently Verifiable</div>
+    <h1>JSONWisdom Mathematical Museum</h1>
+    <p class="subtitle">Twenty original mathematical artworks. Each exhibit is generated from a frozen algorithm and fixed parameters. The browser independently recomputes the exact pixel bytes and verifies them against a signed reference hash.</p>
+    <div class="meta-bar">
+      <span><span class="dot"></span>10 Julia sets</span>
+      <span><span class="dot"></span>10 flow fields</span>
+      <span><span class="dot"></span>200×200 RGBA</span>
+      <span><span class="dot"></span>SHA-256 receipts</span>
+    </div>
+  </header>
+  <main>
+    <div class="controls">
+      <h2 id="exhibit-count">Loading exhibits…</h2>
+      <button class="primary" id="verify-all">Verify All</button>
+    </div>
+    <div id="gallery" class="grid"></div>
+  </main>
+  <footer>
+    Algorithm version: <strong>renderers.js@2026-10-28</strong> · Manifest: museum-v0.1-draft<br>
+    Verification is independent. The page does not claim authority. Human release remains required.
+  </footer>
+  <script type="module">
+    import { renderJulia, renderFlowField, sha256 } from './renderers.js';
+    const WIDTH = 200, HEIGHT = 200;
+    async function loadManifest() {
+      const res = await fetch('./manifest.json');
+      if (!res.ok) throw new Error('Failed to load manifest');
+      return res.json();
+    }
+    function drawPixels(canvas, pixels) {
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.createImageData(WIDTH, HEIGHT);
+      imageData.data.set(pixels);
+      ctx.putImageData(imageData, 0, 0);
+    }
+    function setStatus(statusEl, hashEl, state, computed, expected) {
+      statusEl.className = `status ${state}`;
+      if (state === 'MATCH') {
+        statusEl.textContent = 'MATCH';
+        hashEl.innerHTML = `<strong>${computed}</strong>`;
+      } else if (state === 'MISMATCH') {
+        statusEl.textContent = 'MISMATCH';
+        hashEl.innerHTML = `computed: <strong>${computed}</strong><br>expected: <strong>${expected}</strong>`;
+      } else if (state === 'UNVERIFIED') {
+        statusEl.textContent = 'UNVERIFIED';
+        hashEl.textContent = expected ? expected : 'No reference hash';
+      } else {
+        statusEl.textContent = 'PENDING';
+        hashEl.textContent = 'Click Verify to recompute';
+      }
+    }
+    async function verifyExhibit(exhibit, canvas, statusEl, hashEl) {
+      statusEl.textContent = 'Recomputing…';
+      statusEl.className = 'status PENDING';
+      try {
+        const pixels = exhibit.type === 'julia' ? renderJulia(exhibit.params) : renderFlowField(exhibit.params);
+        const computed = await sha256(pixels);
+        const expected = exhibit.reference_hash;
+        drawPixels(canvas, pixels);
+        if (!expected) setStatus(statusEl, hashEl, 'UNVERIFIED', computed, expected);
+        else if (computed === expected) setStatus(statusEl, hashEl, 'MATCH', computed, expected);
+        else setStatus(statusEl, hashEl, 'MISMATCH', computed, expected);
+      } catch (err) {
+        statusEl.textContent = 'ERROR';
+        statusEl.className = 'status MISMATCH';
+        hashEl.textContent = err.message;
+      }
+    }
+    async function init() {
+      const gallery = document.getElementById('gallery');
+      const countEl = document.getElementById('exhibit-count');
+      const verifyAllBtn = document.getElementById('verify-all');
+      let manifest;
+      try { manifest = await loadManifest(); }
+      catch (e) { gallery.innerHTML = `<div>Failed to load exhibits: ${e.message}</div>`; return; }
+      countEl.textContent = `${manifest.exhibits.length} exhibits`;
+      const exhibitElements = [];
+      for (const exhibit of manifest.exhibits) {
+        const div = document.createElement('div');
+        div.className = 'exhibit';
+        div.innerHTML = `
+          <div class="canvas-wrap"><canvas width="${WIDTH}" height="${HEIGHT}"></canvas></div>
+          <div class="card-body">
+            <div class="card-header"><span class="exhibit-id">${exhibit.id}</span><span class="type-badge">${exhibit.type}</span></div>
+            <h3>${exhibit.title}</h3>
+            <div class="verify-row"><button class="verify">Verify</button><span class="status PENDING">PENDING</span></div>
+            <div class="hash">Click Verify to recompute and compare</div>
+          </div>`;
+        const canvas = div.querySelector('canvas');
+        const button = div.querySelector('.verify');
+        const statusEl = div.querySelector('.status');
+        const hashEl = div.querySelector('.hash');
+        button.addEventListener('click', () => verifyExhibit(exhibit, canvas, statusEl, hashEl));
+        gallery.appendChild(div);
+        exhibitElements.push({ exhibit, canvas, statusEl, hashEl });
+        try {
+          const pixels = exhibit.type === 'julia' ? renderJulia(exhibit.params) : renderFlowField(exhibit.params);
+          drawPixels(canvas, pixels);
+        } catch (e) { console.error(exhibit.id, e); }
+      }
+      verifyAllBtn.addEventListener('click', async () => {
+        verifyAllBtn.disabled = true;
+        verifyAllBtn.textContent = 'Verifying…';
+        for (const item of exhibitElements) {
+          await verifyExhibit(item.exhibit, item.canvas, item.statusEl, item.hashEl);
+          await new Promise(r => setTimeout(r, 40));
+        }
+        verifyAllBtn.disabled = false;
+        verifyAllBtn.textContent = 'Verify All';
+      });
+    }
+    init();
+  </script>
+</body>
+</html>
