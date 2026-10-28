@@ -1,0 +1,83 @@
+name: Verify live museum after Pages deploy
+on:
+  workflow_run:
+    workflows: ["Deploy public front door"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium probe
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/museum-smoke --no-save playwright@1.56.1
+          /tmp/museum-smoke/node_modules/.bin/playwright install --with-deps chromium
+      - name: Verify published bytes and click Verify All
+        env:
+          NODE_PATH: /tmp/museum-smoke/node_modules
+          DEPLOY_CONCLUSION: ${{ github.event.workflow_run.conclusion || 'manual' }}
+          DEPLOY_RUN_ID: ${{ github.event.workflow_run.id || 'manual' }}
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          set -euo pipefail
+          node - <<'NODE' 2>&1 | tee museum-live-execution.log
+          const fs=require('fs'),crypto=require('crypto'),{chromium}=require('playwright');
+          const root='https://jsonwisdom.github.io/Welcome-to-JSONWISDOM/museum/';
+          const h=b=>crypto.createHash('sha256').update(b).digest('hex');
+          const result={url:root,source_sha:process.env.SOURCE_SHA,deploy_run_id:process.env.DEPLOY_RUN_ID,deploy_conclusion:process.env.DEPLOY_CONCLUSION,files:{},browser:null,status:'FAIL'};
+          (async()=>{
+            let browser;
+            try{
+              if(!['success','manual'].includes(result.deploy_conclusion))throw Error('Pages deployment unsuccessful');
+              for(const file of ['index.html','renderers.js','manifest.json']){
+                const expected=fs.readFileSync('museum/'+file);let data=null,code=null;
+                for(let i=0;i<15;i++){
+                  try{
+                    const r=await fetch(root+file+'?verify='+process.env.SOURCE_SHA+'&try='+i,{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
+                    code=r.status;
+                    if(r.ok){data=Buffer.from(await r.arrayBuffer());if(h(data)===h(expected))break;}
+                  }catch(e){}
+                  await new Promise(r=>setTimeout(r,10000));
+                }
+                const ok=!!data&&h(data)===h(expected);
+                result.files[file]={http_status:code,expected_sha256:h(expected),deployed_sha256:data?h(data):null,match:ok};
+                console.log('FILE',file,JSON.stringify(result.files[file]));
+                if(!ok)throw Error('HTTP bytes mismatch: '+file);
+              }
+              browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+              const page=await browser.newPage();
+              const errors=[];page.on('pageerror',e=>errors.push(e.message));
+              await page.goto(root,{waitUntil:'load',timeout:60000});
+              await page.locator('.exhibit').first.waitFor({timeout:30000});
+              const count=await page.locator('.exhibit').count();
+              if(count!==20)throw Error('Expected 20 exhibits; found '+count);
+              await page.locator('#verify-all').click();
+              await page.waitForFunction(()=>{const b=document.querySelector('#verify-all');return b&&!b.disabled&&b.textContent.trim()==='Verify All'},null,{timeout:180000});
+              const statuses=await page.locator('.exhibit .status').allTextContents();
+              result.browser={version:browser.version(),count,matches:statuses.filter(x=>x==='MATCH').length,statuses,errors};
+              console.log('BROWSER',JSON.stringify(result.browser));
+              if(result.browser.matches!==20||errors.length)throw Error('Browser Verify All mismatch');
+              result.status='PASS';
+            }catch(e){result.failure=e.message;console.error('FAIL',e.message);process.exitCode=1;}
+            finally{if(browser)await browser.close();fs.writeFileSync('museum-live-receipt.json',JSON.stringify(result,null,2));console.log('FINAL',result.status);}
+          })();
+          NODE
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: museum-live-verification
+          path: |
+            museum-live-receipt.json
+            museum-live-execution.log
+          if-no-files-found: warn
