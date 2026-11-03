@@ -1,0 +1,79 @@
+{
+  "schema": "JSONWISDOM_IDENTITY_COLLAPSE_V0_2",
+  "observed_at": "2026-08-20T18:43:00-05:00",
+  "mode": "NON_DESTRUCTIVE_IDENTITY_ROUTING",
+  "primary_identity_index": "jaywisdom.eth",
+  "identity_children": {
+    "base_identity": {
+      "id": "jaywisdom.base.eth",
+      "role": "BASE_CHILD_VERIFICATION_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "github_account": {
+      "id": "jsonwisdom",
+      "role": "REPOSITORY_ESTATE_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "repository_canon": {
+      "id": "jsonwisdom/Welcome-to-JSONWISDOM/ARCHITECTURE.md",
+      "role": "CANONICAL_REPOSITORY_ARCHITECTURE_ROOT",
+      "parent": "github_account"
+    },
+    "ethereum": {
+      "role": "NETWORK_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "base": {
+      "role": "NETWORK_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "eas": {
+      "role": "ATTESTATION_WITNESS_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "zora": {
+      "role": "CREATOR_DISTRIBUTION_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "coinbase": {
+      "role": "COMMERCIAL_EXCHANGE_CUSTODY_SERVICE_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "metamask": {
+      "role": "WALLET_INTERFACE_PROVIDER_SURFACE",
+      "parent": "jaywisdom.eth"
+    },
+    "google_drive": {
+      "role": "DURABLE_KNOWLEDGE_CONTINUITY_SURFACE",
+      "parent": "jaywisdom.eth"
+    }
+  },
+  "external_public_authority_surfaces": {
+    "congress_gov": {
+      "role": "EXTERNAL_LEGISLATIVE_SOURCE",
+      "collapse_into_identity": false
+    },
+    "justice_gov": {
+      "role": "EXTERNAL_ENFORCEMENT_SOURCE",
+      "collapse_into_identity": false
+    },
+    "hr_3633_clarity": {
+      "role": "LEGISLATIVE_POLICY_OBJECT",
+      "source_parent": "congress_gov",
+      "collapse_into_identity": false
+    }
+  },
+  "invariants": [
+    "COLLAPSE_TO = jaywisdom.eth",
+    "jaywisdom.base.eth != universal identity index",
+    "WALLET_PROVIDER != IDENTITY",
+    "NETWORK != PERSON",
+    "REPOSITORY_ROOT != HUMAN_IDENTITY",
+    "CONGRESS_GOV != IDENTITY_PARENT",
+    "LEGISLATIVE_OBJECT != IDENTITY_PARENT",
+    "EXTERNAL_SOURCE != INTERNAL_AUTHORITY",
+    "COLLAPSE != DELETE_PROVENANCE",
+    "AUTHORITY_CREATED = FALSE"
+  ],
+  "authority_created": false
+}
