@@ -68,7 +68,7 @@ Minimum arc shape:
   "verified_evidence": [],
   "open_decisions": [],
   "next_action": null,
-  "authority_created": false
+  "machine_authority_created": false
 }
 ```
 
@@ -183,7 +183,7 @@ Allowed render posture:
 {
   "layer": "render",
   "truth_source": false,
-  "authority": false,
+  "render_layer_authority": false,
   "rule": "receipts first, render second",
   "membrane": "HOLDS"
 }
@@ -260,6 +260,20 @@ Mission proposal -> structured mission file -> receipt -> AL registry mirror -> 
 ---
 
 ## Authority Boundaries
+
+### Authority scope rule
+
+Bare `authority = false` is deprecated because it does not name the subject.
+
+```text
+JASON_OPERATOR_CONTROL != AI_AUTHORITY
+AI_AUTHORITY = FALSE
+MACHINE_AUTHORITY_CREATED = FALSE
+ARTIFACT_LEGAL_AUTHORITY_CREATED = FALSE unless an independently valid legal source creates it
+RENDER_LAYER_AUTHORITY = FALSE
+```
+
+These machine/artifact boundaries do not deny or diminish Jason Wisdom's control over his own repository, authorship, decisions, or explicitly authenticated operator actions.
 
 ```text
 Identity page != proof
