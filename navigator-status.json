@@ -1,9 +1,10 @@
 {
   "spec": "JAY_WORK_NAVIGATOR_V1",
-  "observed_at": "2026-09-19T20:29:00Z",
+  "observed_at": "2026-09-23T02:05:00Z",
   "authority_created": false,
   "chain_write": false,
-  "rule": "Narration and pointers only. Do not bootstrap authority. Do not promote claims to proof. Zora surface is not proof. ENS discovery is not authority. Receipt is not authority.",
+  "rule": "Narration and pointers only. Do not bootstrap authority. Do not promote claims to proof. Zora surface is not proof. ENS discovery is not authority. Receipt is not authority. Repo existence is not PASS.",
+  "receipt_event_rule": "LATEST RECEIPT may use a pulse row only when kind is receipt or spec is an explicit receipt schema. A delta that merely mentions receipts is not a receipt event. Absence stays HOLD.",
   "root": {
     "id": "JSONWISDOM",
     "label": "JSONWISDOM",
@@ -22,6 +23,8 @@
       "role": "deterministic machines",
       "repo": "jsonwisdom/CITIZEN_ROOT",
       "href": "https://github.com/jsonwisdom/CITIZEN_ROOT",
+      "stay": "#replay",
+      "evidence_keys": ["CITIZENROOT", "CITIZEN_ROOT"],
       "note": "Public GitHub name is CITIZEN_ROOT. Pointer only."
     },
     {
@@ -30,6 +33,8 @@
       "role": "research / verification",
       "repo": "jsonwisdom/COMPUTERWISDOM",
       "href": "https://github.com/jsonwisdom/COMPUTERWISDOM",
+      "stay": "#replay",
+      "evidence_keys": ["COMPUTERWISDOM"],
       "note": "Operational control plane. Pointer only."
     },
     {
@@ -38,6 +43,8 @@
       "role": "family / story / human layer",
       "repo": "jsonwisdom/JOY",
       "href": "https://github.com/jsonwisdom/JOY",
+      "stay": "#pulse",
+      "evidence_keys": ["JOY"],
       "note": "Witness and continuity. Pointer only."
     },
     {
@@ -46,6 +53,8 @@
       "role": "audit / pipeline",
       "repo": "jsonwisdom/AL",
       "href": "https://github.com/jsonwisdom/AL",
+      "stay": "#receipts",
+      "evidence_keys": ["jsonwisdom/AL"],
       "note": "Registry / courthouse / receipt machinery. Pointer only."
     },
     {
@@ -54,6 +63,8 @@
       "role": "publication surface",
       "repo": "jsonwisdom/jay-zora-portal",
       "href": "https://github.com/jsonwisdom/jay-zora-portal",
+      "stay": "#identity",
+      "evidence_keys": ["jay-zora-portal", "ZORA"],
       "note": "Zora surface ≠ proof. Ingestion portal only."
     },
     {
@@ -62,6 +73,8 @@
       "role": "kernel work",
       "repo": "jsonwisdom/GPKMONSTER",
       "href": "https://github.com/jsonwisdom/GPKMONSTER",
+      "stay": "#pulse",
+      "evidence_keys": ["GPKMONSTER"],
       "note": "Kernel / early-system work. Pointer only."
     }
   ],

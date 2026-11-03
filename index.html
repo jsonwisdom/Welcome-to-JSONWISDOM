@@ -53,23 +53,38 @@ a{color:inherit}
 .navroot small,.navwhat small{color:var(--muted);font:12px Consolas,monospace}
 .workgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .workcard{
-  display:block;padding:16px;min-height:168px;text-decoration:none;border-radius:16px;
-  border:1px solid rgba(85,232,255,.18);
+  display:block;width:100%;padding:16px;min-height:168px;text-decoration:none;border-radius:16px;
+  border:1px solid rgba(85,232,255,.18);color:inherit;font:inherit;text-align:left;cursor:pointer;
   background:linear-gradient(180deg,rgba(7,18,34,.87),rgba(4,10,19,.82));
   box-shadow:0 18px 50px rgba(0,0,0,.28)
 }
-.workcard:hover{border-color:var(--cyan);transform:translateY(-1px);box-shadow:0 0 22px rgba(85,232,255,.12)}
+.workcard:hover,.workcard.active{border-color:var(--cyan);transform:translateY(-1px);box-shadow:0 0 22px rgba(85,232,255,.12)}
 .workcard .role{color:var(--cyan);font:700 11px Consolas,monospace;letter-spacing:.12em;margin-bottom:8px}
 .workcard h3{margin:0 0 8px;font-size:20px}
 .workcard p{margin:0;color:var(--muted);line-height:1.45;font-size:13px}
 .workcard .repo{margin-top:10px;color:#dfeaf4;font:12px Consolas,monospace}
 .workcard.hold{border-color:rgba(255,216,107,.35)}
+.navsurface{
+  margin-top:14px;padding:16px 18px;border:1px solid rgba(85,232,255,.22);border-radius:14px;
+  background:rgba(2,8,16,.62)
+}
+.navsurface .k{color:var(--muted);font:700 11px Consolas,monospace;letter-spacing:.12em}
+.navsurface h3{margin:8px 0;font-size:22px}
+.navsurface p{margin:0;color:var(--muted);line-height:1.5}
+.surfaceActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.surfaceEvidence{margin-top:12px;display:grid;gap:8px}
+.surfaceHit{
+  padding:10px 12px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(2,8,16,.5)
+}
+.surfaceHit b{display:block;font:12px Consolas,monospace;color:var(--cyan)}
+.surfaceHit span{color:var(--muted);font-size:13px}
 .gates{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .gate{
-  padding:16px;border-radius:16px;min-height:168px;
+  display:block;padding:16px;border-radius:16px;min-height:168px;text-decoration:none;color:inherit;
   border:1px solid rgba(85,232,255,.18);
   background:linear-gradient(180deg,rgba(7,18,34,.87),rgba(4,10,19,.82))
 }
+.gate:hover{border-color:var(--cyan);transform:translateY(-1px);box-shadow:0 0 22px rgba(85,232,255,.12)}
 .gate .k{color:var(--muted);font:700 11px Consolas,monospace;letter-spacing:.12em}
 .gate .badge{font:800 13px Consolas,monospace;margin:8px 0}
 .gate .badge.PASS{color:var(--green)} .gate .badge.DIFF{color:var(--yellow)}
@@ -181,12 +196,22 @@ footer{padding:30px 0 50px;color:#7f93a7;font:11px Consolas,monospace;text-align
       <div id="navWhat" class="navwhat"><b>WHAT JAY BUILT</b><small>Public work surfaces. Pointers, not verdicts.</small></div>
       <div class="navdown" aria-hidden="true">↓</div>
       <div id="navWorks" class="workgrid"></div>
+      <div id="navSurface" class="navsurface">
+        <div class="k">SELECTED SURFACE · STAY ON THIS PAGE</div>
+        <h3 id="surfaceName">Pick a work surface.</h3>
+        <p id="surfaceDetail">GitHub stays underneath as a pointer. Local evidence, HOLD, and the next human gate stay here. Repo existence is not PASS.</p>
+        <div id="surfaceEvidence" class="surfaceEvidence"></div>
+        <div class="surfaceActions">
+          <a class="btn" id="surfaceHere" href="#replay">OPEN REPLAY</a>
+          <a class="btn" id="surfaceRepo" hidden target="_blank" rel="noopener">OPEN REPO ↗</a>
+        </div>
+      </div>
       <div class="navdown" aria-hidden="true">↓</div>
       <div id="navGates" class="gates">
-        <div class="gate" id="gateReceipt"><div class="k">LATEST RECEIPT</div><div class="badge HOLD" id="receiptBadge">HOLD</div><h3 id="receiptHead">WAITING</h3><p id="receiptDetail">Reading atomic-replay.json and pulse.jsonl.</p><div class="src" id="receiptSrc">SOURCE PENDING</div></div>
-        <div class="gate" id="gateDelta"><div class="k">LATEST DELTA</div><div class="badge HOLD" id="deltaBadge">HOLD</div><h3 id="deltaHead">WAITING</h3><p id="deltaDetail">Reading pulse.jsonl.</p><div class="src" id="deltaSrc">SOURCE PENDING</div></div>
-        <div class="gate" id="gateHold"><div class="k">LATEST HOLD</div><div class="badge HOLD" id="holdBadge">HOLD</div><h3 id="holdHead">WAITING</h3><p id="holdDetail">Reading atomic-replay.json.</p><div class="src" id="holdSrc">SOURCE PENDING</div></div>
-        <div class="gate" id="gateNext"><div class="k">NEXT HUMAN GATE</div><div class="badge HOLD" id="nextBadge">HOLD</div><h3 id="nextHead">WAITING</h3><p id="nextDetail">Human review remains open. Authority is not created.</p><div class="src" id="nextSrc">SOURCE PENDING</div></div>
+        <a class="gate" id="gateReceipt" href="#receipts"><div class="k">LATEST RECEIPT</div><div class="badge HOLD" id="receiptBadge">HOLD</div><h3 id="receiptHead">WAITING</h3><p id="receiptDetail">Reading atomic-replay.json and pulse.jsonl.</p><div class="src" id="receiptSrc">SOURCE PENDING</div></a>
+        <a class="gate" id="gateDelta" href="#pulse"><div class="k">LATEST DELTA</div><div class="badge HOLD" id="deltaBadge">HOLD</div><h3 id="deltaHead">WAITING</h3><p id="deltaDetail">Reading pulse.jsonl.</p><div class="src" id="deltaSrc">SOURCE PENDING</div></a>
+        <a class="gate" id="gateHold" href="#replay"><div class="k">LATEST HOLD</div><div class="badge HOLD" id="holdBadge">HOLD</div><h3 id="holdHead">WAITING</h3><p id="holdDetail">Reading atomic-replay.json.</p><div class="src" id="holdSrc">SOURCE PENDING</div></a>
+        <a class="gate" id="gateNext" href="#replay"><div class="k">NEXT HUMAN GATE</div><div class="badge HOLD" id="nextBadge">HOLD</div><h3 id="nextHead">WAITING</h3><p id="nextDetail">Human review remains open. Authority is not created.</p><div class="src" id="nextSrc">SOURCE PENDING</div></a>
       </div>
       <div class="navbounds">ZORA SURFACE ≠ PROOF · ENS DISCOVERY ≠ AUTHORITY · RECEIPT ≠ AUTHORITY · CHAIN_WRITE=false · AUTHORITY_CREATED=false</div>
     </div>
@@ -245,7 +270,7 @@ footer{padding:30px 0 50px;color:#7f93a7;font:11px Consolas,monospace;text-align
   <section class="section" id="about">
     <div class="sectionhead"><h2>HOW THIS SITE WORKS</h2><span>HUMAN PAGE FIRST · EVIDENCE RAILS UNDERNEATH</span></div>
     <div class="cards">
-      <div class="card"><h3>Navigator</h3><p>Walk JSONWISDOM into the public work surfaces, then read the latest receipt, delta, hold, and next human gate from existing files.</p><a class="btn" href="#navigator">OPEN NAVIGATOR</a></div>
+      <div class="card"><h3>Navigator</h3><p>Walk JSONWISDOM into the public work surfaces, stay on this page for local evidence or HOLD, then read the latest receipt, delta, hold, and next human gate from existing files.</p><a class="btn" href="#navigator">OPEN NAVIGATOR</a></div>
       <div class="card"><h3>Replay</h3><p>Compare leaves atomically. Agreement becomes PASS; disagreement becomes DIFF; missing comparison stays HOLD.</p><a class="btn" href="#replay">OPEN REPLAY</a></div>
       <div class="card"><h3>Receipts</h3><p>Generate a portable JSON receipt in-browser, copy it, download it, or print it without leaving the site.</p><a class="btn" href="#receipts">MAKE RECEIPT</a></div>
       <div class="card"><h3>Pulse</h3><p>Read the deployed JSONL river. Screen animation is not promoted to new evidence.</p><a class="btn" href="#pulse">READ PULSE</a></div>
@@ -257,13 +282,28 @@ footer{padding:30px 0 50px;color:#7f93a7;font:11px Consolas,monospace;text-align
 <div class="toast" id="toast">COPIED</div>
 
 <script>
-const S={atomic:null,leaves:[],i:0,current:null,receipt:null,pulse:[],nav:null};
+const S={atomic:null,leaves:[],i:0,current:null,receipt:null,pulse:[],nav:null,selected:null};
 const $=s=>document.querySelector(s);
 function norm(v){if(v===undefined||v===null||v==="")return null;if(typeof v==="boolean")return v?"TRUE":"FALSE";return String(v)}
 function cmp(a,b){const A=norm(a),B=norm(b);if(A===null||B===null)return"HOLD";return A===B?"PASS":"DIFF"}
 function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
 function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1600)}
 function stamp(ts){const n=Date.parse(ts||0);return Number.isFinite(n)?new Date(n).toLocaleString():"NO TIMESTAMP"}
+function isReceiptEvent(e){
+  const kind=String(e.kind||"").toLowerCase();
+  const spec=String(e.spec||"");
+  return kind==="receipt" || /RECEIPT/i.test(spec);
+}
+function nodeKeys(n){
+  if(Array.isArray(n.evidence_keys)&&n.evidence_keys.length){
+    return n.evidence_keys.map(x=>String(x||"").trim()).filter(Boolean);
+  }
+  return [n.id,n.label,n.repo].map(x=>String(x||"").trim()).filter(k=>k.length>=4);
+}
+function mentionsNode(e,n){
+  const blob=`${e.headline||""} ${e.detail||""} ${e.project||""} ${e.source||""} ${e.rail||""}`.toLowerCase();
+  return nodeKeys(n).some(k=>blob.includes(k.toLowerCase()));
+}
 function setGate(prefix,status,head,detail,src){
   const badge=$(`#${prefix}Badge`);
   badge.textContent=status;badge.className="badge "+status;
@@ -279,15 +319,54 @@ function renderNavNodes(){
   const nodes=Array.isArray(S.nav.nodes)?S.nav.nodes:[];
   $("#navWorks").innerHTML=nodes.map(n=>{
     const href=n.href&&String(n.href).startsWith("https://github.com/jsonwisdom/")?n.href:"";
+    const active=S.selected===n.id?" active":"";
+    const hold=href?"":" hold";
     const body=`<div class="role">${esc(n.role||"POINTER")}</div><h3>${esc(n.label||n.id||"HOLD")}</h3><p>${esc(n.note||"Pointer only. Not proof.")}</p><div class="repo">${esc(n.repo||"NO PUBLIC REPO")}</div>`;
-    return href
-      ? `<a class="workcard" href="${esc(href)}" target="_blank" rel="noopener">${body}</a>`
-      : `<div class="workcard hold">${body}<p>HOLD — no verified public repo pointer.</p></div>`;
+    return `<button type="button" class="workcard${active}${hold}" data-id="${esc(n.id||"")}">${body}${href?"":"<p>HOLD — no verified public repo pointer.</p>"}</button>`;
   }).join("")||"<div class='workcard hold'><h3>HOLD</h3><p>Navigator node list missing.</p></div>";
+  $("#navWorks").querySelectorAll("[data-id]").forEach(el=>{
+    el.onclick=()=>selectNode(el.getAttribute("data-id"));
+  });
+}
+function selectNode(id){
+  S.selected=id;renderNavNodes();renderNavSurface();
+}
+function renderNavSurface(){
+  const pane=$("#navSurface"); if(!pane)return;
+  const n=(S.nav&&Array.isArray(S.nav.nodes)?S.nav.nodes:[]).find(x=>x.id===S.selected);
+  const here=$("#surfaceHere"), repo=$("#surfaceRepo");
+  if(!n){
+    $("#surfaceName").textContent="Pick a work surface.";
+    $("#surfaceDetail").textContent="GitHub stays underneath as a pointer. Local evidence, HOLD, and the next human gate stay here. Repo existence is not PASS.";
+    $("#surfaceEvidence").innerHTML="";
+    here.href="#replay";here.textContent="OPEN REPLAY";
+    repo.hidden=true;return;
+  }
+  const hits=S.pulse.filter(e=>mentionsNode(e,n)).sort((a,b)=>Date.parse(b.timestamp||0)-Date.parse(a.timestamp||0)).slice(0,3);
+  const atomicHit=n.id==="COMPUTERWISDOM"&&S.atomic;
+  const href=n.href&&String(n.href).startsWith("https://github.com/jsonwisdom/")?n.href:"";
+  $("#surfaceName").textContent=n.label||n.id;
+  $("#surfaceDetail").textContent=hits.length||atomicHit
+    ? `${n.role||"Pointer"}. Local mentions are observed, not promoted to PASS. ${n.note||"Pointer only."}`
+    : `${n.role||"Pointer"}. HOLD — no local pulse/atomic row for this surface. ${n.note||"Pointer only. Not proof."}`;
+  const bits=[];
+  if(atomicHit){
+    bits.push(`<div class="surfaceHit"><b>OBSERVED · atomic-replay.json</b><span>COMPUTERWISDOM source leaves are already rotating on this homepage. ${S.leaves.length} leaves. PASS ≠ truth.</span></div>`);
+  }
+  hits.forEach(e=>{
+    bits.push(`<div class="surfaceHit"><b>OBSERVED · pulse.jsonl · ${esc(stamp(e.timestamp))}</b><span>${esc(e.headline||e.event||"Observed mention")}. Mention ≠ proof. Status on the pulse row stays ${esc(String(e.status||"OBSERVED").toUpperCase())}.</span></div>`);
+  });
+  if(!bits.length){
+    bits.push(`<div class="surfaceHit"><b>HOLD · no local evidence row</b><span>A GitHub pointer is not a receipt, not a verdict, and not authority.</span></div>`);
+  }
+  $("#surfaceEvidence").innerHTML=bits.join("");
+  here.href=n.stay||"#replay";here.textContent=n.stay==="#receipts"?"OPEN RECEIPTS":n.stay==="#pulse"?"READ PULSE":"OPEN REPLAY";
+  if(href){repo.hidden=false;repo.href=href;repo.textContent=`OPEN ${n.repo||"REPO"} ↗`;}
+  else {repo.hidden=true;}
 }
 function renderNavGates(){
   const rows=S.pulse.slice().sort((a,b)=>Date.parse(b.timestamp||0)-Date.parse(a.timestamp||0));
-  const receiptPulse=rows.find(e=>/receipt/i.test(`${e.headline||""} ${e.event||""} ${e.kind||""} ${e.detail||""}`));
+  const receiptPulse=rows.find(isReceiptEvent);
   if(S.receipt){
     setGate("receipt",S.receipt.result||"OBSERVED",`Browser receipt · ${S.receipt.leaf||"leaf"}`,
       `Local portable JSON. ${S.receipt.rule||"Receipt ≠ authority."}`,"THIS SESSION · RECEIPT ≠ AUTHORITY");
@@ -298,11 +377,11 @@ function renderNavGates(){
       `${a.label}: ${norm(a.state.receipt_id)??"NOT PRESENT"} · ${b.label}: ${norm(b.state.receipt_id)??"NOT PRESENT"}`,
       "atomic-replay.json · RECEIPT ≠ AUTHORITY");
   }else if(receiptPulse){
-    setGate("receipt",String(receiptPulse.status||"OBSERVED").toUpperCase(),receiptPulse.headline||receiptPulse.event||"Observed receipt mention",
-      receiptPulse.detail||receiptPulse.source||"Pulse mentioned a receipt. That is not authority.",
+    setGate("receipt",String(receiptPulse.status||"OBSERVED").toUpperCase(),receiptPulse.headline||receiptPulse.event||"Observed receipt event",
+      receiptPulse.detail||receiptPulse.source||"Explicit receipt event. That is not authority.",
       `pulse.jsonl · ${stamp(receiptPulse.timestamp)}`);
   }else{
-    setGate("receipt","HOLD","No receipt row yet","Absence of a receipt row is not PASS.","pulse.jsonl + atomic-replay.json");
+    setGate("receipt","HOLD","No receipt event yet","A pulse row that only mentions receipts is not a receipt event. Absence is not PASS.","pulse.jsonl + atomic-replay.json");
   }
 
   const delta=rows.find(e=>String(e.kind||"").toLowerCase()==="delta")||rows.find(e=>e.headline)||null;
@@ -353,8 +432,8 @@ async function loadAtomic(){
   try{
     const r=await fetch("atomic-replay.json?ts="+Date.now(),{cache:"no-store"}); if(!r.ok)throw new Error("HTTP "+r.status);
     S.atomic=await r.json();buildLeaves();renderCounts();if(!S.current)renderAtomic();$("#lastRefresh").textContent=new Date().toLocaleTimeString();
-    renderNavGates();
-  }catch(e){$("#lastRefresh").textContent="HOLD";renderNavGates()}
+    renderNavGates();renderNavSurface();
+  }catch(e){$("#lastRefresh").textContent="HOLD";renderNavGates();renderNavSurface()}
 }
 async function loadPulse(){
   try{
@@ -364,13 +443,13 @@ async function loadPulse(){
     const latest=rows.slice().sort((a,b)=>Date.parse(b.timestamp||0)-Date.parse(a.timestamp||0)).slice(0,40);
     $("#river").innerHTML=latest.map(e=>`<div class="event"><div class="time">${esc(new Date(e.timestamp).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}))}</div><div class="kind">${esc(String(e.status||e.kind||"OBSERVED").toUpperCase())}</div><div class="body"><h4>${esc(e.headline||e.event||"Observed event")}</h4><p>${esc(e.detail||e.source||"")}</p></div></div>`).join("")||"<div class='event'>WAITING FOR JSONL…</div>";
     $("#pulseStatus").textContent=`${rows.length} ROWS · REFRESH 5s`;
-    renderNavGates();
-  }catch(e){$("#pulseStatus").textContent="HOLD · "+e.message;renderNavGates()}
+    renderNavGates();renderNavSurface();
+  }catch(e){$("#pulseStatus").textContent="HOLD · "+e.message;renderNavGates();renderNavSurface()}
 }
 async function loadNav(){
   try{
     const r=await fetch("navigator-status.json?ts="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
-    S.nav=await r.json();renderNavNodes();renderNavGates();
+    S.nav=await r.json();renderNavNodes();renderNavGates();renderNavSurface();
   }catch(e){
     $("#navWorks").innerHTML=`<div class="workcard hold"><h3>HOLD</h3><p>Navigator map could not load. ${esc(e.message)}</p></div>`;
   }
